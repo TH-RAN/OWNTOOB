@@ -107,7 +107,7 @@
             <div class="flex items-center gap-1.5">
               <span class="text-[9px] font-extrabold uppercase tracking-widest text-amber-400 bg-amber-400/10 px-1.5 py-0.5 rounded border border-amber-400/20">GHB MISSION</span>
               <span id="cloudSyncStatus" class="text-[9px] text-emerald-400 font-medium flex items-center gap-1">
-                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> ซิงค์ข้อมูลเรียลไทม์
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> ซิงค์ Google Sheets เรียลไทม์
               </span>
             </div>
             <h1 class="text-sm font-black text-white tracking-tight">Duo Debt Warrior</h1>
@@ -527,11 +527,11 @@
       </button>
     </div>
   </div>
-  <!-- Firebase & Realtime Cloud Data Module -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-    import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-    import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+  <!-- Google Apps Script & Realtime Cloud Sync Engine -->
+  <script>
+    // Google Sheets API Web App Endpoint
+    const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxgo4nOwJ4ojlV9LuH0vfIzzm1lKAmx6kcM9liRYxteg3z0Qrdonh1aDFz0gfUULFuy/exec";
 
     const INCOME_GIFT = 21000.00;
     const INCOME_GET = 10634.00;
@@ -562,7 +562,7 @@
         amount: 150, 
         note: '🍛 ค่าข้าว GET', 
         category: 'Food', 
-        time: new Date().toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' }), 
+        time: '12:30', 
         date: todayStr,
         slip: null 
       }
@@ -571,8 +571,9 @@
     let currentActivePlayer = 'GIFT';
     let selectedCategory = 'Food';
     let currentSlipBase64 = null;
-    
-    // Check for offline backup cache first
+    let isSyncing = false;
+
+    // Load cached data from LocalStorage to ensure instantaneous offline load
     let cachedTx = null;
     let cachedDebts = null;
     try {
@@ -582,11 +583,6 @@
 
     let appDebts = cachedDebts && cachedDebts.length > 0 ? cachedDebts : [...INITIAL_DEBTS];
     let transactions = cachedTx && cachedTx.length > 0 ? cachedTx : [...INITIAL_TRANSACTIONS];
-
-    let db = null;
-    let auth = null;
-    let currentUser = null;
-    const appId = typeof __app_id !== 'undefined' ? __app_id : 'duo-debt-warrior';
 
     // Audio SFX synthesis
     function playAudioTone(type) {
@@ -627,76 +623,97 @@
         toast.classList.add('-translate-y-20');
       }, 2500);
     }
-    // Cloud Sync Setup complying strictly with RULE 1 & RULE 3
-    async function initCloudSync() {
+
+    // Fetch all records from Google Sheet
+    async function loadDataFromGoogleSheet(silent = false) {
+      if (isSyncing) return;
+      isSyncing = true;
+      const statusBadge = document.getElementById('cloudSyncStatus');
+
+      if (!silent && statusBadge) {
+        statusBadge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-amber-400 animate-ping"></span> กำลังดึงข้อมูล Sheets...`;
+      }
+
       try {
-        if (typeof __firebase_config !== 'undefined') {
-          const config = JSON.parse(__firebase_config);
-          const app = initializeApp(config);
-          db = getFirestore(app);
-          auth = getAuth(app);
+        const res = await fetch(APPS_SCRIPT_URL, {
+          method: 'GET',
+          headers: { 'Accept': 'application/json' }
+        });
 
-          if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-            await signInWithCustomToken(auth, __initial_auth_token);
-          } else {
-            await signInAnonymously(auth);
+        if (res.ok) {
+          const cloudRows = await res.json();
+          if (Array.isArray(cloudRows) && cloudRows.length > 0) {
+            // Normalize rows: newest entries at the beginning
+            const parsed = cloudRows.map(r => ({
+              id: Number(r.id) || Date.now(),
+              player: String(r.player || 'GIFT'),
+              amount: Number(r.amount) || 0,
+              note: String(r.note || ''),
+              category: String(r.category || 'Food'),
+              time: String(r.time || ''),
+              date: String(r.date || todayStr),
+              slip: r.slip || null
+            }));
+
+            // If rows are recorded chronologically in sheets, reverse so newest is on top
+            transactions = parsed.reverse();
+            localStorage.setItem('warrior_saved_tx', JSON.stringify(transactions));
+            updateAllUI();
           }
-
-          currentUser = auth.currentUser;
-          if (currentUser) {
-            document.getElementById('cloudSyncStatus').innerHTML = `
-              <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> คลาวด์เรียลไทม์ (ออนไลน์)
-            `;
-
-            // Document path: artifacts/{appId}/public/data/app_state/shared_doc (6 segments)
-            const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'app_state', 'shared_doc');
-            onSnapshot(docRef, (snap) => {
-              if (snap.exists()) {
-                const data = snap.data();
-                if (data.transactions && Array.isArray(data.transactions)) {
-                  transactions = data.transactions;
-                  localStorage.setItem('warrior_saved_tx', JSON.stringify(transactions));
-                }
-                if (data.debts && Array.isArray(data.debts)) {
-                  appDebts = data.debts;
-                  localStorage.setItem('warrior_saved_debts', JSON.stringify(appDebts));
-                }
-                updateAllUI();
-              }
-            }, (err) => {
-              console.warn("Firestore snapshot error:", err);
-            });
+          if (statusBadge) {
+            statusBadge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> ซิงค์ Google Sheets แล้ว`;
           }
         }
       } catch (err) {
-        console.warn("Using offline-first storage mode:", err);
+        console.warn("Google Sheets fetch error (falling back to local cache):", err);
+        if (statusBadge) {
+          statusBadge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> ข้อมูลพร้อมใช้งาน (แคช)`;
+        }
+      } finally {
+        isSyncing = false;
       }
     }
 
-    async function pushCloudUpdate() {
-      // Save locally first so it never resets on refresh
+    // Append new transaction to Google Sheets via POST
+    async function postDataToGoogleSheet(newTx) {
+      // Local backup immediate write
       try {
         localStorage.setItem('warrior_saved_tx', JSON.stringify(transactions));
         localStorage.setItem('warrior_saved_debts', JSON.stringify(appDebts));
       } catch (e) {}
 
-      // Push to Firestore if online
-      if (db && currentUser) {
-        try {
-          const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'app_state', 'shared_doc');
-          await setDoc(docRef, {
-            transactions: transactions.slice(0, 50),
-            debts: appDebts,
-            updatedAt: Date.now(),
-            updatedBy: currentActivePlayer
-          });
-        } catch (e) {
-          console.warn("Error syncing with cloud:", e);
+      const statusBadge = document.getElementById('cloudSyncStatus');
+      if (statusBadge) {
+        statusBadge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-sky-400 animate-spin"></span> กำลังเซฟลงชีต...`;
+      }
+
+      try {
+        // Send payload using text/plain to avoid CORS preflight rejection on Google Apps Script Web Apps
+        await fetch(APPS_SCRIPT_URL, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: {
+            'Content-Type': 'text/plain;charset=utf-8'
+          },
+          body: JSON.stringify({
+            id: newTx.id,
+            player: newTx.player,
+            amount: newTx.amount,
+            note: newTx.note,
+            category: newTx.category,
+            time: newTx.time,
+            date: newTx.date
+          })
+        });
+
+        if (statusBadge) {
+          statusBadge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> เซฟลง Google Sheets แล้ว`;
         }
+      } catch (err) {
+        console.warn("Could not post to Google Sheet:", err);
       }
     }
 
-    // Slip Photo Handling (with automatic client-side compression)
     window.handleSlipSelected = function(e) {
       const file = e.target.files?.[0];
       if (!file) return;
@@ -803,6 +820,7 @@
         indicator.innerText = "ลงในนาม: GET";
       }
     };
+
     window.selectQuickTag = function(label, cat) {
       selectedCategory = cat;
       const noteInput = document.getElementById('txNote');
@@ -852,7 +870,7 @@
 
       showToast(`บันทึกสำเร็จ ฿${amt.toLocaleString()} (${newTx.player})`);
       updateAllUI();
-      pushCloudUpdate();
+      postDataToGoogleSheet(newTx);
     };
 
     window.openAttackModal = function() {
@@ -879,6 +897,7 @@
         setTimeout(() => bossBox.classList.remove('boss-shake'), 400);
       }
     };
+
     function updateDailyStats() {
       const today = new Date().toISOString().split('T')[0];
       const todayTx = transactions.filter(t => t.date === today && t.category !== 'Snowball');
@@ -1004,7 +1023,9 @@
           showToast(`ยินดีด้วย! ปลดค่างวด ฿${debt.monthly.toLocaleString()}/ด.`);
         }
         updateAllUI();
-        pushCloudUpdate();
+        try {
+          localStorage.setItem('warrior_saved_debts', JSON.stringify(appDebts));
+        } catch (e) {}
       }
     };
 
@@ -1065,8 +1086,15 @@
     window.addEventListener('DOMContentLoaded', () => {
       const now = new Date();
       document.getElementById('statusBarTime').innerText = now.toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' });
-      initCloudSync();
+      
       updateAllUI();
+      // Fetch fresh data from Google Sheet on start
+      loadDataFromGoogleSheet();
+
+      // Poll Google Sheets every 20 seconds to keep both players synced
+      setInterval(() => {
+        loadDataFromGoogleSheet(true);
+      }, 20000);
     });
   </script>
 </body>
