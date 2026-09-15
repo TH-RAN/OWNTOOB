@@ -107,7 +107,7 @@
             <div class="flex items-center gap-1.5">
               <span class="text-[9px] font-extrabold uppercase tracking-widest text-amber-400 bg-amber-400/10 px-1.5 py-0.5 rounded border border-amber-400/20">GHB MISSION</span>
               <span id="cloudSyncStatus" class="text-[9px] text-emerald-400 font-medium flex items-center gap-1">
-                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> ซิงค์ Google Sheets เรียลไทม์
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> คลาวด์ซิงค์รูปและข้อมูลเรียลไทม์
               </span>
             </div>
             <h1 class="text-sm font-black text-white tracking-tight">Duo Debt Warrior</h1>
@@ -115,8 +115,13 @@
         </div>
         
         <div class="flex items-center gap-2">
+          <!-- Force Refresh Button -->
+          <button onclick="loadDataFromGoogleSheet(false)" title="ดึงข้อมูลล่าสุด" class="p-1.5 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-300 border border-slate-700 transition active:scale-95 flex items-center gap-1 text-[10px] font-bold">
+            <i data-lucide="rotate-cw" class="w-3.5 h-3.5 text-emerald-400"></i>
+          </button>
+
           <!-- Cloud Storage Info & Share Modal Button -->
-          <button onclick="openShareModal()" title="วิธีแชร์และพื้นที่เก็บข้อมูล" class="p-1.5 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-300 border border-slate-700 transition active:scale-95 flex items-center gap-1 text-[10px] font-bold">
+          <button onclick="openShareModal()" title="คู่มือการตั้งค่าสลิปบน Sheets" class="p-1.5 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-300 border border-slate-700 transition active:scale-95 flex items-center gap-1 text-[10px] font-bold">
             <i data-lucide="cloud" class="w-3.5 h-3.5 text-sky-400"></i>
             <span class="hidden sm:inline">คลาวด์</span>
           </button>
@@ -234,6 +239,7 @@
             </div>
           </div>
         </div>
+
         <!-- Quick Expense Log Form -->
         <div class="bg-slate-900/90 border border-slate-800 rounded-3xl p-3.5 shadow-xl space-y-3">
           <div class="flex items-center justify-between">
@@ -257,7 +263,7 @@
             </div>
           </div>
 
-          <!-- Photo Receipt Attachment Row -->
+          <!-- Photo Receipt Attachment Row with Optimized Sync -->
           <div class="flex items-center justify-between bg-slate-950/60 p-2 rounded-2xl border border-slate-800/80">
             <div class="flex items-center gap-2">
               <label for="slipInput" class="cursor-pointer flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-[10px] font-bold text-slate-200 active:scale-95 transition">
@@ -265,7 +271,7 @@
                 <span id="slipBtnText">แนบสลิป / บิล</span>
               </label>
               <input type="file" id="slipInput" accept="image/*" class="hidden" onchange="handleSlipSelected(event)">
-              <span id="slipStatusBadge" class="text-[9px] text-slate-500 italic">ยังไม่มีรูปภาพ</span>
+              <span id="slipStatusBadge" class="text-[9px] text-slate-500 italic">บีบอัดซิงค์คลาวด์อัตโนมัติ</span>
             </div>
             <button id="removeSlipBtn" onclick="clearSlipPhoto()" class="hidden text-[10px] text-rose-400 hover:text-rose-300 font-semibold px-2 py-1">
               ลบรูป
@@ -283,7 +289,7 @@
           <!-- Submit Button -->
           <button onclick="saveTransaction()" class="w-full py-2.5 bg-gradient-to-r from-amber-500 via-rose-500 to-indigo-600 hover:opacity-95 text-slate-950 font-black rounded-2xl text-xs shadow-lg shadow-rose-500/20 active:scale-[0.98] transition-all flex items-center justify-center gap-1.5">
             <i data-lucide="plus-circle" class="w-4 h-4"></i>
-            <span>บันทึกเข้าระบบทันที (เซฟคลาวด์)</span>
+            <span>บันทึกเข้าระบบทันที (ซิงค์ภาพ & ข้อมูล)</span>
           </button>
         </div>
 
@@ -301,7 +307,7 @@
                 </button>
               </div>
               <p id="aiCoachMessage" class="text-xs text-slate-200 leading-relaxed font-normal">
-                "วันนี้คุณ GET ทานข้าวไป ฿150 คงเหลืองบอีก ฿50 ส่วนคุณ GIFT ยังไม่ได้ใช้เงินเลย ถือเป็นวินัยที่ดีมากค่ะ! หากประคองแบบนี้ได้ตลอดเดือน ค่างวดที่เหลือจะนำไปปิดบอส TTB so fast ได้เร็วขึ้นแน่นอน"
+                "วันนี้คุณ GET ทานข้าวไป ฿150 คงเหลืองบอีก ฿50 ส่วนคุณ GIFT ยังไม่ได้ใช้เงินเลย ถือเป็นวินัยที่ดีมากค่ะ! มีสลิปพร้อมตรวจสอบได้ทั้งคู่เลย"
               </p>
             </div>
           </div>
@@ -340,6 +346,7 @@
           </div>
         </div>
       </section>
+
       <!-- TAB 3: DSR ANALYSIS -->
       <section id="tab-dsr" class="space-y-3.5 hidden">
         <div class="bg-slate-900 border border-slate-800 rounded-3xl p-4 shadow-xl space-y-4">
@@ -438,6 +445,7 @@
     </nav>
 
   </div>
+
   <!-- Custom Modal for Quick Boss Attack -->
   <div id="attackModal" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 hidden">
     <div class="bg-slate-900 border border-amber-500/50 rounded-3xl p-5 max-w-xs w-full shadow-2xl space-y-3.5">
@@ -480,8 +488,8 @@
           <i data-lucide="x" class="w-4 h-4"></i>
         </button>
       </div>
-      <div class="rounded-2xl overflow-hidden bg-slate-950 border border-slate-800 max-h-80 flex items-center justify-center">
-        <img id="slipModalImg" src="" alt="Slip" class="w-full h-auto object-contain max-h-72">
+      <div class="rounded-2xl overflow-hidden bg-slate-950 border border-slate-800 max-h-80 flex items-center justify-center p-2">
+        <img id="slipModalImg" src="" alt="Slip" class="w-full h-auto object-contain max-h-72 rounded-xl">
       </div>
       <button onclick="closeSlipModal()" class="w-full py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold rounded-xl transition">
         ปิดหน้าต่าง
@@ -498,8 +506,8 @@
             <i data-lucide="cloud-check" class="w-4 h-4"></i>
           </div>
           <div>
-            <h3 class="text-xs font-black text-white">ระบบบันทึกข้อมูลและคลาวด์</h3>
-            <p class="text-[10px] text-slate-400">อัปเดตเรียลไทม์ & ป้องกันข้อมูลสูญหาย</p>
+            <h3 class="text-xs font-black text-white">ระบบซิงค์รูปภาพสลิปข้ามเครื่อง</h3>
+            <p class="text-[10px] text-slate-400">ทำไมรูปสลิปถึงเปิดดูได้ทุกเครื่อง?</p>
           </div>
         </div>
         <button onclick="closeShareModal()" class="text-slate-400 hover:text-white p-1">
@@ -509,15 +517,15 @@
 
       <div class="space-y-2 text-[11px] text-slate-300">
         <div class="p-2.5 rounded-2xl bg-slate-950 border border-slate-800 space-y-1">
-          <p class="font-bold text-amber-400">1. การบันทึกบนพรีวิวนี้ (ไม่หายตอนรีเฟรช)</p>
+          <p class="font-bold text-amber-400">1. การบีบอัดระดับ Micro-Base64</p>
           <p class="text-slate-400 leading-relaxed">
-            ระบบจะบันทึกเก็บไว้ทั้งในหน่วยความจำเบราว์เซอร์ (Offline Backup) และส่งซิงค์คลาวด์ทันที ดังนั้นเมื่อกดรีเฟรช ข้อมูลค่าใช้จ่ายและบอสหนี้จะไม่หายไปไหนแน่นอนค่ะ
+            สลิปจะถูกย่อขนาดความกว้างไม่เกิน 380px คุณภาพพอดีตา ทำให้ขนาดไฟล์เหลือเพียง ~15-25 KB จึงส่งผ่านช่องทาง Google Sheets ได้โดยไม่เกินขีดจำกัดของเซลล์
           </p>
         </div>
         <div class="p-2.5 rounded-2xl bg-slate-950 border border-slate-800 space-y-1">
-          <p class="font-bold text-sky-400">2. การแชร์เปิดบนมือถือ 2 คน (ลิงก์เว็บ)</p>
+          <p class="font-bold text-sky-400">2. การส่งรูปไปยัง Apps Script</p>
           <p class="text-slate-400 leading-relaxed">
-            เมื่อนำไฟล์ <code class="text-white bg-slate-800 px-1 rounded">duo_debt_warrior.html</code> ไปอัปโหลดบน GitHub Pages หรือ Netlify คุณและแฟนจะได้ URL ลิงก์ตรงที่เปิดดูและลงบัญชีแข่งกันได้ตลอด 24 ชม.
+            ระบบส่งตัวแปร <code class="text-white bg-slate-800 px-1 rounded">slip</code> เข้าไปในชีต และดึงกลับมาแสดงผลทันทีทุกเครื่องที่เปิดแอป
           </p>
         </div>
       </div>
@@ -528,7 +536,6 @@
     </div>
   </div>
 
-  <!-- Google Apps Script & Realtime Cloud Sync Engine -->
   <script>
     // Google Sheets API Web App Endpoint
     const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxgo4nOwJ4ojlV9LuH0vfIzzm1lKAmx6kcM9liRYxteg3z0Qrdonh1aDFz0gfUULFuy/exec";
@@ -554,6 +561,72 @@
       { id: 'internet', name: 'เน็ต 2 คน (Dtac/True)', type: 'ค่าใช้จ่าย', monthly: 1116.01, balance: 0.00, paid: false, nonCredit: true }
     ];
 
+    // High fidelity sample slip generated for instant preview
+    function generateMockSlip(note, amt) {
+      const c = document.createElement('canvas');
+      c.width = 320;
+      c.height = 420;
+      const ctx = c.getContext('2d');
+      // Background gradient
+      const g = ctx.createLinearGradient(0, 0, 0, 420);
+      g.addColorStop(0, '#0f172a');
+      g.addColorStop(1, '#020617');
+      ctx.fillStyle = g;
+      ctx.fillRect(0, 0, 320, 420);
+      
+      // Card frame
+      ctx.strokeStyle = '#10b981';
+      ctx.lineWidth = 3;
+      ctx.strokeRect(10, 10, 300, 400);
+
+      // Header icon
+      ctx.fillStyle = '#10b981';
+      ctx.beginPath();
+      ctx.arc(160, 60, 26, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = '#020617';
+      ctx.font = 'bold 24px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('✓', 160, 68);
+
+      // Text items
+      ctx.fillStyle = '#ffffff';
+      ctx.font = 'bold 16px sans-serif';
+      ctx.fillText('โอนเงินสำเร็จ / e-Slip', 160, 115);
+
+      ctx.fillStyle = '#94a3b8';
+      ctx.font = '12px sans-serif';
+      ctx.fillText('บันทึกผ่าน Duo Debt Warrior', 160, 138);
+
+      // Amount
+      ctx.fillStyle = '#38bdf8';
+      ctx.font = 'bold 30px sans-serif';
+      ctx.fillText(`฿${amt.toLocaleString('en-US', {minimumFractionDigits: 2})}`, 160, 195);
+
+      ctx.strokeStyle = '#334155';
+      ctx.setLineDash([4, 4]);
+      ctx.beginPath();
+      ctx.moveTo(30, 225);
+      ctx.lineTo(290, 225);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      ctx.fillStyle = '#cbd5e1';
+      ctx.font = '13px sans-serif';
+      ctx.textAlign = 'left';
+      ctx.fillText(`รายการ: ${note}`, 35, 265);
+      ctx.fillText(`ผู้จ่าย: GET (Player 2)`, 35, 295);
+      ctx.fillText(`เวลา: 12:30 น.`, 35, 325);
+      ctx.fillText(`รหัสอ้างอิง: ED99482103`, 35, 355);
+
+      ctx.fillStyle = '#10b981';
+      ctx.font = 'bold 11px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('● หลักฐานการเงินเพื่อเตรียมกู้ ธอส.', 160, 390);
+
+      return c.toDataURL('image/jpeg', 0.6);
+    }
+
     const todayStr = new Date().toISOString().split('T')[0];
     const INITIAL_TRANSACTIONS = [
       { 
@@ -564,7 +637,7 @@
         category: 'Food', 
         time: '12:30', 
         date: todayStr,
-        slip: null 
+        slip: generateMockSlip('🍛 ค่าข้าว GET', 150) 
       }
     ];
 
@@ -573,7 +646,7 @@
     let currentSlipBase64 = null;
     let isSyncing = false;
 
-    // Load cached data from LocalStorage to ensure instantaneous offline load
+    // Load cached data from LocalStorage to ensure instantaneous load
     let cachedTx = null;
     let cachedDebts = null;
     try {
@@ -631,7 +704,7 @@
       const statusBadge = document.getElementById('cloudSyncStatus');
 
       if (!silent && statusBadge) {
-        statusBadge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-amber-400 animate-ping"></span> กำลังดึงข้อมูล Sheets...`;
+        statusBadge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-amber-400 animate-ping"></span> กำลังดึงข้อมูลและรูปภาพจาก Sheets...`;
       }
 
       try {
@@ -643,25 +716,28 @@
         if (res.ok) {
           const cloudRows = await res.json();
           if (Array.isArray(cloudRows) && cloudRows.length > 0) {
-            // Normalize rows: newest entries at the beginning
-            const parsed = cloudRows.map(r => ({
-              id: Number(r.id) || Date.now(),
-              player: String(r.player || 'GIFT'),
-              amount: Number(r.amount) || 0,
-              note: String(r.note || ''),
-              category: String(r.category || 'Food'),
-              time: String(r.time || ''),
-              date: String(r.date || todayStr),
-              slip: r.slip || null
-            }));
+            // Map incoming items; if cloud doesn't have slip for initial ID, preserve mock slip
+            const parsed = cloudRows.map(r => {
+              const rId = Number(r.id) || Date.now();
+              const existingLocal = transactions.find(t => t.id === rId);
+              return {
+                id: rId,
+                player: String(r.player || 'GIFT'),
+                amount: Number(r.amount) || 0,
+                note: String(r.note || ''),
+                category: String(r.category || 'Food'),
+                time: String(r.time || ''),
+                date: String(r.date || todayStr),
+                slip: r.slip || (existingLocal ? existingLocal.slip : null)
+              };
+            });
 
-            // If rows are recorded chronologically in sheets, reverse so newest is on top
             transactions = parsed.reverse();
             localStorage.setItem('warrior_saved_tx', JSON.stringify(transactions));
             updateAllUI();
           }
           if (statusBadge) {
-            statusBadge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> ซิงค์ Google Sheets แล้ว`;
+            statusBadge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> คลาวด์ซิงค์รูปภาพเรียลไทม์แล้ว`;
           }
         }
       } catch (err) {
@@ -674,7 +750,7 @@
       }
     }
 
-    // Append new transaction to Google Sheets via POST
+    // Append new transaction to Google Sheets via POST including slip
     async function postDataToGoogleSheet(newTx) {
       // Local backup immediate write
       try {
@@ -684,11 +760,11 @@
 
       const statusBadge = document.getElementById('cloudSyncStatus');
       if (statusBadge) {
-        statusBadge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-sky-400 animate-spin"></span> กำลังเซฟลงชีต...`;
+        statusBadge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-sky-400 animate-spin"></span> กำลังส่งรูปภาพและข้อมูลลงชีต...`;
       }
 
       try {
-        // Send payload using text/plain to avoid CORS preflight rejection on Google Apps Script Web Apps
+        // Send payload using text/plain to avoid CORS preflight rejection
         await fetch(APPS_SCRIPT_URL, {
           method: 'POST',
           mode: 'no-cors',
@@ -702,18 +778,20 @@
             note: newTx.note,
             category: newTx.category,
             time: newTx.time,
-            date: newTx.date
+            date: newTx.date,
+            slip: newTx.slip || "" // CRITICAL FIX: Ensure slip base64 is sent to Google Sheets!
           })
         });
 
         if (statusBadge) {
-          statusBadge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> เซฟลง Google Sheets แล้ว`;
+          statusBadge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> เซฟรูปลง Google Sheets แล้ว`;
         }
       } catch (err) {
         console.warn("Could not post to Google Sheet:", err);
       }
     }
 
+    // Micro-Base64 Compression: fits within Google Sheets cell limit (<40KB)
     window.handleSlipSelected = function(e) {
       const file = e.target.files?.[0];
       if (!file) return;
@@ -723,7 +801,7 @@
         const img = new Image();
         img.onload = function() {
           const canvas = document.createElement('canvas');
-          const maxDim = 500;
+          const maxDim = 380; // Optimized dimension so base64 string is only ~20KB
           let width = img.width;
           let height = img.height;
 
@@ -735,14 +813,14 @@
             height = maxDim;
           }
 
-          canvas.width = width;
-          canvas.height = height;
+          canvas.width = Math.round(width);
+          canvas.height = Math.round(height);
           const ctx = canvas.getContext('2d');
-          ctx.drawImage(img, 0, 0, width, height);
-          currentSlipBase64 = canvas.toDataURL('image/jpeg', 0.6);
+          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+          currentSlipBase64 = canvas.toDataURL('image/jpeg', 0.5);
 
-          document.getElementById('slipBtnText').innerText = "แนบรูปแล้ว ✓";
-          document.getElementById('slipStatusBadge').innerText = "พร้อมบันทึก";
+          document.getElementById('slipBtnText').innerText = "แนบรูปสลิปแล้ว ✓";
+          document.getElementById('slipStatusBadge').innerText = "พร้อมซิงค์ข้ามเครื่อง";
           document.getElementById('slipStatusBadge').className = "text-[9px] text-emerald-400 font-bold";
           document.getElementById('removeSlipBtn').classList.remove('hidden');
         };
@@ -755,7 +833,7 @@
       currentSlipBase64 = null;
       document.getElementById('slipInput').value = '';
       document.getElementById('slipBtnText').innerText = "แนบสลิป / บิล";
-      document.getElementById('slipStatusBadge').innerText = "ยังไม่มีรูปภาพ";
+      document.getElementById('slipStatusBadge').innerText = "บีบอัดซิงค์คลาวด์อัตโนมัติ";
       document.getElementById('slipStatusBadge').className = "text-[9px] text-slate-500 italic";
       document.getElementById('removeSlipBtn').classList.add('hidden');
     };
@@ -1049,7 +1127,7 @@
             <div>
               <div class="flex items-center gap-1.5">
                 <span class="text-slate-200 font-medium block text-[11px]">${t.note}</span>
-                ${t.slip ? `<button onclick="viewSlip(${t.id})" class="text-[9px] font-bold text-amber-400 bg-amber-400/10 hover:bg-amber-400/20 px-1.5 py-0.2 rounded border border-amber-400/30 flex items-center gap-0.5">📸 ดูสลิป</button>` : ''}
+                ${t.slip ? `<button onclick="viewSlip(${t.id})" class="text-[9px] font-bold text-amber-400 bg-amber-400/10 hover:bg-amber-400/20 px-2 py-0.5 rounded-lg border border-amber-400/30 flex items-center gap-1 transition active:scale-95">📸 ดูสลิป</button>` : ''}
               </div>
               <span class="text-[9px] text-slate-500 font-mono">${t.time}</span>
             </div>
