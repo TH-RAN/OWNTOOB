@@ -726,24 +726,29 @@
       { id: 'goodmoney', name: 'ยักษ์สินเชื่อ Goodmoney', bank: 'Goodmoney', subtype: 'สินเชื่อส่วนบุคคล (เป้าหมายเดือนที่ 3-4)', monthly: 800.00, balance: 19812.82, initialHp: 19812.82, avatar: '👺', owner: 'GET', paid: false, monthlyPaid: false },
       { id: 'ttb_flash', name: 'ยักษ์บัตร TTB flash', bank: 'TTB / flash', subtype: 'บัตรกดเงินสด TTB flash', monthly: 907.00, balance: 23860.97, initialHp: 23860.97, avatar: '🧌', owner: 'GIFT', paid: false, monthlyPaid: false },
       { id: 'lotus', name: 'ยักษ์บัตร Lotus', bank: 'Lotus', subtype: 'บัตรเครดิตโลตัส', monthly: 2436.28, balance: 24419.94, initialHp: 24419.94, avatar: '🧟', owner: 'GET', paid: false, monthlyPaid: false },
-      { id: 'cardx', name: 'ยักษ์บัตร CardX', bank: 'CardX', subtype: 'บัตรเครดิต SCB CardX', monthly: 2015.62, balance: 25195.31, initialHp: 25195.31, avatar: '🧛', owner: 'GIFT', paid: false, monthlyPaid: false },
+      { id: 'cardx', name: 'CardX', type: 'บัตรเครดิต SCB CardX', bank: 'CardX', subtype: 'บัตรเครดิต SCB CardX', monthly: 2015.62, balance: 25195.31, initialHp: 25195.31, avatar: '🧛', owner: 'GIFT', paid: false, monthlyPaid: false },
       { id: 'uob', name: 'ยักษ์บัตร UOB', bank: 'UOB', subtype: 'บัตรเครดิต UOB', monthly: 2100.00, balance: 25280.26, initialHp: 25280.26, avatar: '🧙', owner: 'GIFT', paid: false, monthlyPaid: false },
       { id: 'ktc_proud', name: 'ยักษ์บัตร KTC proud', bank: 'KTC / proud', subtype: 'บัตรกดเงินสด KTC proud', monthly: 1300.00, balance: 25334.48, initialHp: 25334.48, avatar: '🦹', owner: 'GIFT', paid: false, monthlyPaid: false },
       { id: 'phone_zflip', name: 'ยักษ์ผ่อน Phone Z Flip', bank: 'Phone (zflip)', subtype: 'ค่าผ่อนโทรศัพท์มือถือ', monthly: 2209.94, balance: 39598.75, initialHp: 39598.75, avatar: '🤖', owner: 'GET', paid: false, monthlyPaid: false },
       { id: 'tidlor', name: 'ยักษ์สินเชื่อเงินติดล้อ', bank: 'เงินติดล้อ', subtype: 'สินเชื่อจำนำทะเบียน', monthly: 2800.00, balance: 80600.00, initialHp: 80600.00, avatar: '🐉', owner: 'GIFT', paid: false, monthlyPaid: false },
-      { id: 'tiktok', name: 'ยักษ์ TikTok Pay Later', bank: 'TikTok Pay Later', subtype: 'Pay Later ช้อปปิ้ง', monthly: 2000.00, balance: 0.00, initialHp: 2000.00, avatar: '👾', owner: 'GET', paid: false, monthlyPaid: false }
+      { id: 'tiktok', name: 'ยักษ์ TikTok Pay Later', bank: 'TikTok Pay Later', subtype: 'Pay Later ช้อปปิ้ง', monthly: 2000.00, balance: 2000.00, initialHp: 2000.00, avatar: '👾', owner: 'GET', paid: false, monthlyPaid: false }
     ];
 
-    // Load saved debt values if edited by user
+    // Load saved debt values if edited by user and clean legacy zero-balance bugs
     try {
       const savedDebts = localStorage.getItem('owntoob_edited_debts');
       if (savedDebts) {
-        const parsedDebts = JSON.parse(savedDebts);
-        if (Array.isArray(parsedDebts) && parsedDebts.length > 0) {
-          giantBosses = giantBosses.map(g => {
-            const found = parsedDebts.find(p => p.id === g.id);
-            return found ? { ...g, ...found } : g;
-          });
+        // Clear any old legacy cache where TikTok was accidentally saved as 0
+        if (savedDebts.includes('"id":"tiktok"') && (savedDebts.includes('"balance":0') || savedDebts.includes('"balance":0,'))) {
+          localStorage.removeItem('owntoob_edited_debts');
+        } else {
+          const parsedDebts = JSON.parse(savedDebts);
+          if (Array.isArray(parsedDebts) && parsedDebts.length > 0) {
+            giantBosses = giantBosses.map(g => {
+              const found = parsedDebts.find(p => p.id === g.id);
+              return found ? { ...g, ...found } : g;
+            });
+          }
         }
       }
     } catch (e) {}
@@ -1389,13 +1394,13 @@
 
           item.innerHTML = `
             <div class="flex items-center space-x-2.5 flex-1 min-w-0 pr-2">
-              <input type="checkbox" ${debt.monthlyPaid || isClosed ? 'checked' : ''} ${isClosed ? 'disabled' : ''} onchange="toggleMonthlyInstallment('${debt.id}')" title="${debt.monthlyPaid ? 'ยกเลิกสถานะจ่ายงวดนี้' : 'ติ๊กเมื่อจ่ายค่างวดเดือนนี้แล้ว'}" class="w-4 h-4 rounded accent-emerald-600 cursor-pointer">
+              <input type="checkbox" ${debt.monthlyPaid ? 'checked' : ''} onchange="toggleMonthlyInstallment('${debt.id}')" title="${debt.monthlyPaid ? 'ยกเลิกสถานะจ่ายงวดนี้' : 'ติ๊กเมื่อจ่ายค่างวดเดือนนี้แล้ว'}" class="w-4 h-4 rounded accent-emerald-600 cursor-pointer">
               <span class="text-xl flex-shrink-0 cursor-pointer" onclick="jumpToBoss(${index})">${debt.avatar}</span>
               <div class="flex-1 min-w-0">
                 <div class="flex items-center gap-1.5">
                   <span class="text-xs font-black text-slate-900 ${isClosed ? 'line-through text-slate-400' : ''} truncate">${debt.name}</span>
                   <span class="text-[9px] px-1.5 py-0.2 rounded ${debt.owner === 'GET' ? 'bg-sky-100 text-sky-700 border-sky-200' : 'bg-rose-100 text-rose-700 border-rose-200'} font-bold border font-mono">${debt.owner || 'GIFT'}</span>
-                  ${debt.monthlyPaid && !isClosed ? '<span class="text-[9px] font-black text-emerald-700 bg-emerald-100 px-1.5 py-0.2 rounded border border-emerald-200">จ่ายงวดแล้ว ✓</span>' : ''}
+                  ${debt.monthlyPaid ? '<span class="text-[9px] font-black text-emerald-700 bg-emerald-100 px-1.5 py-0.2 rounded border border-emerald-200">จ่ายงวดแล้ว ✓</span>' : ''}
                 </div>
                 <p class="text-[10px] text-slate-500 font-semibold mt-0.5">
                   ค่างวด <strong class="text-rose-600 font-bold font-mono">฿${debt.monthly.toLocaleString()}</strong>/ด. | คงค้าง <strong class="font-mono text-slate-800 font-black">฿${debt.balance.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</strong>
@@ -1403,8 +1408,8 @@
               </div>
             </div>
             <div class="flex items-center gap-1">
-              <button onclick="openEditDebtModal('${debt.id}')" title="แตะเพื่อแก้ไขยอดหนี้ ค่างวด หรือผู้กู้" class="p-1 rounded-lg text-slate-400 hover:text-amber-600 hover:bg-amber-50 transition active:scale-90">
-                <i data-lucide="edit" class="w-3.5 h-3.5"></i>
+              <button onclick="openEditDebtModal('${debt.id}')" title="แตะเพื่อแก้ไขยอดหนี้ ค่างวด หรือผู้กู้" class="p-2 rounded-xl text-slate-400 hover:text-amber-600 hover:bg-amber-50 active:scale-95 transition">
+                <i data-lucide="edit" class="w-4 h-4"></i>
               </button>
               ${isClosed ? '<span class="text-[9px] font-black text-emerald-800 bg-emerald-100 border border-emerald-300 px-2 py-0.5 rounded-full">ปิดหนี้แล้ว 🎉</span>' : ''}
             </div>
