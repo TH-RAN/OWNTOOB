@@ -153,6 +153,7 @@
                     <i data-lucide="edit-3" class="w-3 h-3"></i>
                   </button>
                 </div>
+                <p id="treasurySubDetail" class="text-[9px] text-white/70 font-medium mt-0.5">รวมตัดรายจ่ายและค่างวดหนี้แล้ว</p>
               </div>
             </div>
 
@@ -226,15 +227,20 @@
           </div>
         </div>
 
-        <!-- Expense Entry Form (Clean, Direct Amount & Note only) -->
+        <!-- Expense / Income Entry Form -->
         <div class="bg-white border border-slate-200 rounded-3xl p-3.5 shadow-card space-y-2.5">
           <div class="flex items-center justify-between">
-            <div class="flex items-center gap-1.5">
-              <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
-              <h2 class="text-xs font-black text-slate-900 uppercase tracking-wider">จดบันทึกรายจ่ายวันนี้</h2>
+            <!-- Entry Type Switcher (Expense vs Income) -->
+            <div class="flex bg-slate-100 p-0.5 rounded-xl border border-slate-200">
+              <button id="entryTypeExpenseBtn" type="button" onclick="setEntryType('expense')" class="px-2.5 py-1 rounded-lg text-xs font-black transition shadow-sm bg-rose-500 text-white flex items-center gap-1">
+                <i data-lucide="arrow-down-circle" class="w-3 h-3"></i> รายจ่าย (-)
+              </button>
+              <button id="entryTypeIncomeBtn" type="button" onclick="setEntryType('income')" class="px-2.5 py-1 rounded-lg text-xs font-black transition text-slate-600 hover:text-slate-900 flex items-center gap-1">
+                <i data-lucide="arrow-up-circle" class="w-3 h-3"></i> รายรับ (+)
+              </button>
             </div>
-            <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 border border-slate-200">
-              ตัดจากคลังเสบียงทันที
+            <span id="entryTypeBadge" class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-rose-50 text-rose-700 border border-rose-200">
+              ตัดจากคลังเสบียง
             </span>
           </div>
 
@@ -245,7 +251,7 @@
               <input type="number" id="txAmount" placeholder="0" inputmode="decimal" class="w-full bg-slate-50 border-2 border-slate-200 focus:border-rose-400 rounded-2xl pl-7 pr-2 py-2 text-slate-900 text-sm font-extrabold focus:outline-none transition">
             </div>
             <div class="col-span-7">
-              <input type="text" id="txNote" placeholder="รายละเอียดค่าใช้จ่าย" class="w-full bg-slate-50 border-2 border-slate-200 focus:border-rose-400 rounded-2xl px-3 py-2 text-slate-800 text-xs font-bold focus:outline-none transition">
+              <input type="text" id="txNote" placeholder="รายละเอียด (เช่น ค่าข้าว / เงินเดือน)" class="w-full bg-slate-50 border-2 border-slate-200 focus:border-rose-400 rounded-2xl px-3 py-2 text-slate-800 text-xs font-bold focus:outline-none transition">
             </div>
           </div>
 
@@ -281,14 +287,47 @@
 
       <!-- TAB 2: DEBTS SNOWBALL -->
       <section id="tab-debts" class="space-y-3 hidden">
+        <!-- Monthly Mission Summary Dashboard Card -->
+        <div class="bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 rounded-3xl p-3.5 text-white shadow-card space-y-2.5 border border-indigo-800/40">
+          <div class="flex justify-between items-center">
+            <div class="flex items-center gap-1.5">
+              <span class="text-base">📊</span>
+              <h3 class="text-xs font-black uppercase tracking-wider text-amber-300">สรุปผลภารกิจประจำเดือน</h3>
+            </div>
+            <span id="monthlyPaidCountBadge" class="text-[10px] font-mono font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 px-2 py-0.5 rounded-full">
+              จ่ายแล้ว 0/10 ตัว
+            </span>
+          </div>
+
+          <div class="grid grid-cols-3 gap-2 text-center pt-0.5">
+            <div class="bg-white/10 rounded-2xl p-2 border border-white/15">
+              <span class="text-[9px] text-emerald-300 font-bold block">จ่ายงวดแล้ว</span>
+              <span id="summaryMonthlyPaidVal" class="text-xs font-black text-emerald-400 font-mono">฿0</span>
+            </div>
+            <div class="bg-white/10 rounded-2xl p-2 border border-white/15">
+              <span class="text-[9px] text-amber-300 font-bold block">ค้างจ่ายเดือนนี้</span>
+              <span id="summaryMonthlyRemainingVal" class="text-xs font-black text-amber-400 font-mono">฿23,984</span>
+            </div>
+            <div class="bg-white/10 rounded-2xl p-2 border border-white/15">
+              <span class="text-[9px] text-rose-300 font-bold block">หนี้รวมคงค้าง</span>
+              <span id="summaryTotalDebtsVal" class="text-xs font-black text-rose-400 font-mono">฿279,462</span>
+            </div>
+          </div>
+        </div>
+
         <div class="bg-white border border-slate-200 rounded-3xl p-3.5 shadow-card space-y-3">
           <div class="flex justify-between items-start">
             <div>
-              <h2 class="text-sm font-extrabold text-slate-900">กองทัพยักษ์หนี้ (Snowball Raid)</h2>
-              <p class="text-[11px] text-slate-500 font-medium">แตะที่ตัวเลขเพื่อแก้ไขยอดหนี้หรือค่างวดได้ทันที</p>
+              <div class="flex items-center gap-1.5">
+                <span class="text-[10px] font-black px-2 py-0.5 bg-emerald-500 text-white rounded-full flex items-center gap-1">
+                  <i data-lucide="calendar-check" class="w-3 h-3"></i> MONTHLY RAID
+                </span>
+                <h2 class="text-sm font-extrabold text-slate-900">มิชชั่นจ่ายค่างวดประจำเดือน</h2>
+              </div>
+              <p class="text-[10px] text-slate-500 font-medium mt-0.5">ติ๊กถูกเพื่องวดนี้จ่ายแล้ว ตัดยอดหนี้ &amp; ตีดาเมจใส่บอสทันที</p>
             </div>
             <div class="text-right">
-              <span class="text-[10px] font-bold text-slate-400 block">ยอดหนี้รวม</span>
+              <span class="text-[10px] font-bold text-slate-400 block">ยอดหนี้รวมคงเหลือ</span>
               <span id="totalDebtsRemainingVal" class="text-xs font-black text-amber-700 font-mono bg-amber-50 px-2 py-0.5 rounded-lg border border-amber-200">
                 ฿279,462.00
               </span>
@@ -305,7 +344,7 @@
       <section id="tab-dsr" class="space-y-3 hidden">
         <div class="bg-white border border-slate-200 rounded-3xl p-3.5 shadow-card space-y-3">
           <div class="text-center space-y-1">
-            <span class="text-[10px] font-black uppercase tracking-widest text-slate-400">Debt Service Ratio (DSR)</span>
+            <span class="text-[10px] font-black uppercase tracking-widest text-slate-400">Debt Service Ratio (DSR) ประเมินเดี่ยว &amp; ร่วม</span>
             <h2 class="text-2xl font-black text-slate-900 flex items-center justify-center gap-2">
               <span id="dsrBigVal">75.8%</span>
               <span id="dsrStatusText" class="text-[10px] font-black px-2 py-0.5 rounded-full bg-rose-100 text-rose-700 border border-rose-300">
@@ -313,7 +352,7 @@
               </span>
             </h2>
             <p class="text-[11px] text-slate-500 max-w-xs mx-auto font-medium">
-              ธอส. กำหนดภาระผ่อนรวม <strong class="text-emerald-700 font-black">ไม่เกิน 60%</strong> ของรายได้สุทธิสองคน
+              จนท. ธอส. จะตรวจ <strong class="text-slate-800">DSR เดี่ยวของแต่ละคน</strong> ควบคู่กับ DSR รวม ต้องไม่เกิน <strong class="text-emerald-700 font-black">60%</strong>
             </p>
           </div>
 
@@ -330,15 +369,66 @@
             </div>
           </div>
 
-          <!-- Financial Breakdown Cards -->
-          <div class="grid grid-cols-2 gap-2">
+          <!-- Individual DSR Breakdown: GIFT vs GET -->
+          <div class="space-y-2 pt-1">
+            <h4 class="text-[11px] font-black uppercase text-slate-700 flex items-center gap-1">
+              <i data-lucide="users" class="w-3.5 h-3.5 text-indigo-600"></i> วิเคราะห์ภาระผ่อนแยกรายบุคคล (เกณฑ์เจ้าหน้าที่ ธอส.)
+            </h4>
+
+            <div class="grid grid-cols-2 gap-2">
+              <!-- Player GIFT Box -->
+              <div class="bg-gradient-to-br from-rose-50 to-pink-50/70 p-3 rounded-2xl border border-rose-200 space-y-1.5 shadow-sm">
+                <div class="flex justify-between items-center">
+                  <div class="flex items-center gap-1">
+                    <span class="text-base">👩🏻‍💻</span>
+                    <span class="text-xs font-black text-rose-800">GIFT</span>
+                  </div>
+                  <span id="dsrGiftBadge" class="text-[9px] font-black px-1.5 py-0.2 rounded bg-rose-100 text-rose-700 border border-rose-300">
+                    DSR 89.3%
+                  </span>
+                </div>
+                <div class="space-y-0.5 text-[10px] text-slate-600 font-medium">
+                  <p>เงินเดือนสุทธิ: <strong class="text-slate-900 font-mono font-bold">฿21,000</strong></p>
+                  <p>ภาระผ่อนปัจจุบัน: <strong id="dsrGiftMonthlyVal" class="text-rose-600 font-mono font-bold">฿18,756</strong></p>
+                  <p>เพดานผ่อนสูงสุด (60%): <strong class="text-emerald-700 font-mono font-bold">฿12,600</strong></p>
+                </div>
+                <p id="dsrGiftAdvice" class="text-[9px] text-rose-600 font-bold bg-white/70 p-1.5 rounded-xl border border-rose-200">
+                  ⚠️ เกินเพดาน ฿6,156 ต้องปิดหนี้ก่อนกู้
+                </p>
+              </div>
+
+              <!-- Player GET Box -->
+              <div class="bg-gradient-to-br from-sky-50 to-indigo-50/70 p-3 rounded-2xl border border-sky-200 space-y-1.5 shadow-sm">
+                <div class="flex justify-between items-center">
+                  <div class="flex items-center gap-1">
+                    <span class="text-base">🧑🏻‍💻</span>
+                    <span class="text-xs font-black text-sky-800">GET</span>
+                  </div>
+                  <span id="dsrGetBadge" class="text-[9px] font-black px-1.5 py-0.2 rounded bg-amber-100 text-amber-700 border border-amber-300">
+                    DSR 49.2%
+                  </span>
+                </div>
+                <div class="space-y-0.5 text-[10px] text-slate-600 font-medium">
+                  <p>เงินเดือนสุทธิ: <strong class="text-slate-900 font-mono font-bold">฿10,634</strong></p>
+                  <p>ภาระผ่อนปัจจุบัน: <strong id="dsrGetMonthlyVal" class="text-sky-700 font-mono font-bold">฿5,228</strong></p>
+                  <p>เพดานผ่อนสูงสุด (60%): <strong class="text-emerald-700 font-mono font-bold">฿6,380</strong></p>
+                </div>
+                <p id="dsrGetAdvice" class="text-[9px] text-emerald-700 font-bold bg-white/70 p-1.5 rounded-xl border border-emerald-200">
+                  ✓ อยู่ในเกณฑ์ผ่อนเดี่ยวของตนเอง
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Total Joint Financial Breakdown Cards -->
+          <div class="grid grid-cols-2 gap-2 pt-1">
             <div class="bg-gradient-to-br from-slate-50 to-indigo-50 p-2.5 rounded-2xl border border-indigo-100">
-              <p class="text-[10px] text-slate-500 font-bold">รายได้สุทธิรวม 2 คน</p>
+              <p class="text-[10px] text-slate-500 font-bold">รายได้รวม 2 คน (กู้ร่วม)</p>
               <p class="text-sm font-black text-slate-900 font-mono">฿31,634.00</p>
-              <span class="text-[9px] text-slate-400">GIFT (21k) + GET (10.6k)</span>
+              <span class="text-[9px] text-slate-400">เพดานผ่อนรวม (60%): ฿18,980</span>
             </div>
             <div class="bg-gradient-to-br from-slate-50 to-rose-50 p-2.5 rounded-2xl border border-rose-100">
-              <p class="text-[10px] text-slate-500 font-bold">ภาระผ่อนปัจจุบัน</p>
+              <p class="text-[10px] text-slate-500 font-bold">ภาระผ่อนรวมปัจจุบัน</p>
               <p id="currentInstallmentVal" class="text-sm font-black text-rose-600 font-mono">฿23,984.85</p>
               <span class="text-[9px] text-slate-400">เป้าหมายต้องต่ำกว่า ฿18,980</span>
             </div>
@@ -456,7 +546,7 @@
         <span id="editDebtAvatar" class="text-2xl">👹</span>
         <div>
           <h3 id="editDebtName" class="text-sm font-black text-slate-900">แก้ไขข้อมูลยักษ์หนี้</h3>
-          <p class="text-[10px] text-slate-500 font-bold">ปรับปรุงยอดคงเหลือและค่างวด</p>
+          <p class="text-[10px] text-slate-500 font-bold">ปรับปรุงยอดคงเหลือ ค่างวด และผู้ถือสัญญา</p>
         </div>
       </div>
       <div class="space-y-1.5 text-xs">
@@ -467,6 +557,13 @@
         <div>
           <label class="block text-[10px] font-bold text-slate-600 mb-0.5">ค่างวดต่อเดือน (฿):</label>
           <input type="number" id="editDebtMonthlyInput" step="0.01" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-1.5 font-mono font-bold text-slate-800 text-xs focus:border-amber-500 focus:outline-none">
+        </div>
+        <div>
+          <label class="block text-[10px] font-bold text-slate-600 mb-0.5">ผู้กู้ / เจ้าของสัญญา:</label>
+          <select id="editDebtOwnerInput" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-1.5 font-bold text-slate-800 text-xs focus:border-amber-500 focus:outline-none">
+            <option value="GIFT">GIFT (เงินเดือน 21k)</option>
+            <option value="GET">GET (เงินเดือน 10.6k)</option>
+          </select>
         </div>
       </div>
       <div class="flex gap-2 pt-1">
@@ -590,7 +687,6 @@
     function getActiveWebAppUrl() {
       try {
         const savedUrl = localStorage.getItem('owntoob_custom_webapp_url');
-        // If saved URL was the old default, auto-migrate to new default
         if (savedUrl && !savedUrl.includes('AKfycbWZhVO7aT4EB9iM') && savedUrl.trim().startsWith('http')) {
           return savedUrl.trim();
         } else {
@@ -611,7 +707,9 @@
     }
 
     // Financial Setup
-    const INCOME_TOTAL = 31634.00;
+    const INCOME_GIFT = 21000.00;
+    const INCOME_GET = 10634.00;
+    const INCOME_TOTAL = INCOME_GIFT + INCOME_GET;
     let baseTreasuryBalance = 3469.43;
 
     try {
@@ -622,18 +720,18 @@
       }
     } catch (e) {}
 
-    // Array of Debt Giants (10 Giants)
+    // Array of Debt Giants with Individual Contract Ownership (GIFT vs GET)
     let giantBosses = [
-      { id: 'ttb_sofast', name: 'ยักษ์บัตรเงินสด TTB', bank: 'TTB / so fast', subtype: 'บัตรกดเงินสด so fast (เป้าหมาย 1-2 เดือนแรก)', monthly: 1800.00, balance: 15359.88, initialHp: 15359.88, avatar: '👹', paid: false },
-      { id: 'goodmoney', name: 'ยักษ์สินเชื่อ Goodmoney', bank: 'Goodmoney', subtype: 'สินเชื่อส่วนบุคคล (เป้าหมายเดือนที่ 3-4)', monthly: 800.00, balance: 19812.82, initialHp: 19812.82, avatar: '👺', paid: false },
-      { id: 'ttb_flash', name: 'ยักษ์บัตร TTB flash', bank: 'TTB / flash', subtype: 'บัตรกดเงินสด TTB flash', monthly: 907.00, balance: 23860.97, initialHp: 23860.97, avatar: '🧌', paid: false },
-      { id: 'lotus', name: 'ยักษ์บัตร Lotus', bank: 'Lotus', subtype: 'บัตรเครดิตโลตัส', monthly: 2436.28, balance: 24419.94, initialHp: 24419.94, avatar: '🧟', paid: false },
-      { id: 'cardx', name: 'ยักษ์บัตร CardX', bank: 'CardX', subtype: 'บัตรเครดิต SCB CardX', monthly: 2015.62, balance: 25195.31, initialHp: 25195.31, avatar: '🧛', paid: false },
-      { id: 'uob', name: 'ยักษ์บัตร UOB', bank: 'UOB', subtype: 'บัตรเครดิต UOB', monthly: 2100.00, balance: 25280.26, initialHp: 25280.26, avatar: '🧙', paid: false },
-      { id: 'ktc_proud', name: 'ยักษ์บัตร KTC proud', bank: 'KTC / proud', subtype: 'บัตรกดเงินสด KTC proud', monthly: 1300.00, balance: 25334.48, initialHp: 25334.48, avatar: '🦹', paid: false },
-      { id: 'phone_zflip', name: 'ยักษ์ผ่อน Phone Z Flip', bank: 'Phone (zflip)', subtype: 'ค่าผ่อนโทรศัพท์มือถือ', monthly: 2209.94, balance: 39598.75, initialHp: 39598.75, avatar: '🤖', paid: false },
-      { id: 'tidlor', name: 'ยักษ์สินเชื่อเงินติดล้อ', bank: 'เงินติดล้อ', subtype: 'สินเชื่อจำนำทะเบียน', monthly: 2800.00, balance: 80600.00, initialHp: 80600.00, avatar: '🐉', paid: false },
-      { id: 'tiktok', name: 'ยักษ์ TikTok Pay Later', bank: 'TikTok Pay Later', subtype: 'Pay Later ช้อปปิ้ง', monthly: 2000.00, balance: 0.00, initialHp: 2000.00, avatar: '👾', paid: false }
+      { id: 'ttb_sofast', name: 'ยักษ์บัตรเงินสด TTB', bank: 'TTB / so fast', subtype: 'บัตรกดเงินสด so fast (เป้าหมาย 1-2 เดือนแรก)', monthly: 1800.00, balance: 15359.88, initialHp: 15359.88, avatar: '👹', owner: 'GIFT', paid: false, monthlyPaid: false },
+      { id: 'goodmoney', name: 'ยักษ์สินเชื่อ Goodmoney', bank: 'Goodmoney', subtype: 'สินเชื่อส่วนบุคคล (เป้าหมายเดือนที่ 3-4)', monthly: 800.00, balance: 19812.82, initialHp: 19812.82, avatar: '👺', owner: 'GET', paid: false, monthlyPaid: false },
+      { id: 'ttb_flash', name: 'ยักษ์บัตร TTB flash', bank: 'TTB / flash', subtype: 'บัตรกดเงินสด TTB flash', monthly: 907.00, balance: 23860.97, initialHp: 23860.97, avatar: '🧌', owner: 'GIFT', paid: false, monthlyPaid: false },
+      { id: 'lotus', name: 'ยักษ์บัตร Lotus', bank: 'Lotus', subtype: 'บัตรเครดิตโลตัส', monthly: 2436.28, balance: 24419.94, initialHp: 24419.94, avatar: '🧟', owner: 'GET', paid: false, monthlyPaid: false },
+      { id: 'cardx', name: 'ยักษ์บัตร CardX', bank: 'CardX', subtype: 'บัตรเครดิต SCB CardX', monthly: 2015.62, balance: 25195.31, initialHp: 25195.31, avatar: '🧛', owner: 'GIFT', paid: false, monthlyPaid: false },
+      { id: 'uob', name: 'ยักษ์บัตร UOB', bank: 'UOB', subtype: 'บัตรเครดิต UOB', monthly: 2100.00, balance: 25280.26, initialHp: 25280.26, avatar: '🧙', owner: 'GIFT', paid: false, monthlyPaid: false },
+      { id: 'ktc_proud', name: 'ยักษ์บัตร KTC proud', bank: 'KTC / proud', subtype: 'บัตรกดเงินสด KTC proud', monthly: 1300.00, balance: 25334.48, initialHp: 25334.48, avatar: '🦹', owner: 'GIFT', paid: false, monthlyPaid: false },
+      { id: 'phone_zflip', name: 'ยักษ์ผ่อน Phone Z Flip', bank: 'Phone (zflip)', subtype: 'ค่าผ่อนโทรศัพท์มือถือ', monthly: 2209.94, balance: 39598.75, initialHp: 39598.75, avatar: '🤖', owner: 'GET', paid: false, monthlyPaid: false },
+      { id: 'tidlor', name: 'ยักษ์สินเชื่อเงินติดล้อ', bank: 'เงินติดล้อ', subtype: 'สินเชื่อจำนำทะเบียน', monthly: 2800.00, balance: 80600.00, initialHp: 80600.00, avatar: '🐉', owner: 'GIFT', paid: false, monthlyPaid: false },
+      { id: 'tiktok', name: 'ยักษ์ TikTok Pay Later', bank: 'TikTok Pay Later', subtype: 'Pay Later ช้อปปิ้ง', monthly: 2000.00, balance: 0.00, initialHp: 2000.00, avatar: '👾', owner: 'GET', paid: false, monthlyPaid: false }
     ];
 
     // Load saved debt values if edited by user
@@ -657,11 +755,60 @@
     let longPressTimer = null;
     let currentEditDebtId = null;
     let lastCloudDataSignature = "";
+    let currentEntryType = 'expense'; // 'expense' or 'income'
 
     function safeSetText(id, text) {
       const el = document.getElementById(id);
       if (el) el.innerText = text;
     }
+
+    window.setEntryType = function(type) {
+      currentEntryType = type;
+      const expenseBtn = document.getElementById('entryTypeExpenseBtn');
+      const incomeBtn = document.getElementById('entryTypeIncomeBtn');
+      const badge = document.getElementById('entryTypeBadge');
+      const saveBtn = document.getElementById('saveBtn');
+      const saveBtnText = document.getElementById('saveBtnText');
+      const txAmount = document.getElementById('txAmount');
+      const txNote = document.getElementById('txNote');
+
+      if (type === 'income') {
+        if (expenseBtn) {
+          expenseBtn.className = "px-2.5 py-1 rounded-lg text-xs font-black transition text-slate-600 hover:text-slate-900 flex items-center gap-1";
+        }
+        if (incomeBtn) {
+          incomeBtn.className = "px-2.5 py-1 rounded-lg text-xs font-black transition shadow-sm bg-emerald-600 text-white flex items-center gap-1";
+        }
+        if (badge) {
+          badge.innerText = "เพิ่มเสบียงเข้าคลัง";
+          badge.className = "text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200";
+        }
+        if (saveBtn) {
+          saveBtn.className = "w-full py-2.5 bg-gradient-to-r from-emerald-500 to-teal-600 hover:opacity-95 text-white font-black rounded-2xl text-xs shadow-md shadow-emerald-200 active:scale-[0.98] transition flex items-center justify-center gap-1.5";
+        }
+        if (saveBtnText) saveBtnText.innerText = "บันทึกและเพิ่มเสบียงเข้าคลังทันที";
+        if (txNote && !txNote.value) txNote.placeholder = "รายละเอียดรายรับ (เช่น เงินเดือน / เงินพิเศษ)";
+        if (txAmount) txAmount.focus();
+      } else {
+        if (expenseBtn) {
+          expenseBtn.className = "px-2.5 py-1 rounded-lg text-xs font-black transition shadow-sm bg-rose-500 text-white flex items-center gap-1";
+        }
+        if (incomeBtn) {
+          incomeBtn.className = "px-2.5 py-1 rounded-lg text-xs font-black transition text-slate-600 hover:text-slate-900 flex items-center gap-1";
+        }
+        if (badge) {
+          badge.innerText = "ตัดจากคลังเสบียง";
+          badge.className = "text-[10px] font-bold px-2 py-0.5 rounded-full bg-rose-50 text-rose-700 border border-rose-200";
+        }
+        if (saveBtn) {
+          saveBtn.className = "w-full py-2.5 bg-gradient-to-r from-rose-500 via-pink-500 to-amber-500 hover:opacity-95 text-white font-black rounded-2xl text-xs shadow-md shadow-rose-200 active:scale-[0.98] transition flex items-center justify-center gap-1.5";
+        }
+        if (saveBtnText) saveBtnText.innerText = "บันทึกและตัดเสบียงทันที";
+        if (txNote && !txNote.value) txNote.placeholder = "รายละเอียดค่าใช้จ่าย";
+        if (txAmount) txAmount.focus();
+      }
+      safeRenderIcons();
+    };
 
     function showToast(msg) {
       const toast = document.getElementById('toastNotification');
@@ -694,6 +841,15 @@
           gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.25);
           osc.start();
           osc.stop(audioCtx.currentTime + 0.25);
+        } else if (type === 'income') {
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(440, audioCtx.currentTime);
+          osc.frequency.setValueAtTime(660, audioCtx.currentTime + 0.08);
+          osc.frequency.setValueAtTime(880, audioCtx.currentTime + 0.16);
+          gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.35);
+          osc.start();
+          osc.stop(audioCtx.currentTime + 0.35);
         } else if (type === 'hit') {
           osc.type = 'triangle';
           osc.frequency.setValueAtTime(240, audioCtx.currentTime);
@@ -723,13 +879,16 @@
         player: 'นักรบอ้วงตุ๊บ',
         amount: Number(r.amount) || 0,
         note: String(r.note || ''),
-        category: String(r.category || 'General'),
+        category: String(r.category || (String(r.note || '').includes('รายรับ') ? 'Income' : 'General')),
         time: String(r.time || ''),
         date: String(r.date || todayStr)
       }));
 
       // Google Sheet rows are chronologically downwards; reverse so newest is on top
       transactions = parsed.reverse();
+      
+      // Sync debts and monthly quest status directly from transactions
+      syncDebtsFromTransactions();
       updateAllUI();
 
       const timeString = new Date().toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
@@ -804,7 +963,9 @@
       } catch (err) {
         console.warn("Post error:", err);
       } finally {
-        if (saveBtnText) saveBtnText.innerText = "บันทึกและตัดเสบียงทันที";
+        if (saveBtnText) {
+          saveBtnText.innerText = currentEntryType === 'income' ? "บันทึกและเพิ่มเสบียงเข้าคลังทันที" : "บันทึกและตัดเสบียงทันที";
+        }
         setTimeout(() => loadDataFromGoogleSheet(true), 800);
       }
     }
@@ -825,7 +986,7 @@
       }
     }
 
-    // Save New Expense Transaction
+    // Save New Transaction (Expense or Income)
     window.saveTransaction = function() {
       const amountEl = document.getElementById('txAmount');
       const noteEl = document.getElementById('txNote');
@@ -837,16 +998,26 @@
         return;
       }
 
-      const noteText = noteEl && noteEl.value.trim() ? noteEl.value.trim() : 'ใช้จ่ายทั่วไป';
-      const isSnowball = noteText.includes('โปะหนี้') || noteText.includes('โจมตียักษ์');
+      let category = 'General';
+      let defaultNote = 'ใช้จ่ายทั่วไป';
+
+      if (currentEntryType === 'income') {
+        category = 'Income';
+        defaultNote = 'รายรับเข้าคลัง';
+      }
+
+      const noteText = noteEl && noteEl.value.trim() ? noteEl.value.trim() : defaultNote;
+      const isSnowball = (currentEntryType === 'expense') && (noteText.includes('โปะหนี้') || noteText.includes('โจมตียักษ์'));
+
+      if (isSnowball) category = 'Snowball';
 
       const txId = Date.now();
       const newTx = {
         id: txId,
         player: 'นักรบอ้วงตุ๊บ',
         amount: amt,
-        category: isSnowball ? 'Snowball' : 'General',
-        note: noteText,
+        category: category,
+        note: currentEntryType === 'income' && !noteText.includes('💰') ? `💰 ${noteText}` : noteText,
         time: new Date().toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' }),
         date: new Date().toISOString().split('T')[0]
       };
@@ -865,6 +1036,8 @@
           persistDebtEdits();
         }
         playAudioTone('hit');
+      } else if (currentEntryType === 'income') {
+        playAudioTone('income');
       } else {
         playAudioTone('coin');
       }
@@ -875,22 +1048,61 @@
       amountEl.value = '';
       if (noteEl) noteEl.value = '';
 
-      showToast(`บันทึก ฿${amt.toLocaleString()} ตัดเสบียงแล้ว`);
+      if (currentEntryType === 'income') {
+        showToast(`รับเงินเข้าคลัง +฿${amt.toLocaleString()} เรียบร้อย 🎉`);
+      } else {
+        showToast(`บันทึก ฿${amt.toLocaleString()} ตัดเสบียงแล้ว`);
+      }
+
+      syncDebtsFromTransactions();
       updateAllUI();
 
       // Post to Google Sheets
       postDataToGoogleSheet(newTx);
     };
 
-    // Treasury Balance Calculations
+    // Treasury Balance Calculations (Includes Base + Incomes - Expenses - Installments)
     function updateTreasuryUI() {
-      // Total expenses deducted from base balance
-      const totalExpenses = transactions
-        .filter(t => t.category !== 'Snowball')
-        .reduce((sum, t) => sum + (Number(t.amount) || 0), 0);
+      let expenseSum = 0;
+      let debtPaymentSum = 0;
+      let incomeSum = 0;
 
-      const remainingTreasury = baseTreasuryBalance - totalExpenses;
+      transactions.forEach(t => {
+        const amt = Number(t.amount) || 0;
+        if (t.category === 'Income' || (t.note && (t.note.includes('รายรับ') || t.note.includes('เงินเดือน') || t.note.includes('💰')))) {
+          incomeSum += amt;
+        } else if (t.category === 'Snowball' || t.category === 'Installment' || (t.note && (t.note.includes('จ่ายค่างวด') || t.note.includes('โจมตียักษ์') || t.note.includes('โปะหนี้')))) {
+          debtPaymentSum += amt;
+        } else {
+          expenseSum += amt;
+        }
+      });
+
+      const totalDeductions = expenseSum + debtPaymentSum;
+      const remainingTreasury = baseTreasuryBalance + incomeSum - totalDeductions;
+
       safeSetText('treasuryBalanceVal', `฿${remainingTreasury.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`);
+      safeSetText('treasurySubDetail', `รับเข้า ฿${incomeSum.toLocaleString()} | ใช้จ่าย ฿${expenseSum.toLocaleString()} | จ่ายหนี้ ฿${debtPaymentSum.toLocaleString()}`);
+    }
+
+    // Synchronize debts status and monthly mission checkmarks from real transactions
+    function syncDebtsFromTransactions() {
+      giantBosses.forEach(g => {
+        // Find all payments related to this giant
+        const giantPayments = transactions.filter(t => 
+          (t.note && (t.note.includes(g.bank) || t.note.includes(g.name)))
+        );
+
+        const totalDamage = giantPayments.reduce((sum, t) => sum + (Number(t.amount) || 0), 0);
+        g.balance = Math.max(0, g.initialHp - totalDamage);
+        g.paid = g.balance <= 0;
+
+        // Has this month's installment been paid?
+        const hasPaidInstallment = giantPayments.some(t => 
+          t.note && (t.note.includes('จ่ายค่างวด') || t.category === 'Installment')
+        );
+        g.monthlyPaid = hasPaidInstallment;
+      });
     }
 
     // Giants Management & Carousel
@@ -912,19 +1124,17 @@
       safeSetText('bossIndexIndicator', `${currentBossIndex + 1}/${giantBosses.length}`);
       safeSetText('giantAvatarBox', giant.avatar);
       safeSetText('giantName', giant.name);
-      safeSetText('giantSubtype', giant.subtype);
+      safeSetText('giantSubtype', `${giant.subtype} (สัญญา: ${giant.owner || 'GIFT'})`);
       safeSetText('giantMonthlyTag', `ค่างวด ฿${giant.monthly.toLocaleString()}/ด.`);
 
-      // Dynamic Snowball Damage calculated from transactions
-      const giantDamage = transactions
-        .filter(t => t.category === 'Snowball' && t.note.includes(giant.bank))
-        .reduce((sum, t) => sum + (Number(t.amount) || 0), 0);
+      // Dynamic Snowball & Monthly Damage calculated directly from current giant balance
+      const damageDone = Math.max(0, giant.initialHp - giant.balance);
+      const curBalance = Math.max(0, giant.balance);
 
-      const curBalance = Math.max(0, giant.initialHp - giantDamage);
-      safeSetText('giantHpVal', `฿${curBalance.toLocaleString('en-US', { minimumFractionDigits: 2 })}`);
-      safeSetText('giantDamageDone', `฿${giantDamage.toLocaleString()}`);
+      safeSetText('giantHpVal', `฿${curBalance.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`);
+      safeSetText('giantDamageDone', `฿${damageDone.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`);
 
-      const pct = Math.min(100, Math.max(0, (curBalance / giant.initialHp) * 100));
+      const pct = giant.initialHp > 0 ? Math.min(100, Math.max(0, (curBalance / giant.initialHp) * 100)) : 0;
       const hpBar = document.getElementById('giantHpBar');
       if (hpBar) hpBar.style.width = `${pct}%`;
     }
@@ -948,6 +1158,7 @@
       if (!input) return;
       const amt = parseFloat(input.value);
       if (amt && amt > 0) {
+        setEntryType('expense');
         const giant = giantBosses[currentBossIndex];
         const amtInput = document.getElementById('txAmount');
         const noteInput = document.getElementById('txNote');
@@ -1001,8 +1212,10 @@
       safeSetText('editDebtName', debt.name);
       const balInput = document.getElementById('editDebtBalanceInput');
       const monInput = document.getElementById('editDebtMonthlyInput');
+      const ownInput = document.getElementById('editDebtOwnerInput');
       if (balInput) balInput.value = debt.balance;
       if (monInput) monInput.value = debt.monthly;
+      if (ownInput) ownInput.value = debt.owner || 'GIFT';
       const modal = document.getElementById('editDebtModal');
       if (modal) modal.classList.remove('hidden');
     };
@@ -1018,6 +1231,7 @@
       const debt = giantBosses.find(g => g.id === currentEditDebtId);
       const balInput = document.getElementById('editDebtBalanceInput');
       const monInput = document.getElementById('editDebtMonthlyInput');
+      const ownInput = document.getElementById('editDebtOwnerInput');
       if (debt && balInput && monInput) {
         const newBal = parseFloat(balInput.value);
         const newMon = parseFloat(monInput.value);
@@ -1027,6 +1241,7 @@
           debt.paid = debt.balance === 0;
         }
         if (!isNaN(newMon)) debt.monthly = Math.max(0, newMon);
+        if (ownInput) debt.owner = ownInput.value;
 
         persistDebtEdits();
         updateAllUI();
@@ -1042,26 +1257,56 @@
           balance: g.balance,
           initialHp: g.initialHp,
           monthly: g.monthly,
-          paid: g.paid
+          owner: g.owner || 'GIFT',
+          paid: g.paid,
+          monthlyPaid: g.monthlyPaid
         }));
         localStorage.setItem('owntoob_edited_debts', JSON.stringify(toSave));
       } catch (e) {}
     }
 
-    // Render Debt Bosses in Tab 2 & DSR in Tab 3
+    // Render Debt Bosses in Tab 2 & DSR in Tab 3 (Individual & Joint Breakdown)
     function updateDebtsAndDSR() {
       let activeInstallment = 0;
       let totalRemainingDebts = 0;
+
+      let giftActiveInstallment = 0;
+      let getActiveInstallment = 0;
+
+      let monthlyPaidSum = 0;
+      let monthlyRemainingSum = 0;
+      let monthlyPaidCount = 0;
 
       giantBosses.forEach(d => {
         if (!d.paid) {
           activeInstallment += d.monthly;
           totalRemainingDebts += d.balance;
+
+          // Individual Installment Breakdown
+          if (d.owner === 'GET') {
+            getActiveInstallment += d.monthly;
+          } else {
+            giftActiveInstallment += d.monthly;
+          }
+        }
+
+        // Monthly Quest Status
+        if (d.monthlyPaid) {
+          monthlyPaidSum += d.monthly;
+          monthlyPaidCount += 1;
+        } else if (!d.paid) {
+          monthlyRemainingSum += d.monthly;
         }
       });
 
-      safeSetText('totalDebtsRemainingVal', `฿${totalRemainingDebts.toLocaleString('en-US', { minimumFractionDigits: 2 })}`);
+      // Tab 2 Summary Dashboard Updates
+      safeSetText('totalDebtsRemainingVal', `฿${totalRemainingDebts.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`);
+      safeSetText('summaryMonthlyPaidVal', `฿${monthlyPaidSum.toLocaleString('en-US', { minimumFractionDigits: 0 })}`);
+      safeSetText('summaryMonthlyRemainingVal', `฿${monthlyRemainingSum.toLocaleString('en-US', { minimumFractionDigits: 0 })}`);
+      safeSetText('summaryTotalDebtsVal', `฿${totalRemainingDebts.toLocaleString('en-US', { minimumFractionDigits: 0 })}`);
+      safeSetText('monthlyPaidCountBadge', `จ่ายงวดแล้ว ${monthlyPaidCount}/${giantBosses.length} ตัว`);
 
+      // Joint DSR Calculation
       const currentDsr = ((activeInstallment / INCOME_TOTAL) * 100).toFixed(1);
       safeSetText('dsrBigVal', `${currentDsr}%`);
       safeSetText('currentInstallmentVal', `฿${activeInstallment.toLocaleString('en-US', { minimumFractionDigits: 2 })}`);
@@ -1072,40 +1317,96 @@
       const dsrStatus = document.getElementById('dsrStatusText');
       if (dsrStatus) {
         if (currentDsr <= 60) {
-          dsrStatus.innerText = "ผ่านเกณฑ์ ธอส. แล้ว 🎉";
+          dsrStatus.innerText = "ผ่านเกณฑ์รวม ธอส. 🎉";
           dsrStatus.className = "text-[10px] font-black px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300";
         } else {
-          dsrStatus.innerText = "เกินเกณฑ์ ธอส. (ต้อง < 60%)";
+          dsrStatus.innerText = "เกินเกณฑ์รวม ธอส. (ต้อง < 60%)";
           dsrStatus.className = "text-[10px] font-black px-2 py-0.5 rounded-full bg-rose-100 text-rose-800 border border-rose-300";
         }
       }
 
-      // Render Debt List in Tab 2
+      // Individual DSR Calculations
+      const giftDsr = ((giftActiveInstallment / INCOME_GIFT) * 100).toFixed(1);
+      const getDsr = ((getActiveInstallment / INCOME_GET) * 100).toFixed(1);
+
+      safeSetText('dsrGiftMonthlyVal', `฿${giftActiveInstallment.toLocaleString('en-US', { minimumFractionDigits: 2 })}`);
+      safeSetText('dsrGetMonthlyVal', `฿${getActiveInstallment.toLocaleString('en-US', { minimumFractionDigits: 2 })}`);
+
+      const giftBadge = document.getElementById('dsrGiftBadge');
+      const giftAdvice = document.getElementById('dsrGiftAdvice');
+      if (giftBadge) {
+        giftBadge.innerText = `DSR ${giftDsr}%`;
+        if (giftDsr <= 60) {
+          giftBadge.className = "text-[9px] font-black px-1.5 py-0.2 rounded bg-emerald-100 text-emerald-800 border border-emerald-300";
+          if (giftAdvice) {
+            giftAdvice.innerText = `✓ ผ่านเกณฑ์เดี่ยว (ผ่อนไม่เกิน ฿12,600)`;
+            giftAdvice.className = "text-[9px] text-emerald-700 font-bold bg-white/70 p-1.5 rounded-xl border border-emerald-200";
+          }
+        } else {
+          const excess = giftActiveInstallment - (INCOME_GIFT * 0.6);
+          giftBadge.className = "text-[9px] font-black px-1.5 py-0.2 rounded bg-rose-100 text-rose-700 border border-rose-300";
+          if (giftAdvice) {
+            giftAdvice.innerText = `⚠️ เกินเพดาน ฿${excess.toLocaleString('en-US', {maximumFractionDigits:0})} ต้องปิดหนี้ก่อนกู้`;
+            giftAdvice.className = "text-[9px] text-rose-600 font-bold bg-white/70 p-1.5 rounded-xl border border-rose-200";
+          }
+        }
+      }
+
+      const getBadge = document.getElementById('dsrGetBadge');
+      const getAdvice = document.getElementById('dsrGetAdvice');
+      if (getBadge) {
+        getBadge.innerText = `DSR ${getDsr}%`;
+        if (getDsr <= 60) {
+          getBadge.className = "text-[9px] font-black px-1.5 py-0.2 rounded bg-emerald-100 text-emerald-800 border border-emerald-300";
+          if (getAdvice) {
+            getAdvice.innerText = `✓ อยู่ในเกณฑ์ผ่อนเดี่ยวของตนเอง`;
+            getAdvice.className = "text-[9px] text-emerald-700 font-bold bg-white/70 p-1.5 rounded-xl border border-emerald-200";
+          }
+        } else {
+          const excess = getActiveInstallment - (INCOME_GET * 0.6);
+          getBadge.className = "text-[9px] font-black px-1.5 py-0.2 rounded bg-rose-100 text-rose-700 border border-rose-300";
+          if (getAdvice) {
+            getAdvice.innerText = `⚠️ เกินเพดาน ฿${excess.toLocaleString('en-US', {maximumFractionDigits:0})} ต้องเร่งปลด`;
+            getAdvice.className = "text-[9px] text-rose-600 font-bold bg-white/70 p-1.5 rounded-xl border border-rose-200";
+          }
+        }
+      }
+
+      // Render Debt List in Tab 2 with Monthly Installment Mission Checkbox & Owner Badge
       const listContainer = document.getElementById('debtBossList');
       if (listContainer) {
         listContainer.innerHTML = '';
         giantBosses.forEach((debt, index) => {
           const item = document.createElement('div');
-          item.className = `p-3 rounded-2xl border transition-all flex items-center justify-between ${debt.paid ? 'bg-slate-100/60 border-slate-200 opacity-60' : 'bg-white border-slate-200 shadow-sm'}`;
+          const isClosed = debt.balance <= 0 || debt.paid;
+          item.className = `p-3 rounded-2xl border transition-all flex items-center justify-between ${
+            isClosed
+              ? 'bg-slate-100/70 border-slate-200 opacity-60'
+              : debt.monthlyPaid
+              ? 'bg-emerald-50/70 border-emerald-300 shadow-sm'
+              : 'bg-white border-slate-200 shadow-sm'
+          }`;
+
           item.innerHTML = `
             <div class="flex items-center space-x-2.5 flex-1 min-w-0 pr-2">
-              <input type="checkbox" ${debt.paid ? 'checked' : ''} onchange="toggleDebtPaid('${debt.id}')" class="w-4 h-4 rounded accent-rose-500 cursor-pointer">
-              <span class="text-xl flex-shrink-0">${debt.avatar}</span>
+              <input type="checkbox" ${debt.monthlyPaid || isClosed ? 'checked' : ''} ${isClosed ? 'disabled' : ''} onchange="toggleMonthlyInstallment('${debt.id}')" title="${debt.monthlyPaid ? 'ยกเลิกสถานะจ่ายงวดนี้' : 'ติ๊กเมื่อจ่ายค่างวดเดือนนี้แล้ว'}" class="w-4 h-4 rounded accent-emerald-600 cursor-pointer">
+              <span class="text-xl flex-shrink-0 cursor-pointer" onclick="jumpToBoss(${index})">${debt.avatar}</span>
               <div class="flex-1 min-w-0">
                 <div class="flex items-center gap-1.5">
-                  <span class="text-xs font-black text-slate-900 ${debt.paid ? 'line-through text-slate-400' : ''} truncate">${debt.name}</span>
-                  <span class="text-[9px] px-1.5 py-0.2 rounded bg-slate-100 text-slate-600 font-bold border border-slate-200 font-mono">#${index+1}</span>
+                  <span class="text-xs font-black text-slate-900 ${isClosed ? 'line-through text-slate-400' : ''} truncate">${debt.name}</span>
+                  <span class="text-[9px] px-1.5 py-0.2 rounded ${debt.owner === 'GET' ? 'bg-sky-100 text-sky-700 border-sky-200' : 'bg-rose-100 text-rose-700 border-rose-200'} font-bold border font-mono">${debt.owner || 'GIFT'}</span>
+                  ${debt.monthlyPaid && !isClosed ? '<span class="text-[9px] font-black text-emerald-700 bg-emerald-100 px-1.5 py-0.2 rounded border border-emerald-200">จ่ายงวดแล้ว ✓</span>' : ''}
                 </div>
                 <p class="text-[10px] text-slate-500 font-semibold mt-0.5">
-                  ผ่อน <strong class="text-rose-600 font-bold font-mono">฿${debt.monthly.toLocaleString()}</strong>/ด. | ค้าง <strong class="font-mono text-slate-700">฿${debt.balance.toLocaleString()}</strong>
+                  ค่างวด <strong class="text-rose-600 font-bold font-mono">฿${debt.monthly.toLocaleString()}</strong>/ด. | คงค้าง <strong class="font-mono text-slate-800 font-black">฿${debt.balance.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</strong>
                 </p>
               </div>
             </div>
             <div class="flex items-center gap-1">
-              <button onclick="openEditDebtModal('${debt.id}')" title="แตะเพื่อแก้ไขยอดหนี้" class="p-1 rounded-lg text-slate-400 hover:text-amber-600 hover:bg-amber-50 transition active:scale-90">
+              <button onclick="openEditDebtModal('${debt.id}')" title="แตะเพื่อแก้ไขยอดหนี้ ค่างวด หรือผู้กู้" class="p-1 rounded-lg text-slate-400 hover:text-amber-600 hover:bg-amber-50 transition active:scale-90">
                 <i data-lucide="edit" class="w-3.5 h-3.5"></i>
               </button>
-              ${debt.paid ? '<span class="text-[9px] font-black text-emerald-800 bg-emerald-100 border border-emerald-300 px-2 py-0.5 rounded-full">ปิดแล้ว 🎉</span>' : ''}
+              ${isClosed ? '<span class="text-[9px] font-black text-emerald-800 bg-emerald-100 border border-emerald-300 px-2 py-0.5 rounded-full">ปิดหนี้แล้ว 🎉</span>' : ''}
             </div>
           `;
           listContainer.appendChild(item);
@@ -1113,19 +1414,68 @@
       }
     }
 
-    window.toggleDebtPaid = function(id) {
+    // Toggle Monthly Installment: Deduct monthly installment as real damage to giant & sheet
+    window.toggleMonthlyInstallment = function(id) {
       const debt = giantBosses.find(d => d.id === id);
-      if (debt) {
-        debt.paid = !debt.paid;
-        if (debt.paid) {
-          playAudioTone('hit');
-          if (typeof confetti === 'function') {
-            confetti({ particleCount: 70, spread: 60, origin: { y: 0.6 } });
+      if (!debt) return;
+
+      debt.monthlyPaid = !debt.monthlyPaid;
+
+      if (debt.monthlyPaid) {
+        // Apply installment as real damage
+        debt.balance = Math.max(0, debt.balance - debt.monthly);
+        if (debt.balance === 0) debt.paid = true;
+
+        playAudioTone('hit');
+        showToast(`จ่ายงวด ${debt.name} แล้ว! ตัดเสบียง ฿${debt.monthly.toLocaleString()} และฟันดาเมจเข้ายักษ์`);
+
+        // Record installment transaction - marked as Installment so it cuts treasury & adds damage
+        const txId = Date.now();
+        const tx = {
+          id: txId,
+          player: 'นักรบอ้วงตุ๊บ',
+          amount: debt.monthly,
+          category: 'Installment',
+          note: `⚔️ จ่ายค่างวด ${debt.bank}`,
+          time: new Date().toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' }),
+          date: new Date().toISOString().split('T')[0]
+        };
+        transactions.unshift(tx);
+        postDataToGoogleSheet(tx);
+
+        // Shake active boss box if this giant is on arena
+        const bossIndex = giantBosses.findIndex(g => g.id === id);
+        if (bossIndex !== -1) {
+          currentBossIndex = bossIndex;
+          const bossBox = document.getElementById('bossSection');
+          if (bossBox) {
+            bossBox.classList.add('boss-shake');
+            setTimeout(() => bossBox.classList.remove('boss-shake'), 400);
           }
-          showToast(`ปิดหนี้สำเร็จ! ปลดค่างวด ฿${debt.monthly.toLocaleString()}/ด.`);
         }
-        persistDebtEdits();
-        updateAllUI();
+      } else {
+        // Rollback installment
+        debt.balance = Math.min(debt.initialHp, debt.balance + debt.monthly);
+        debt.paid = false;
+        showToast(`ยกเลิกจ่ายงวด ${debt.name} คืนยอดหนี้และเสบียงแล้ว`);
+
+        // Remove the latest matching installment transaction if present
+        const txIndex = transactions.findIndex(t => t.note.includes(`จ่ายค่างวด ${debt.bank}`));
+        if (txIndex !== -1) {
+          const removed = transactions.splice(txIndex, 1)[0];
+          deleteDataFromGoogleSheet(removed.id);
+        }
+      }
+
+      persistDebtEdits();
+      syncDebtsFromTransactions();
+      updateAllUI();
+    };
+
+    window.jumpToBoss = function(index) {
+      if (index >= 0 && index < giantBosses.length) {
+        currentBossIndex = index;
+        switchTab('arena');
       }
     };
 
@@ -1147,7 +1497,8 @@
 
       transactions.slice(0, 30).forEach(t => {
         const item = document.createElement('div');
-        item.className = "relative flex justify-between items-center bg-white border border-slate-200 rounded-2xl px-3 py-2 shadow-sm transition active:scale-[0.99] select-none";
+        const isIncome = t.category === 'Income' || (t.note && (t.note.includes('รายรับ') || t.note.includes('เงินเดือน') || t.note.includes('💰')));
+        item.className = `relative flex justify-between items-center bg-white border ${isIncome ? 'border-emerald-200 bg-emerald-50/20' : 'border-slate-200'} rounded-2xl px-3 py-2 shadow-sm transition active:scale-[0.99] select-none`;
 
         // Touch & Mouse Long-press support
         item.addEventListener('touchstart', () => startLongPress(t.id), { passive: true });
@@ -1159,15 +1510,15 @@
 
         item.innerHTML = `
           <div class="flex items-center space-x-2 flex-1 pr-2">
-            <span class="text-base">${t.category === 'Snowball' ? '⚡' : '💰'}</span>
+            <span class="text-base">${isIncome ? '💰' : t.category === 'Snowball' ? '⚡' : '💸'}</span>
             <div class="flex-1 min-w-0">
-              <span class="text-slate-800 font-bold text-xs block truncate">${t.note}</span>
+              <span class="text-slate-800 font-bold text-xs block truncate ${isIncome ? 'text-emerald-950 font-black' : ''}">${t.note}</span>
               <span class="text-[10px] text-slate-400 font-mono">${t.time} • ${t.date}</span>
             </div>
           </div>
           <div class="flex items-center gap-1.5">
-            <span class="font-extrabold font-mono text-xs ${t.category === 'Snowball' ? 'text-amber-600' : 'text-slate-800'}">
-              ฿${t.amount.toLocaleString()}
+            <span class="font-extrabold font-mono text-xs ${isIncome ? 'text-emerald-600 font-black' : t.category === 'Snowball' ? 'text-amber-600' : 'text-slate-800'}">
+              ${isIncome ? '+' : '-'}฿${t.amount.toLocaleString()}
             </span>
             <button onclick="event.stopPropagation(); promptDeleteTransaction(${t.id})" title="ลบรายการนี้" class="p-1 rounded-lg text-slate-300 hover:text-rose-600 hover:bg-rose-50 transition active:scale-90">
               <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
@@ -1215,6 +1566,7 @@
         transactions.splice(txIndex, 1);
         playAudioTone('hit');
         showToast(`ลบรายการ ฿${deleted.amount.toLocaleString()} เรียบร้อย`);
+        syncDebtsFromTransactions();
         updateAllUI();
         deleteDataFromGoogleSheet(pendingDeleteTxId);
       }
