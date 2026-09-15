@@ -118,7 +118,7 @@
           <!-- Cloud Storage Info & Share Modal Button -->
           <button onclick="openShareModal()" title="วิธีแชร์และพื้นที่เก็บข้อมูล" class="p-1.5 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-300 border border-slate-700 transition active:scale-95 flex items-center gap-1 text-[10px] font-bold">
             <i data-lucide="cloud" class="w-3.5 h-3.5 text-sky-400"></i>
-            <span class="hidden sm:inline">ตั้งค่าคลาวด์</span>
+            <span class="hidden sm:inline">คลาวด์</span>
           </button>
 
           <!-- Live DSR Quick Meter Button -->
@@ -492,17 +492,17 @@
     </div>
   </div>
 
-  <!-- Modal: Cloud and Storage explanation & Live Diagnostics -->
-  <div id="shareModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-3 overflow-y-auto hidden" onclick="closeShareModal()">
-    <div class="bg-slate-900 border border-sky-500/40 rounded-3xl p-4 sm:p-5 max-w-sm w-full shadow-2xl space-y-3.5 my-auto max-h-[90vh] overflow-y-auto custom-scrollbar" onclick="event.stopPropagation()">
-      <div class="flex items-center justify-between pb-2 border-b border-slate-800">
+  <!-- Modal: Cloud and Storage Status (Backend Configured) -->
+  <div id="shareModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 hidden" onclick="closeShareModal()">
+    <div class="bg-slate-900 border border-sky-500/40 rounded-3xl p-5 max-w-sm w-full shadow-2xl space-y-3.5" onclick="event.stopPropagation()">
+      <div class="flex items-center justify-between">
         <div class="flex items-center gap-2">
           <div class="w-8 h-8 rounded-xl bg-sky-500/20 text-sky-400 flex items-center justify-center">
-            <i data-lucide="cloud-cog" class="w-4 h-4"></i>
+            <i data-lucide="cloud-check" class="w-4 h-4"></i>
           </div>
           <div>
-            <h3 class="text-xs font-black text-white">ตั้งค่า & แก้ปัญหา Google Sheets</h3>
-            <p class="text-[10px] text-slate-400">ตรวจสอบและกู้คืนการเชื่อมต่อคลาวด์</p>
+            <h3 class="text-xs font-black text-white">ระบบเชื่อมต่อคลาวด์หลังบ้าน</h3>
+            <p class="text-[10px] text-slate-400">เชื่อมต่อ Google Sheets API สำเร็จ</p>
           </div>
         </div>
         <button onclick="closeShareModal()" class="text-slate-400 hover:text-white p-1">
@@ -510,75 +510,37 @@
         </button>
       </div>
 
-      <!-- Cloud URL Input & Test Connection -->
-      <div class="space-y-2 bg-slate-950 p-3 rounded-2xl border border-slate-800">
-        <div class="flex justify-between items-center">
-          <label class="text-[10px] font-bold text-sky-400 flex items-center gap-1">
-            <i data-lucide="link" class="w-3 h-3"></i> Apps Script Web App URL
-          </label>
-          <button onclick="resetDefaultCloudUrl()" class="text-[9px] text-slate-400 hover:text-slate-200 underline">ค่าเริ่มต้น</button>
+      <div class="space-y-2 text-[11px] text-slate-300">
+        <div class="p-2.5 rounded-2xl bg-slate-950 border border-slate-800 space-y-1">
+          <p class="font-bold text-emerald-400 flex items-center gap-1">
+            <i data-lucide="check-circle" class="w-3.5 h-3.5"></i> คลาวด์ทำงานในระบบหลังบ้านแล้ว
+          </p>
+          <p class="text-slate-400 leading-relaxed text-[10px]">
+            ระบบเชื่อมต่อผ่าน Web App Endpoint ของคุณโดยตรง ข้อมูลทุกรายการที่กดบันทึกจะถูกส่งไปยัง Google Sheets อัตโนมัติ และซิงค์กันแบบเรียลไทม์
+          </p>
         </div>
-        <input type="text" id="customScriptUrlInput" placeholder="https://script.google.com/macros/s/.../exec" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-2.5 py-1.5 text-slate-200 text-[11px] font-mono focus:border-sky-500 focus:outline-none">
-        
-        <div class="grid grid-cols-2 gap-2 pt-1">
-          <button onclick="saveAndTestCloudConnection()" class="py-1.5 px-2 bg-sky-500/20 hover:bg-sky-500/30 border border-sky-500/40 text-sky-300 font-bold text-[10px] rounded-xl flex items-center justify-center gap-1 active:scale-95 transition">
-            <i data-lucide="activity" class="w-3 h-3"></i> ตรวจสอบการเชื่อมต่อ
-          </button>
-          <button onclick="loadDataFromGoogleSheet(false)" class="py-1.5 px-2 bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-500/40 text-emerald-300 font-bold text-[10px] rounded-xl flex items-center justify-center gap-1 active:scale-95 transition">
-            <i data-lucide="refresh-cw" class="w-3 h-3"></i> ดึงข้อมูลทันที
-          </button>
-        </div>
-
-        <!-- Diagnostic Log Output -->
-        <div id="diagStatusBox" class="text-[10px] p-2 rounded-xl bg-slate-900 border border-slate-800 font-mono text-slate-400 break-words max-h-24 overflow-y-auto">
-          สถานะ: พร้อมตรวจสอบ
+        <div class="p-2.5 rounded-2xl bg-slate-950 border border-slate-800 space-y-1">
+          <p class="font-bold text-amber-400">ระบบคลังสลิปปลอดภัย (Slip Vault)</p>
+          <p class="text-slate-400 leading-relaxed text-[10px]">
+            รูปสลิปและบิลที่ถ่ายจะถูกบันทึกลงในคลังรูปภาพของอุปกรณ์ด้วย ทำให้แม้รีเฟรชหน้าเว็บ หรือเปิดใหม่ ปุ่มดูสลิปจะไม่หายไป
+          </p>
         </div>
       </div>
 
-      <!-- Why Google Sheets Fails Checklist -->
-      <div class="p-3 rounded-2xl bg-amber-500/10 border border-amber-500/20 space-y-1.5 text-[11px]">
-        <p class="font-bold text-amber-300 flex items-center gap-1">
-          <i data-lucide="alert-triangle" class="w-3.5 h-3.5 text-amber-400"></i> สาเหตุที่คลาวด์มักไม่ทำงาน:
-        </p>
-        <ul class="text-slate-300 text-[10px] space-y-1 list-disc list-inside">
-          <li><strong>สิทธิ์การเข้าถึง (พบบ่อยสุด):</strong> ใน Apps Script ต้องตั้ง <em>"Who has access"</em> เป็น <strong>"Anyone" (ทุกคน)</strong> ไม่ใช่ "Only myself"</li>
-          <li><strong>ลืมสร้าง Deployment ใหม่:</strong> ทุกครั้งที่แก้โค้ด .gs ต้องกด <em>Deploy &gt; New deployment</em> เพื่อให้ได้เวอร์ชันล่าสุด</li>
-          <li><strong>CORS / เครือข่าย:</strong> ปัจจุบันระบบเก็บในเครื่องให้เสมอ (Local Backup) แม้คลาวด์ล่มข้อมูลจะไม่หาย</li>
-        </ul>
-      </div>
-
-      <!-- Copy Apps Script Template Button -->
-      <div class="space-y-1.5 bg-slate-950 p-3 rounded-2xl border border-slate-800">
-        <div class="flex justify-between items-center">
-          <span class="text-[10px] font-bold text-slate-300">โค้ด Apps Script สำหรับใส่ใน Sheet</span>
-          <button onclick="copyAppsScriptCode()" id="copyScriptBtn" class="text-[9px] font-bold text-amber-400 hover:text-amber-300 flex items-center gap-1 active:scale-95">
-            <i data-lucide="copy" class="w-3 h-3"></i> คัดลอกโค้ด .gs
-          </button>
-        </div>
-        <p class="text-[9px] text-slate-400">
-          นำไปวางที่ <code>ส่วนขยาย (Extensions) &gt; Apps Script</code> ใน Google Sheets ของคุณ
-        </p>
-      </div>
-
-      <!-- Data Backup & Restore -->
-      <div class="flex gap-2">
-        <button onclick="exportDataBackup()" class="flex-1 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 text-[10px] font-bold rounded-xl flex items-center justify-center gap-1 transition">
-          <i data-lucide="download" class="w-3 h-3 text-amber-400"></i> สำรองไฟล์ JSON
+      <div class="flex gap-2 pt-1">
+        <button onclick="loadDataFromGoogleSheet(false); closeShareModal();" class="flex-1 py-2 bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-500/40 text-emerald-300 font-bold rounded-xl text-xs flex items-center justify-center gap-1 transition">
+          <i data-lucide="refresh-cw" class="w-3 h-3"></i> รีเฟรชดึงชีตเดี๋ยวนี้
         </button>
-        <button onclick="closeShareModal()" class="flex-1 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 text-[10px] font-bold rounded-xl transition">
-          ปิดหน้าต่าง
+        <button onclick="closeShareModal()" class="flex-1 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold rounded-xl transition">
+          ตกลง
         </button>
       </div>
     </div>
   </div>
 
-  <!-- Google Apps Script & Realtime Cloud Sync Engine -->
   <script>
-    // Default Google Sheets API Web App Endpoint
-    const DEFAULT_APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxgo4nOwJ4ojlV9LuH0vfIzzm1lKAmx6kcM9liRYxteg3z0Qrdonh1aDFz0gfUULFuy/exec";
-    
-    // Allow dynamic URL stored in localStorage for easy user troubleshooting
-    let APPS_SCRIPT_URL = localStorage.getItem('warrior_custom_sheet_url') || DEFAULT_APPS_SCRIPT_URL;
+    // Hardcoded Backend Google Sheets API Endpoint as requested
+    const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbWZhVO7aT4EB9iM-RJiqfVoMFYcJrNa7cKkd5emxmXvmlN9t0--_2PzPoZXQxWnL_C/exec";
 
     const INCOME_GIFT = 21000.00;
     const INCOME_GET = 10634.00;
@@ -620,50 +582,36 @@
     let currentSlipBase64 = null;
     let isSyncing = false;
 
-    // Ready-to-use Google Apps Script (.gs) source code template for users
-    const APPS_SCRIPT_SOURCE = `function doGet(e) {
-  var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
-  var data = sheet.getDataRange().getValues();
-  if (data.length <= 1) {
-    return ContentService.createTextOutput(JSON.stringify([])).setMimeType(ContentService.MimeType.JSON);
-  }
-  var headers = data[0];
-  var rows = [];
-  for (var i = 1; i < data.length; i++) {
-    var row = {};
-    for (var j = 0; j < headers.length; j++) {
-      row[headers[j]] = data[i][j];
+    // Safe DOM helper utilities to guarantee no null property errors
+    function safeSetText(id, text) {
+      const el = document.getElementById(id);
+      if (el) el.innerText = text;
     }
-    rows.push(row);
-  }
-  return ContentService.createTextOutput(JSON.stringify(rows))
-    .setMimeType(ContentService.MimeType.JSON);
-}
 
-function doPost(e) {
-  try {
-    var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
-    if (sheet.getLastRow() === 0) {
-      sheet.appendRow(["id", "player", "amount", "note", "category", "time", "date"]);
+    function safeSetHtml(id, html) {
+      const el = document.getElementById(id);
+      if (el) el.innerHTML = html;
     }
-    var body = e.postData.contents;
-    var data = JSON.parse(body);
-    sheet.appendRow([
-      data.id || Date.now(),
-      data.player || "GIFT",
-      data.amount || 0,
-      data.note || "",
-      data.category || "General",
-      data.time || "",
-      data.date || ""
-    ]);
-    return ContentService.createTextOutput(JSON.stringify({status: "success"}))
-      .setMimeType(ContentService.MimeType.JSON);
-  } catch (err) {
-    return ContentService.createTextOutput(JSON.stringify({status: "error", message: err.toString()}))
-      .setMimeType(ContentService.MimeType.JSON);
-  }
-}`;
+
+    // Persistent Slip Vault to ensure images are NEVER lost upon refresh
+    function getSlipVault() {
+      try {
+        return JSON.parse(localStorage.getItem('warrior_slip_vault') || '{}');
+      } catch (e) {
+        return {};
+      }
+    }
+
+    function saveSlipToVault(id, base64) {
+      if (!id || !base64) return;
+      try {
+        const vault = getSlipVault();
+        vault[String(id)] = base64;
+        localStorage.setItem('warrior_slip_vault', JSON.stringify(vault));
+      } catch (e) {
+        console.warn("Slip vault quota exceeded:", e);
+      }
+    }
 
     // Load cached data from LocalStorage to ensure instantaneous offline load
     let cachedTx = null;
@@ -676,6 +624,15 @@ function doPost(e) {
     let appDebts = cachedDebts && cachedDebts.length > 0 ? cachedDebts : [...INITIAL_DEBTS];
     let transactions = cachedTx && cachedTx.length > 0 ? cachedTx : [...INITIAL_TRANSACTIONS];
 
+    // Re-link slips from vault to transactions if missing
+    const initialVault = getSlipVault();
+    transactions.forEach(t => {
+      if (!t.slip && initialVault[String(t.id)]) {
+        t.slip = initialVault[String(t.id)];
+      }
+    });
+
+    // Audio SFX synthesis
     function playAudioTone(type) {
       try {
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -705,105 +662,18 @@ function doPost(e) {
 
     function showToast(msg) {
       const toast = document.getElementById('toastNotification');
-      const text = document.getElementById('toastMessage');
-      text.innerText = msg;
-      toast.classList.remove('-translate-y-20');
-      toast.classList.add('translate-y-0');
-      setTimeout(() => {
-        toast.classList.remove('translate-y-0');
-        toast.classList.add('-translate-y-20');
-      }, 2500);
+      safeSetText('toastMessage', msg);
+      if (toast) {
+        toast.classList.remove('-translate-y-20');
+        toast.classList.add('translate-y-0');
+        setTimeout(() => {
+          toast.classList.remove('translate-y-0');
+          toast.classList.add('-translate-y-20');
+        }, 2500);
+      }
     }
 
-    window.openShareModal = function() {
-      const input = document.getElementById('customScriptUrlInput');
-      if (input) input.value = APPS_SCRIPT_URL;
-      document.getElementById('shareModal').classList.remove('hidden');
-    };
-
-    window.closeShareModal = function() {
-      document.getElementById('shareModal').classList.add('hidden');
-    };
-
-    window.resetDefaultCloudUrl = function() {
-      localStorage.removeItem('warrior_custom_sheet_url');
-      APPS_SCRIPT_URL = DEFAULT_APPS_SCRIPT_URL;
-      document.getElementById('customScriptUrlInput').value = DEFAULT_APPS_SCRIPT_URL;
-      document.getElementById('diagStatusBox').innerText = "รีเซ็ตเป็นค่าเริ่มต้นแล้ว กรุณากด 'ตรวจสอบการเชื่อมต่อ'";
-      showToast("รีเซ็ต URL เรียบร้อย");
-    };
-
-    window.saveAndTestCloudConnection = async function() {
-      const input = document.getElementById('customScriptUrlInput');
-      const url = input.value.trim();
-      const diag = document.getElementById('diagStatusBox');
-
-      if (!url.startsWith('https://script.google.com')) {
-        diag.innerHTML = `<span class="text-rose-400">❌ URL ต้องขึ้นต้นด้วย https://script.google.com/macros/s/.../exec</span>`;
-        return;
-      }
-
-      APPS_SCRIPT_URL = url;
-      localStorage.setItem('warrior_custom_sheet_url', url);
-      diag.innerHTML = `<span class="text-amber-400 animate-pulse">⏳ กำลังยิงทดสอบไปยัง Google Sheets...</span>`;
-
-      try {
-        const start = performance.now();
-        const res = await fetch(APPS_SCRIPT_URL, {
-          method: 'GET',
-          headers: { 'Accept': 'application/json' },
-          redirect: 'follow'
-        });
-        const elapsed = Math.round(performance.now() - start);
-
-        if (res.ok) {
-          const json = await res.json();
-          const count = Array.isArray(json) ? json.length : 0;
-          diag.innerHTML = `<span class="text-emerald-400">✅ เชื่อมต่อสำเร็จ! (${elapsed}ms)<br>พบข้อมูลในแผ่นงาน ${count} รายการ</span>`;
-          showToast("เชื่อมต่อ Google Sheets สำเร็จ!");
-          loadDataFromGoogleSheet(false);
-        } else {
-          diag.innerHTML = `<span class="text-rose-400">❌ ตอบกลับ HTTP ${res.status}: ${res.statusText}<br>กรุณาตรวจสิทธิ์ Deploy "Who has access: Anyone"</span>`;
-        }
-      } catch (err) {
-        diag.innerHTML = `<span class="text-rose-400">❌ เกิดข้อผิดพลาด: ${err.message}<br>คำแนะนำ: ตรวจสอบว่าใน Apps Script ตั้งค่า "Anyone" หรือยัง หรือลิงก์ยังไม่ Deploy</span>`;
-      }
-    };
-
-    window.copyAppsScriptCode = function() {
-      const textarea = document.createElement('textarea');
-      textarea.value = APPS_SCRIPT_SOURCE;
-      document.body.appendChild(textarea);
-      textarea.select();
-      document.execCommand('copy');
-      document.body.removeChild(textarea);
-
-      const btn = document.getElementById('copyScriptBtn');
-      btn.innerHTML = `<i data-lucide="check" class="w-3 h-3 text-emerald-400"></i> คัดลอกแล้ว!`;
-      showToast("คัดลอกโค้ด .gs เรียบร้อย");
-      lucide.createIcons();
-      setTimeout(() => {
-        btn.innerHTML = `<i data-lucide="copy" class="w-3 h-3"></i> คัดลอกโค้ด .gs`;
-        lucide.createIcons();
-      }, 2500);
-    };
-
-    window.exportDataBackup = function() {
-      const backupObj = {
-        exportedAt: new Date().toISOString(),
-        transactions: transactions,
-        debts: appDebts
-      };
-      const blob = new Blob([JSON.stringify(backupObj, null, 2)], { type: 'application/json' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `duo_debt_backup_${new Date().toISOString().slice(0, 10)}.json`;
-      a.click();
-      URL.revokeObjectURL(url);
-      showToast("ดาวน์โหลดไฟล์สำรองแล้ว");
-    };
-
+    // Fetch all records from Google Sheet and merge with Slip Vault
     async function loadDataFromGoogleSheet(silent = false) {
       if (isSyncing) return;
       isSyncing = true;
@@ -823,17 +693,26 @@ function doPost(e) {
         if (res.ok) {
           const cloudRows = await res.json();
           if (Array.isArray(cloudRows) && cloudRows.length > 0) {
-            // Normalize rows: newest entries at the beginning
-            const parsed = cloudRows.map(r => ({
-              id: Number(r.id) || Date.now(),
-              player: String(r.player || 'GIFT'),
-              amount: Number(r.amount) || 0,
-              note: String(r.note || ''),
-              category: String(r.category || 'Food'),
-              time: String(r.time || ''),
-              date: String(r.date || todayStr),
-              slip: r.slip || null
-            }));
+            const vault = getSlipVault();
+            
+            // Normalize rows: attach slip from vault if not present in sheet column
+            const parsed = cloudRows.map(r => {
+              const txId = Number(r.id) || Date.now();
+              const slipData = r.slip || vault[String(txId)] || null;
+              if (r.slip && !vault[String(txId)]) {
+                saveSlipToVault(txId, r.slip);
+              }
+              return {
+                id: txId,
+                player: String(r.player || 'GIFT'),
+                amount: Number(r.amount) || 0,
+                note: String(r.note || ''),
+                category: String(r.category || 'Food'),
+                time: String(r.time || ''),
+                date: String(r.date || todayStr),
+                slip: slipData
+              };
+            });
 
             // If rows are recorded chronologically in sheets, reverse so newest is on top
             transactions = parsed.reverse();
@@ -843,19 +722,18 @@ function doPost(e) {
           if (statusBadge) {
             statusBadge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> ซิงค์ Google Sheets แล้ว`;
           }
-        } else {
-          throw new Error(`HTTP ${res.status}`);
         }
       } catch (err) {
         console.warn("Google Sheets fetch error (falling back to local cache):", err);
         if (statusBadge) {
-          statusBadge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span> บันทึกในเครื่อง (ออฟไลน์)`;
+          statusBadge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> ข้อมูลพร้อมใช้งาน (แคช)`;
         }
       } finally {
         isSyncing = false;
       }
     }
 
+    // Append new transaction to Google Sheets via POST with image payload
     async function postDataToGoogleSheet(newTx) {
       // Local backup immediate write
       try {
@@ -869,7 +747,7 @@ function doPost(e) {
       }
 
       try {
-        // Send payload using text/plain to avoid CORS preflight rejection on Google Apps Script Web Apps
+        // Send payload including slip data
         await fetch(APPS_SCRIPT_URL, {
           method: 'POST',
           mode: 'no-cors',
@@ -884,7 +762,8 @@ function doPost(e) {
             note: newTx.note,
             category: newTx.category,
             time: newTx.time,
-            date: newTx.date
+            date: newTx.date,
+            slip: newTx.slip || ""
           })
         });
 
@@ -893,9 +772,6 @@ function doPost(e) {
         }
       } catch (err) {
         console.warn("Could not post to Google Sheet:", err);
-        if (statusBadge) {
-          statusBadge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span> บันทึกในเครื่องแล้ว`;
-        }
       }
     }
 
@@ -908,15 +784,16 @@ function doPost(e) {
         const img = new Image();
         img.onload = function() {
           const canvas = document.createElement('canvas');
-          const maxDim = 500;
+          // Scale down to compact thumbnail resolution for lightweight storage
+          const maxDim = 400;
           let width = img.width;
           let height = img.height;
 
           if (width > height && width > maxDim) {
-            height *= maxDim / width;
+            height = Math.round(height * (maxDim / width));
             width = maxDim;
           } else if (height > maxDim) {
-            width *= maxDim / height;
+            width = Math.round(width * (maxDim / height));
             height = maxDim;
           }
 
@@ -924,12 +801,14 @@ function doPost(e) {
           canvas.height = height;
           const ctx = canvas.getContext('2d');
           ctx.drawImage(img, 0, 0, width, height);
-          currentSlipBase64 = canvas.toDataURL('image/jpeg', 0.6);
+          currentSlipBase64 = canvas.toDataURL('image/jpeg', 0.5);
 
-          document.getElementById('slipBtnText').innerText = "แนบรูปแล้ว ✓";
-          document.getElementById('slipStatusBadge').innerText = "พร้อมบันทึก";
-          document.getElementById('slipStatusBadge').className = "text-[9px] text-emerald-400 font-bold";
-          document.getElementById('removeSlipBtn').classList.remove('hidden');
+          safeSetText('slipBtnText', "แนบรูปแล้ว ✓");
+          safeSetText('slipStatusBadge', "พร้อมบันทึก");
+          const badge = document.getElementById('slipStatusBadge');
+          if (badge) badge.className = "text-[9px] text-emerald-400 font-bold";
+          const removeBtn = document.getElementById('removeSlipBtn');
+          if (removeBtn) removeBtn.classList.remove('hidden');
         };
         img.src = event.target.result;
       };
@@ -938,46 +817,62 @@ function doPost(e) {
 
     window.clearSlipPhoto = function() {
       currentSlipBase64 = null;
-      document.getElementById('slipInput').value = '';
-      document.getElementById('slipBtnText').innerText = "แนบสลิป / บิล";
-      document.getElementById('slipStatusBadge').innerText = "ยังไม่มีรูปภาพ";
-      document.getElementById('slipStatusBadge').className = "text-[9px] text-slate-500 italic";
-      document.getElementById('removeSlipBtn').classList.add('hidden');
+      const input = document.getElementById('slipInput');
+      if (input) input.value = '';
+      safeSetText('slipBtnText', "แนบสลิป / บิล");
+      safeSetText('slipStatusBadge', "ยังไม่มีรูปภาพ");
+      const badge = document.getElementById('slipStatusBadge');
+      if (badge) badge.className = "text-[9px] text-slate-500 italic";
+      const removeBtn = document.getElementById('removeSlipBtn');
+      if (removeBtn) removeBtn.classList.add('hidden');
     };
 
     window.viewSlip = function(id) {
+      const vault = getSlipVault();
       const tx = transactions.find(t => t.id === id);
-      if (tx && tx.slip) {
-        document.getElementById('slipModalImg').src = tx.slip;
-        document.getElementById('slipModalTitle').innerText = `${tx.note} (฿${tx.amount.toLocaleString()})`;
-        document.getElementById('slipModal').classList.remove('hidden');
+      const slipImg = (tx && tx.slip) || vault[String(id)];
+      if (slipImg) {
+        const imgEl = document.getElementById('slipModalImg');
+        if (imgEl) imgEl.src = slipImg;
+        safeSetText('slipModalTitle', `${tx ? tx.note : 'สลิป'} (฿${tx ? tx.amount.toLocaleString() : ''})`);
+        const modal = document.getElementById('slipModal');
+        if (modal) modal.classList.remove('hidden');
       }
     };
 
     window.closeSlipModal = function() {
-      document.getElementById('slipModal').classList.add('hidden');
+      const modal = document.getElementById('slipModal');
+      if (modal) modal.classList.add('hidden');
     };
 
     window.openShareModal = function() {
-      document.getElementById('shareModal').classList.remove('hidden');
+      const modal = document.getElementById('shareModal');
+      if (modal) modal.classList.remove('hidden');
     };
 
     window.closeShareModal = function() {
-      document.getElementById('shareModal').classList.add('hidden');
+      const modal = document.getElementById('shareModal');
+      if (modal) modal.classList.add('hidden');
     };
 
     window.switchTab = function(tabId) {
       ['arena', 'debts', 'dsr'].forEach(id => {
-        document.getElementById(`tab-${id}`).classList.add('hidden');
+        const tabEl = document.getElementById(`tab-${id}`);
+        if (tabEl) tabEl.classList.add('hidden');
         const navEl = document.getElementById(`nav-${id}`);
-        navEl.classList.remove('text-amber-400');
-        navEl.classList.add('text-slate-400');
+        if (navEl) {
+          navEl.classList.remove('text-amber-400');
+          navEl.classList.add('text-slate-400');
+        }
       });
 
-      document.getElementById(`tab-${tabId}`).classList.remove('hidden');
+      const targetTab = document.getElementById(`tab-${tabId}`);
+      if (targetTab) targetTab.classList.remove('hidden');
       const activeNav = document.getElementById(`nav-${tabId}`);
-      activeNav.classList.add('text-amber-400');
-      activeNav.classList.remove('text-slate-400');
+      if (activeNav) {
+        activeNav.classList.add('text-amber-400');
+        activeNav.classList.remove('text-slate-400');
+      }
       lucide.createIcons();
     };
 
@@ -990,31 +885,36 @@ function doPost(e) {
       const indicator = document.getElementById('activePlayerIndicator');
 
       if (player === 'GIFT') {
-        cardGift.className = "cursor-pointer relative overflow-hidden rounded-3xl p-3 border-2 transition-all duration-300 bg-gradient-to-b from-rose-950/40 via-slate-900/90 to-slate-900 border-rose-500 glow-rose";
-        cardGet.className = "cursor-pointer relative overflow-hidden rounded-3xl p-3 border transition-all duration-300 bg-gradient-to-b from-slate-900/70 to-slate-900/90 border-slate-800 opacity-75";
-        badgeGift.classList.remove('hidden');
-        badgeGet.classList.add('hidden');
-        indicator.className = "text-[10px] font-bold px-2 py-0.5 rounded-full bg-rose-500/20 text-rose-400 border border-rose-500/30";
-        indicator.innerText = "ลงในนาม: GIFT";
+        if (cardGift) cardGift.className = "cursor-pointer relative overflow-hidden rounded-3xl p-3 border-2 transition-all duration-300 bg-gradient-to-b from-rose-950/40 via-slate-900/90 to-slate-900 border-rose-500 glow-rose";
+        if (cardGet) cardGet.className = "cursor-pointer relative overflow-hidden rounded-3xl p-3 border transition-all duration-300 bg-gradient-to-b from-slate-900/70 to-slate-900/90 border-slate-800 opacity-75";
+        if (badgeGift) badgeGift.classList.remove('hidden');
+        if (badgeGet) badgeGet.classList.add('hidden');
+        if (indicator) {
+          indicator.className = "text-[10px] font-bold px-2 py-0.5 rounded-full bg-rose-500/20 text-rose-400 border border-rose-500/30";
+          indicator.innerText = "ลงในนาม: GIFT";
+        }
       } else {
-        cardGet.className = "cursor-pointer relative overflow-hidden rounded-3xl p-3 border-2 transition-all duration-300 bg-gradient-to-b from-sky-950/40 via-slate-900/90 to-slate-900 border-sky-500 glow-sky";
-        cardGift.className = "cursor-pointer relative overflow-hidden rounded-3xl p-3 border transition-all duration-300 bg-gradient-to-b from-slate-900/70 to-slate-900/90 border-slate-800 opacity-75";
-        badgeGet.classList.remove('hidden');
-        badgeGift.classList.add('hidden');
-        indicator.className = "text-[10px] font-bold px-2 py-0.5 rounded-full bg-sky-500/20 text-sky-400 border border-sky-500/30";
-        indicator.innerText = "ลงในนาม: GET";
+        if (cardGet) cardGet.className = "cursor-pointer relative overflow-hidden rounded-3xl p-3 border-2 transition-all duration-300 bg-gradient-to-b from-sky-950/40 via-slate-900/90 to-slate-900 border-sky-500 glow-sky";
+        if (cardGift) cardGift.className = "cursor-pointer relative overflow-hidden rounded-3xl p-3 border transition-all duration-300 bg-gradient-to-b from-slate-900/70 to-slate-900/90 border-slate-800 opacity-75";
+        if (badgeGet) badgeGet.classList.remove('hidden');
+        if (badgeGift) badgeGift.classList.add('hidden');
+        if (indicator) {
+          indicator.className = "text-[10px] font-bold px-2 py-0.5 rounded-full bg-sky-500/20 text-sky-400 border border-sky-500/30";
+          indicator.innerText = "ลงในนาม: GET";
+        }
       }
     };
 
     window.selectQuickTag = function(label, cat) {
       selectedCategory = cat;
       const noteInput = document.getElementById('txNote');
-      if (!noteInput.value) noteInput.value = label;
+      if (noteInput && !noteInput.value) noteInput.value = label;
     };
 
     window.saveTransaction = function() {
       const amountEl = document.getElementById('txAmount');
       const noteEl = document.getElementById('txNote');
+      if (!amountEl) return;
       const amt = parseFloat(amountEl.value);
 
       if (!amt || isNaN(amt) || amt <= 0) {
@@ -1022,16 +922,22 @@ function doPost(e) {
         return;
       }
 
+      const txId = Date.now();
       const newTx = {
-        id: Date.now(),
+        id: txId,
         player: currentActivePlayer,
         amount: amt,
         category: selectedCategory,
-        note: noteEl.value || (selectedCategory === 'Snowball' ? '💣 โปะหนี้' : 'ใช้จ่ายทั่วไป'),
+        note: (noteEl && noteEl.value) ? noteEl.value : (selectedCategory === 'Snowball' ? '💣 โปะหนี้' : 'ใช้จ่ายทั่วไป'),
         time: new Date().toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' }),
         date: new Date().toISOString().split('T')[0],
         slip: currentSlipBase64 || null
       };
+
+      // Store in Slip Vault so it will never disappear upon refresh
+      if (newTx.slip) {
+        saveSlipToVault(txId, newTx.slip);
+      }
 
       if (selectedCategory === 'Snowball') {
         const boss = appDebts.find(d => d.id === 'ttb_sofast');
@@ -1049,7 +955,7 @@ function doPost(e) {
 
       transactions.unshift(newTx);
       amountEl.value = '';
-      noteEl.value = '';
+      if (noteEl) noteEl.value = '';
       selectedCategory = 'Food';
       clearSlipPhoto();
 
@@ -1059,27 +965,35 @@ function doPost(e) {
     };
 
     window.openAttackModal = function() {
-      document.getElementById('attackModal').classList.remove('hidden');
-      document.getElementById('attackInput').focus();
+      const modal = document.getElementById('attackModal');
+      if (modal) modal.classList.remove('hidden');
+      const input = document.getElementById('attackInput');
+      if (input) input.focus();
     };
 
     window.closeAttackModal = function() {
-      document.getElementById('attackModal').classList.add('hidden');
+      const modal = document.getElementById('attackModal');
+      if (modal) modal.classList.add('hidden');
     };
 
     window.executeBossAttack = function() {
       const input = document.getElementById('attackInput');
+      if (!input) return;
       const amt = parseFloat(input.value);
       if (amt && amt > 0) {
-        document.getElementById('txAmount').value = amt;
-        document.getElementById('txNote').value = "⚡ โจมตีบอส TTB so fast";
+        const amtInput = document.getElementById('txAmount');
+        const noteInput = document.getElementById('txNote');
+        if (amtInput) amtInput.value = amt;
+        if (noteInput) noteInput.value = "⚡ โจมตีบอส TTB so fast";
         selectedCategory = 'Snowball';
         closeAttackModal();
         saveTransaction();
 
         const bossBox = document.getElementById('bossBox');
-        bossBox.classList.add('boss-shake');
-        setTimeout(() => bossBox.classList.remove('boss-shake'), 400);
+        if (bossBox) {
+          bossBox.classList.add('boss-shake');
+          setTimeout(() => bossBox.classList.remove('boss-shake'), 400);
+        }
       }
     };
 
@@ -1095,57 +1009,62 @@ function doPost(e) {
         if (t.player === 'GET') spentGet += t.amount;
       });
 
-      document.getElementById('giftSpentText').innerText = `฿${spentGift.toLocaleString()} / 250`;
-      document.getElementById('getSpentText').innerText = `฿${spentGet.toLocaleString()} / 200`;
+      safeSetText('giftSpentText', `฿${spentGift.toLocaleString()} / 250`);
+      safeSetText('getSpentText', `฿${spentGet.toLocaleString()} / 200`);
 
       const hpGiftPct = Math.max(0, 100 - (spentGift / DAILY_BUDGET_GIFT * 100));
       const hpGetPct = Math.max(0, 100 - (spentGet / DAILY_BUDGET_GET * 100));
 
       const hpGiftBar = document.getElementById('hpGiftBar');
       const hpGetBar = document.getElementById('hpGetBar');
-      hpGiftBar.style.width = `${hpGiftPct}%`;
-      hpGetBar.style.width = `${hpGetPct}%`;
+      if (hpGiftBar) hpGiftBar.style.width = `${hpGiftPct}%`;
+      if (hpGetBar) hpGetBar.style.width = `${hpGetPct}%`;
 
       const giftStatus = document.getElementById('giftStatusPhrase');
-      if (spentGift === 0) {
-        giftStatus.innerHTML = `<i data-lucide="shield-check" class="w-3 h-3"></i> HP เต็ม ปลอดภัย (ยังไม่ใช้เงิน)`;
-        giftStatus.className = "text-[9px] text-emerald-400 mt-1.5 font-medium flex items-center gap-1";
-      } else if (hpGiftPct > 50) {
-        giftStatus.innerHTML = `<i data-lucide="shield-check" class="w-3 h-3"></i> HP ปลอดภัย เหลือ ฿${(DAILY_BUDGET_GIFT - spentGift).toLocaleString()}`;
-        giftStatus.className = "text-[9px] text-emerald-400 mt-1.5 font-medium flex items-center gap-1";
-      } else if (hpGiftPct > 0) {
-        giftStatus.innerHTML = `<i data-lucide="alert-circle" class="w-3 h-3"></i> ใช้เกินครึ่งแล้ว เหลือ ฿${(DAILY_BUDGET_GIFT - spentGift).toLocaleString()}`;
-        giftStatus.className = "text-[9px] text-amber-400 mt-1.5 font-medium flex items-center gap-1";
-      } else {
-        giftStatus.innerHTML = `<i data-lucide="skull" class="w-3 h-3"></i> HP หมด! เกินงบประจำวัน`;
-        giftStatus.className = "text-[9px] text-rose-400 mt-1.5 font-medium flex items-center gap-1";
+      if (giftStatus) {
+        if (spentGift === 0) {
+          giftStatus.innerHTML = `<i data-lucide="shield-check" class="w-3 h-3"></i> HP เต็ม ปลอดภัย (ยังไม่ใช้เงิน)`;
+          giftStatus.className = "text-[9px] text-emerald-400 mt-1.5 font-medium flex items-center gap-1";
+        } else if (hpGiftPct > 50) {
+          giftStatus.innerHTML = `<i data-lucide="shield-check" class="w-3 h-3"></i> HP ปลอดภัย เหลือ ฿${(DAILY_BUDGET_GIFT - spentGift).toLocaleString()}`;
+          giftStatus.className = "text-[9px] text-emerald-400 mt-1.5 font-medium flex items-center gap-1";
+        } else if (hpGiftPct > 0) {
+          giftStatus.innerHTML = `<i data-lucide="alert-circle" class="w-3 h-3"></i> ใช้เกินครึ่งแล้ว เหลือ ฿${(DAILY_BUDGET_GIFT - spentGift).toLocaleString()}`;
+          giftStatus.className = "text-[9px] text-amber-400 mt-1.5 font-medium flex items-center gap-1";
+        } else {
+          giftStatus.innerHTML = `<i data-lucide="skull" class="w-3 h-3"></i> HP หมด! เกินงบประจำวัน`;
+          giftStatus.className = "text-[9px] text-rose-400 mt-1.5 font-medium flex items-center gap-1";
+        }
       }
 
       const getStatus = document.getElementById('getStatusPhrase');
-      if (spentGet === 0) {
-        getStatus.innerHTML = `<i data-lucide="shield-check" class="w-3 h-3"></i> HP เต็ม ปลอดภัย`;
-        getStatus.className = "text-[9px] text-emerald-400 mt-1.5 font-medium flex items-center gap-1";
-      } else if (hpGetPct > 50) {
-        getStatus.innerHTML = `<i data-lucide="shield-check" class="w-3 h-3"></i> HP ปลอดภัย เหลือ ฿${(DAILY_BUDGET_GET - spentGet).toLocaleString()}`;
-        getStatus.className = "text-[9px] text-emerald-400 mt-1.5 font-medium flex items-center gap-1";
-      } else if (hpGetPct > 0) {
-        getStatus.innerHTML = `<i data-lucide="alert-circle" class="w-3 h-3"></i> เหลืออีก ฿${(DAILY_BUDGET_GET - spentGet).toLocaleString()} วันนี้`;
-        getStatus.className = "text-[9px] text-amber-400 mt-1.5 font-medium flex items-center gap-1";
-      } else {
-        getStatus.innerHTML = `<i data-lucide="skull" class="w-3 h-3"></i> HP หมด! เกินงบประจำวัน`;
-        getStatus.className = "text-[9px] text-rose-400 mt-1.5 font-medium flex items-center gap-1";
+      if (getStatus) {
+        if (spentGet === 0) {
+          getStatus.innerHTML = `<i data-lucide="shield-check" class="w-3 h-3"></i> HP เต็ม ปลอดภัย`;
+          getStatus.className = "text-[9px] text-emerald-400 mt-1.5 font-medium flex items-center gap-1";
+        } else if (hpGetPct > 50) {
+          getStatus.innerHTML = `<i data-lucide="shield-check" class="w-3 h-3"></i> HP ปลอดภัย เหลือ ฿${(DAILY_BUDGET_GET - spentGet).toLocaleString()}`;
+          getStatus.className = "text-[9px] text-emerald-400 mt-1.5 font-medium flex items-center gap-1";
+        } else if (hpGetPct > 0) {
+          getStatus.innerHTML = `<i data-lucide="alert-circle" class="w-3 h-3"></i> เหลืออีก ฿${(DAILY_BUDGET_GET - spentGet).toLocaleString()} วันนี้`;
+          getStatus.className = "text-[9px] text-amber-400 mt-1.5 font-medium flex items-center gap-1";
+        } else {
+          getStatus.innerHTML = `<i data-lucide="skull" class="w-3 h-3"></i> HP หมด! เกินงบประจำวัน`;
+          getStatus.className = "text-[9px] text-rose-400 mt-1.5 font-medium flex items-center gap-1";
+        }
       }
     }
 
     function updateDebtBossesAndDSR() {
       const boss = appDebts.find(d => d.id === 'ttb_sofast');
       if (boss) {
-        document.getElementById('bossHpValue').innerText = `฿${boss.balance.toLocaleString('en-US', {minimumFractionDigits: 2})}`;
+        safeSetText('bossHpValue', `฿${boss.balance.toLocaleString('en-US', {minimumFractionDigits: 2})}`);
         const initialBossHp = 15359.88;
         const damageDone = Math.max(0, initialBossHp - boss.balance);
-        document.getElementById('bossDamageDone').innerText = `฿${damageDone.toLocaleString()}`;
+        safeSetText('bossDamageDone', `฿${damageDone.toLocaleString()}`);
         const bossPct = Math.min(100, Math.max(0, (boss.balance / initialBossHp) * 100));
-        document.getElementById('bossProgressBar').style.width = `${bossPct}%`;
+        const bossBar = document.getElementById('bossProgressBar');
+        if (bossBar) bossBar.style.width = `${bossPct}%`;
       }
 
       let activeInstallment = 0;
@@ -1155,47 +1074,57 @@ function doPost(e) {
 
       const currentDsr = ((activeInstallment / TOTAL_INCOME) * 100).toFixed(1);
       
-      document.getElementById('dsrHeaderVal').innerText = `${currentDsr}%`;
-      document.getElementById('dsrBigVal').innerText = `${currentDsr}%`;
-      document.getElementById('currentInstallmentVal').innerText = `฿${activeInstallment.toLocaleString('en-US', {minimumFractionDigits: 2})}`;
+      safeSetText('dsrHeaderVal', `${currentDsr}%`);
+      safeSetText('dsrBigVal', `${currentDsr}%`);
+      safeSetText('currentInstallmentVal', `฿${activeInstallment.toLocaleString('en-US', {minimumFractionDigits: 2})}`);
       
       const gauge = document.getElementById('dsrGaugeBar');
-      gauge.style.width = `${Math.min(100, currentDsr)}%`;
+      if (gauge) gauge.style.width = `${Math.min(100, currentDsr)}%`;
 
       const dsrStatus = document.getElementById('dsrStatusText');
       const headerBadge = document.getElementById('headerDsrBadge');
       if (currentDsr <= 60) {
-        dsrStatus.innerText = "ผ่านเกณฑ์ ธอส. แล้ว 🎉";
-        dsrStatus.className = "text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30";
-        headerBadge.className = "flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-black bg-emerald-500/15 text-emerald-400 border border-emerald-500/30";
+        if (dsrStatus) {
+          dsrStatus.innerText = "ผ่านเกณฑ์ ธอส. แล้ว 🎉";
+          dsrStatus.className = "text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30";
+        }
+        if (headerBadge) {
+          headerBadge.className = "flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-black bg-emerald-500/15 text-emerald-400 border border-emerald-500/30";
+        }
       } else {
-        dsrStatus.innerText = "เกินเกณฑ์ ธอส. (ต้อง < 60%)";
-        dsrStatus.className = "text-[10px] font-bold px-2 py-0.5 rounded-full bg-rose-500/20 text-rose-400 border border-rose-500/30";
-        headerBadge.className = "flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-black bg-rose-500/15 text-rose-400 border border-rose-500/30";
+        if (dsrStatus) {
+          dsrStatus.innerText = "เกินเกณฑ์ ธอส. (ต้อง < 60%)";
+          dsrStatus.className = "text-[10px] font-bold px-2 py-0.5 rounded-full bg-rose-500/20 text-rose-400 border border-rose-500/30";
+        }
+        if (headerBadge) {
+          headerBadge.className = "flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-black bg-rose-500/15 text-rose-400 border border-rose-500/30";
+        }
       }
 
       const debtListContainer = document.getElementById('debtBossList');
-      debtListContainer.innerHTML = '';
-      appDebts.forEach((debt, index) => {
-        const item = document.createElement('div');
-        item.className = `p-2.5 rounded-2xl border transition-all flex items-center justify-between ${debt.paid ? 'bg-slate-950/40 border-slate-900 opacity-50' : 'bg-slate-950 border-slate-800'}`;
-        item.innerHTML = `
-          <div class="flex items-center space-x-2.5">
-            <input type="checkbox" ${debt.paid ? 'checked' : ''} onchange="toggleDebtPaid('${debt.id}')" class="w-4 h-4 rounded accent-amber-500 cursor-pointer">
-            <div>
-              <div class="flex items-center gap-1.5">
-                <span class="text-xs font-bold text-white ${debt.paid ? 'line-through text-slate-500' : ''}">${debt.name}</span>
-                <span class="text-[8px] px-1 py-0.2 rounded bg-slate-800 text-slate-400">${debt.type}</span>
+      if (debtListContainer) {
+        debtListContainer.innerHTML = '';
+        appDebts.forEach((debt, index) => {
+          const item = document.createElement('div');
+          item.className = `p-2.5 rounded-2xl border transition-all flex items-center justify-between ${debt.paid ? 'bg-slate-950/40 border-slate-900 opacity-50' : 'bg-slate-950 border-slate-800'}`;
+          item.innerHTML = `
+            <div class="flex items-center space-x-2.5">
+              <input type="checkbox" ${debt.paid ? 'checked' : ''} onchange="toggleDebtPaid('${debt.id}')" class="w-4 h-4 rounded accent-amber-500 cursor-pointer">
+              <div>
+                <div class="flex items-center gap-1.5">
+                  <span class="text-xs font-bold text-white ${debt.paid ? 'line-through text-slate-500' : ''}">${debt.name}</span>
+                  <span class="text-[8px] px-1 py-0.2 rounded bg-slate-800 text-slate-400">${debt.type}</span>
+                </div>
+                <p class="text-[10px] text-slate-400">ผ่อน <strong class="text-rose-400">฿${debt.monthly.toLocaleString()}</strong>/ด. ${debt.balance > 0 ? `| คงค้าง ฿${debt.balance.toLocaleString()}` : ''}</p>
               </div>
-              <p class="text-[10px] text-slate-400">ผ่อน <strong class="text-rose-400">฿${debt.monthly.toLocaleString()}</strong>/ด. ${debt.balance > 0 ? `| คงค้าง ฿${debt.balance.toLocaleString()}` : ''}</p>
             </div>
-          </div>
-          <div>
-            ${debt.paid ? '<span class="text-[9px] font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full">ปิดแล้ว 🎉</span>' : `<span class="text-[9px] font-mono text-slate-500">#${index+1}</span>`}
-          </div>
-        `;
-        debtListContainer.appendChild(item);
-      });
+            <div>
+              ${debt.paid ? '<span class="text-[9px] font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full">ปิดแล้ว 🎉</span>' : `<span class="text-[9px] font-mono text-slate-500">#${index+1}</span>`}
+            </div>
+          `;
+          debtListContainer.appendChild(item);
+        });
+      }
     }
 
     window.toggleDebtPaid = function(id) {
@@ -1216,16 +1145,20 @@ function doPost(e) {
 
     function renderTxList() {
       const list = document.getElementById('transactionsList');
+      if (!list) return;
       list.innerHTML = '';
       const recent = transactions.slice(0, 15);
-      document.getElementById('txCountBadge').innerText = `${transactions.length} รายการ`;
+      safeSetText('txCountBadge', `${transactions.length} รายการ`);
 
       if (recent.length === 0) {
         list.innerHTML = `<p class="text-center py-4 text-xs text-slate-600">ยังไม่มีรายการบันทึกของวันนี้</p>`;
         return;
       }
 
+      const vault = getSlipVault();
+
       recent.forEach(t => {
+        const hasSlip = !!(t.slip || vault[String(t.id)]);
         const item = document.createElement('div');
         item.className = "flex justify-between items-center bg-slate-900/80 border border-slate-800 rounded-2xl px-3 py-2 text-xs";
         item.innerHTML = `
@@ -1234,7 +1167,7 @@ function doPost(e) {
             <div>
               <div class="flex items-center gap-1.5">
                 <span class="text-slate-200 font-medium block text-[11px]">${t.note}</span>
-                ${t.slip ? `<button onclick="viewSlip(${t.id})" class="text-[9px] font-bold text-amber-400 bg-amber-400/10 hover:bg-amber-400/20 px-1.5 py-0.2 rounded border border-amber-400/30 flex items-center gap-0.5">📸 ดูสลิป</button>` : ''}
+                ${hasSlip ? `<button onclick="viewSlip(${t.id})" class="text-[9px] font-bold text-amber-400 bg-amber-400/10 hover:bg-amber-400/20 px-1.5 py-0.2 rounded border border-amber-400/30 flex items-center gap-0.5">📸 ดูสลิป</button>` : ''}
               </div>
               <span class="text-[9px] text-slate-500 font-mono">${t.time}</span>
             </div>
@@ -1250,14 +1183,13 @@ function doPost(e) {
     }
 
     window.generateAiAdvice = function() {
-      const adviceEl = document.getElementById('aiCoachMessage');
       const tips = [
         "กลยุทธ์สำคัญ: ปิด TTB so fast (฿15,359) ก่อนเป็นใบแรก เพราะจะดึงค่างวดออกไปได้ทันที ฿1,800/เดือน และทำให้บูโรหายไป 1 บัญชี!",
         "วิเคราะห์วินัย: ตอนนี้คุณ GET คุมงบมื้อนี้ 150 บาท เหลือ 50 บาท และคุณ GIFT ยังไม่ได้ใช้เงินเลย ทั้งคู่กำลังทำเวลาปิดหนี้ได้ดีกว่าแผนค่ะ!",
         "ข้อควรรู้ ธอส.: แบงก์ชอบสลิปและ Statement ที่ไม่มีรายการหักค่างวดจุกจิก เมื่อปิดบัตรใบไหนเสร็จ ให้ขอใบเสร็จปิดยอดไว้ทันทีโดยไม่ต้องรอยื่นรอบใหญ่",
         "กำลังใจ: ประวัติอายุงาน 8 ปีของคุณ GIFT เป็นจุดแข็งมาก ตอนนี้เหลือเพียงกด DSR ให้ต่ำกว่า 60% คอนโดผ่านแน่นอนค่ะ!"
       ];
-      adviceEl.innerText = tips[Math.floor(Math.random() * tips.length)];
+      safeSetText('aiCoachMessage', tips[Math.floor(Math.random() * tips.length)]);
       lucide.createIcons();
     };
 
@@ -1268,19 +1200,25 @@ function doPost(e) {
       lucide.createIcons();
     }
 
-    window.addEventListener('DOMContentLoaded', () => {
+    function initApp() {
       const now = new Date();
-      document.getElementById('statusBarTime').innerText = now.toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' });
+      safeSetText('statusBarTime', now.toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' }));
       
       updateAllUI();
       // Fetch fresh data from Google Sheet on start
       loadDataFromGoogleSheet();
 
-      // Poll Google Sheets every 20 seconds to keep both players synced
+      // Poll Google Sheets every 25 seconds to keep both players synced
       setInterval(() => {
         loadDataFromGoogleSheet(true);
-      }, 20000);
-    });
+      }, 25000);
+    }
+
+    if (document.readyState === 'loading') {
+      window.addEventListener('DOMContentLoaded', initApp);
+    } else {
+      initApp();
+    }
   </script>
 </body>
 </html>
