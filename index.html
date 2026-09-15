@@ -1,0 +1,1024 @@
+<!DOCTYPE html>
+<html lang="th" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Duo Debt Warrior - ทุบหนี้คว้าคอนโด</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              rose: '#f43f5e',
+              sky: '#0ea5e9',
+              amber: '#f59e0b',
+              emerald: '#10b981',
+              dark: '#070a13',
+              card: '#0f172a',
+              border: '#1e293b'
+            }
+          },
+          fontFamily: {
+            sans: ['Plus Jakarta Sans', 'Noto Sans Thai', 'sans-serif']
+          },
+          animation: {
+            'pulse-fast': 'pulse 1s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+            'float': 'floating 3s ease-in-out infinite'
+          },
+          keyframes: {
+            floating: {
+              '0%, 100%': { transform: 'translateY(0px)' },
+              '50%': { transform: 'translateY(-6px)' }
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <style>
+    body {
+      font-family: 'Plus Jakarta Sans', 'Noto Sans Thai', sans-serif;
+      -webkit-font-smoothing: antialiased;
+      background-color: #050811;
+      color: #f8fafc;
+      user-select: none;
+    }
+    input, button, select, textarea {
+      user-select: auto;
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 4px;
+      height: 4px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #334155;
+      border-radius: 9999px;
+    }
+    .glow-rose {
+      box-shadow: 0 0 25px -5px rgba(244, 63, 94, 0.4);
+    }
+    .glow-sky {
+      box-shadow: 0 0 25px -5px rgba(14, 165, 233, 0.4);
+    }
+    .glow-amber {
+      box-shadow: 0 0 25px -5px rgba(245, 158, 11, 0.4);
+    }
+    .boss-shake {
+      animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both;
+    }
+    @keyframes shake {
+      10%, 90% { transform: translate3d(-2px, 0, 0); }
+      20%, 80% { transform: translate3d(3px, 0, 0); }
+      30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+      40%, 60% { transform: translate3d(4px, 0, 0); }
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col items-center justify-start p-0 sm:p-4 md:py-6 bg-[#050811]">
+
+  <div class="w-full max-w-md bg-[#0a0f1d] min-h-screen sm:min-h-[844px] sm:rounded-[40px] sm:border-[6px] sm:border-slate-800/90 shadow-2xl relative flex flex-col overflow-hidden">
+    
+    <!-- Phone Notch / Status Indicator for Desktop Preview -->
+    <div class="hidden sm:flex items-center justify-between px-6 pt-3 pb-1 text-[11px] text-slate-400 font-mono select-none">
+      <span id="statusBarTime">09:41</span>
+      <div class="w-20 h-4 bg-slate-900 rounded-full flex items-center justify-center">
+        <span class="w-2 h-2 rounded-full bg-slate-700"></span>
+      </div>
+      <div class="flex items-center gap-1.5 text-[10px]">
+        <i data-lucide="wifi" class="w-3 h-3 text-slate-300"></i>
+        <i data-lucide="battery" class="w-3 h-3 text-emerald-400"></i>
+      </div>
+    </div>
+
+    <header class="sticky top-0 z-40 bg-[#0a0f1d]/90 backdrop-blur-xl border-b border-slate-800/90 px-4 py-3">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center space-x-2.5">
+          <div class="w-9 h-9 rounded-2xl bg-gradient-to-tr from-amber-500 via-rose-500 to-indigo-600 flex items-center justify-center text-lg shadow-md shadow-rose-500/20 animate-float">
+            ⚔️
+          </div>
+          <div>
+            <div class="flex items-center gap-1.5">
+              <span class="text-[9px] font-extrabold uppercase tracking-widest text-amber-400 bg-amber-400/10 px-1.5 py-0.5 rounded border border-amber-400/20">GHB MISSION</span>
+              <span id="cloudSyncStatus" class="text-[9px] text-emerald-400 font-medium flex items-center gap-1">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> คลาวด์เรียลไทม์
+              </span>
+            </div>
+            <h1 class="text-sm font-black text-white tracking-tight">Duo Debt Warrior</h1>
+          </div>
+        </div>
+        
+        <div class="flex items-center gap-2">
+          <!-- Get Live Web Link Button -->
+          <button onclick="openShareModal()" title="วิธีสร้างลิงก์เว็บให้แฟนเปิดในมือถือ" class="p-1.5 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-300 border border-slate-700 transition active:scale-95 flex items-center gap-1 text-[10px] font-bold">
+            <i data-lucide="share-2" class="w-3.5 h-3.5 text-sky-400"></i>
+            <span class="hidden sm:inline">ลิงก์เว็บ</span>
+          </button>
+
+          <!-- Live DSR Quick Meter Button -->
+          <button onclick="switchTab('dsr')" class="flex flex-col items-end group focus:outline-none">
+            <span class="text-[9px] text-slate-400 font-semibold group-hover:text-slate-300">DSR รวม</span>
+            <div id="headerDsrBadge" class="flex items-center gap-1.5 px-2 py-0.5 rounded-full text-xs font-black bg-rose-500/15 text-rose-400 border border-rose-500/30 transition-all group-hover:scale-105">
+              <span class="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse"></span>
+              <span id="dsrHeaderVal">75.8%</span>
+            </div>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <main class="flex-1 px-4 pt-3 pb-24 overflow-y-auto custom-scrollbar space-y-4">
+
+      <!-- TAB 1: DAILY ARENA -->
+      <section id="tab-arena" class="space-y-4">
+
+        <!-- Duo Character Player Cards (Gift & Get) -->
+        <div class="grid grid-cols-2 gap-2.5">
+          <!-- Player GIFT -->
+          <div id="playerCardGift" onclick="setActivePlayer('GIFT')" class="cursor-pointer relative overflow-hidden rounded-3xl p-3 border-2 transition-all duration-300 bg-gradient-to-b from-rose-950/40 via-slate-900/90 to-slate-900 border-rose-500 glow-rose">
+            <div class="flex justify-between items-start">
+              <div class="flex items-center space-x-1.5">
+                <span class="text-2xl filter drop-shadow">👩🏻‍💻</span>
+                <div>
+                  <p class="text-[9px] uppercase font-bold text-rose-400">Player 1</p>
+                  <h3 class="text-xs font-black text-white">GIFT</h3>
+                </div>
+              </div>
+              <span id="badgeGift" class="text-[9px] font-black px-1.5 py-0.5 rounded-md bg-rose-500 text-white">ACTIVE</span>
+            </div>
+
+            <div class="mt-2.5">
+              <div class="flex justify-between text-[10px] text-slate-400 mb-1">
+                <span>งบวันนี้</span>
+                <span id="giftSpentText" class="font-bold text-rose-300 font-mono">฿0 / 250</span>
+              </div>
+              <!-- Health Bar -->
+              <div class="w-full bg-slate-950 h-2 rounded-full overflow-hidden border border-slate-800">
+                <div id="hpGiftBar" class="bg-gradient-to-r from-rose-500 to-emerald-400 h-full w-[100%] transition-all duration-500"></div>
+              </div>
+            </div>
+            <p id="giftStatusPhrase" class="text-[9px] text-emerald-400 mt-1.5 font-medium flex items-center gap-1">
+              <i data-lucide="shield-check" class="w-3 h-3"></i> HP เต็ม ปลอดภัย
+            </p>
+          </div>
+
+          <!-- Player GET -->
+          <div id="playerCardGet" onclick="setActivePlayer('GET')" class="cursor-pointer relative overflow-hidden rounded-3xl p-3 border transition-all duration-300 bg-gradient-to-b from-slate-900/70 to-slate-900/90 border-slate-800 opacity-75">
+            <div class="flex justify-between items-start">
+              <div class="flex items-center space-x-1.5">
+                <span class="text-2xl filter drop-shadow">🧑🏻‍💻</span>
+                <div>
+                  <p class="text-[9px] uppercase font-bold text-sky-400">Player 2</p>
+                  <h3 class="text-xs font-black text-white">GET</h3>
+                </div>
+              </div>
+              <span id="badgeGet" class="text-[9px] font-black px-1.5 py-0.5 rounded-md bg-sky-500 text-white hidden">ACTIVE</span>
+            </div>
+
+            <div class="mt-2.5">
+              <div class="flex justify-between text-[10px] text-slate-400 mb-1">
+                <span>งบวันนี้</span>
+                <span id="getSpentText" class="font-bold text-sky-300 font-mono">฿0 / 200</span>
+              </div>
+              <!-- Health Bar -->
+              <div class="w-full bg-slate-950 h-2 rounded-full overflow-hidden border border-slate-800">
+                <div id="hpGetBar" class="bg-gradient-to-r from-sky-500 to-emerald-400 h-full w-[100%] transition-all duration-500"></div>
+              </div>
+            </div>
+            <p id="getStatusPhrase" class="text-[9px] text-emerald-400 mt-1.5 font-medium flex items-center gap-1">
+              <i data-lucide="shield-check" class="w-3 h-3"></i> HP เต็ม ปลอดภัย
+            </p>
+          </div>
+        </div>
+
+        <div id="bossBox" class="bg-gradient-to-br from-slate-900 via-[#131b2e] to-slate-900 border border-amber-500/40 rounded-3xl p-4 shadow-xl relative overflow-hidden transition-all">
+          <div class="absolute -right-6 -bottom-6 w-28 h-28 bg-amber-500/10 rounded-full blur-2xl pointer-events-none"></div>
+          <div class="flex justify-between items-start mb-2">
+            <div>
+              <div class="flex items-center gap-1.5">
+                <span class="text-[9px] font-extrabold px-2 py-0.5 bg-amber-500/20 text-amber-300 border border-amber-500/30 rounded-full flex items-center gap-1">
+                  <i data-lucide="crosshair" class="w-3 h-3"></i> BOSS #1 RAID
+                </span>
+                <span class="text-[10px] text-slate-400 font-medium">เป้าหมายเดือนที่ 1–2</span>
+              </div>
+              <h3 class="text-sm font-black text-white mt-1 flex items-center gap-1.5">
+                TTB / so fast (บัตรเงินสด)
+              </h3>
+            </div>
+            <div class="text-right">
+              <span class="text-[9px] text-slate-400 font-medium">ปลดค่างวด</span>
+              <p class="text-xs font-black text-emerald-400 font-mono">+฿1,800/ด.</p>
+            </div>
+          </div>
+
+          <div class="space-y-1.5">
+            <div class="flex justify-between text-xs font-mono">
+              <span class="text-slate-400 text-[11px]">HP บอสคงเหลือ:</span>
+              <span id="bossHpValue" class="text-amber-300 font-bold">฿15,359.88</span>
+            </div>
+            <div class="w-full bg-slate-950 h-3 rounded-full overflow-hidden border border-slate-800 p-0.5">
+              <div id="bossProgressBar" class="bg-gradient-to-r from-amber-500 via-rose-500 to-emerald-400 h-full rounded-full transition-all duration-700" style="width: 100%"></div>
+            </div>
+            <div class="flex justify-between items-center text-[10px] text-slate-400 pt-1">
+              <span>ดาเมจสะสม: <strong id="bossDamageDone" class="text-emerald-400 font-mono">฿0</strong></span>
+              <button onclick="openAttackModal()" class="text-amber-400 hover:text-amber-300 font-bold underline flex items-center gap-1 active:scale-95 transition-transform">
+                ⚡ กดโจมตีด้วยเงินโปะ
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-slate-900/90 border border-slate-800 rounded-3xl p-3.5 shadow-xl space-y-3">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-1.5">
+              <span class="w-2 h-2 rounded-full bg-amber-400 animate-ping"></span>
+              <h2 class="text-[11px] font-bold uppercase tracking-wider text-slate-300">ลงบัญชีเร็ว</h2>
+            </div>
+            <span id="activePlayerIndicator" class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-rose-500/20 text-rose-400 border border-rose-500/30">
+              ลงในนาม: GIFT
+            </span>
+          </div>
+
+          <!-- Input Fields -->
+          <div class="grid grid-cols-12 gap-2">
+            <div class="col-span-5 relative">
+              <span class="absolute left-3 top-2.5 text-slate-500 font-bold text-sm">฿</span>
+              <input type="number" id="txAmount" placeholder="0" inputmode="decimal" class="w-full bg-slate-950 border border-slate-800 rounded-2xl pl-7 pr-2 py-2 text-white font-mono text-sm font-bold focus:border-amber-500 focus:outline-none">
+            </div>
+            <div class="col-span-7">
+              <input type="text" id="txNote" placeholder="รายละเอียด (เช่น ข้าวเที่ยง)" class="w-full bg-slate-950 border border-slate-800 rounded-2xl px-3 py-2 text-white text-xs focus:border-amber-500 focus:outline-none">
+            </div>
+          </div>
+
+          <!-- Photo Receipt Attachment Row -->
+          <div class="flex items-center justify-between bg-slate-950/60 p-2 rounded-2xl border border-slate-800/80">
+            <div class="flex items-center gap-2">
+              <label for="slipInput" class="cursor-pointer flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-[10px] font-bold text-slate-200 active:scale-95 transition">
+                <i data-lucide="camera" class="w-3.5 h-3.5 text-amber-400"></i>
+                <span id="slipBtnText">แนบสลิป / บิล</span>
+              </label>
+              <input type="file" id="slipInput" accept="image/*" class="hidden" onchange="handleSlipSelected(event)">
+              <span id="slipStatusBadge" class="text-[9px] text-slate-500 italic">ยังไม่มีรูปภาพ</span>
+            </div>
+            <button id="removeSlipBtn" onclick="clearSlipPhoto()" class="hidden text-[10px] text-rose-400 hover:text-rose-300 font-semibold px-2 py-1">
+              ลบรูป
+            </button>
+          </div>
+
+          <!-- Quick Preset Buttons -->
+          <div class="grid grid-cols-4 gap-1.5">
+            <button type="button" onclick="selectQuickTag('🍛 ข้าว', 'Food')" class="py-1.5 rounded-xl bg-slate-950 hover:bg-slate-800 border border-slate-800 text-[10px] text-slate-300 text-center font-semibold transition active:scale-95">🍛 ข้าว</button>
+            <button type="button" onclick="selectQuickTag('☕ กาแฟ', 'Drink')" class="py-1.5 rounded-xl bg-slate-950 hover:bg-slate-800 border border-slate-800 text-[10px] text-slate-300 text-center font-semibold transition active:scale-95">☕ กาแฟ</button>
+            <button type="button" onclick="selectQuickTag('🚗 เดินทาง', 'Travel')" class="py-1.5 rounded-xl bg-slate-950 hover:bg-slate-800 border border-slate-800 text-[10px] text-slate-300 text-center font-semibold transition active:scale-95">🚗 เดินทาง</button>
+            <button type="button" onclick="selectQuickTag('💣 โปะหนี้', 'Snowball')" class="py-1.5 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500/40 text-[10px] text-amber-300 text-center font-bold transition active:scale-95">💣 โปะหนี้</button>
+          </div>
+
+          <!-- Submit Button -->
+          <button onclick="saveTransaction()" class="w-full py-2.5 bg-gradient-to-r from-amber-500 via-rose-500 to-indigo-600 hover:opacity-95 text-slate-950 font-black rounded-2xl text-xs shadow-lg shadow-rose-500/20 active:scale-[0.98] transition-all flex items-center justify-center gap-1.5">
+            <i data-lucide="plus-circle" class="w-4 h-4"></i>
+            <span>บันทึกเข้าระบบทันที</span>
+          </button>
+        </div>
+
+        <div class="bg-gradient-to-r from-indigo-950/60 via-slate-900 to-purple-950/60 border border-indigo-500/30 rounded-3xl p-3.5 shadow-xl relative overflow-hidden">
+          <div class="flex items-start space-x-2.5">
+            <div class="w-7 h-7 rounded-xl bg-indigo-500/20 border border-indigo-500/40 flex items-center justify-center flex-shrink-0 text-indigo-300 mt-0.5">
+              <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
+            </div>
+            <div class="space-y-1 flex-1">
+              <div class="flex items-center justify-between">
+                <h4 class="text-[10px] font-bold uppercase tracking-wider text-indigo-300">AI Debt & DSR Coach</h4>
+                <button onclick="generateAiAdvice()" class="text-[9px] text-indigo-400 hover:text-indigo-200 underline font-semibold flex items-center gap-1">
+                  <i data-lucide="refresh-cw" class="w-2.5 h-2.5"></i> ข้อคิดใหม่
+                </button>
+              </div>
+              <p id="aiCoachMessage" class="text-xs text-slate-200 leading-relaxed font-normal">
+                "ขณะนี้ DSR รวมอยู่ที่ 75.8% หากเดือนนี้คุณทั้งคู่คุมงบกินใช้วันละ 200–250฿ แล้วโยนเงินส่วนต่างไปปิด TTB so fast จะตัดภาระค่างวดได้ ฿1,800/ด. ในทันที!"
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recent Logs Section -->
+        <div class="space-y-2">
+          <div class="flex justify-between items-center px-1">
+            <h3 class="text-[11px] font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1">
+              <i data-lucide="history" class="w-3.5 h-3.5"></i> รายการล่าสุดวันนี้
+            </h3>
+            <span id="txCountBadge" class="text-[10px] font-mono text-slate-500">0 รายการ</span>
+          </div>
+          <div id="transactionsList" class="space-y-2 min-h-[50px]">
+            <!-- Dynamic Items -->
+          </div>
+        </div>
+
+      </section>
+
+      <section id="tab-debts" class="space-y-3 hidden">
+        <div class="bg-slate-900 border border-slate-800 rounded-3xl p-4 shadow-xl space-y-3">
+          <div class="flex justify-between items-center">
+            <div>
+              <h2 class="text-sm font-bold text-white">ตารางบอสหนี้ทั้งหมด (Snowball Raid)</h2>
+              <p class="text-[10px] text-slate-400">ติ๊กถูกเมื่อปิดบัญชีสำเร็จเพื่ออัปเดต DSR สด</p>
+            </div>
+            <span class="text-xs font-mono font-bold text-amber-400 bg-amber-400/10 px-2 py-1 rounded-lg border border-amber-400/20">
+              หนี้รวม: ฿279,462
+            </span>
+          </div>
+
+          <div id="debtBossList" class="space-y-2">
+            <!-- Dynamic Debt Cards -->
+          </div>
+        </div>
+      </section>
+
+      <section id="tab-dsr" class="space-y-3.5 hidden">
+        <div class="bg-slate-900 border border-slate-800 rounded-3xl p-4 shadow-xl space-y-4">
+          <div class="text-center space-y-1">
+            <span class="text-[9px] font-extrabold uppercase tracking-widest text-slate-400">Debt Service Ratio (DSR)</span>
+            <h2 class="text-2xl font-black text-white flex items-center justify-center gap-2">
+              <span id="dsrBigVal">75.8%</span>
+              <span id="dsrStatusText" class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-rose-500/20 text-rose-400 border border-rose-500/30">
+                เกินเกณฑ์ ธอส.
+              </span>
+            </h2>
+            <p class="text-[11px] text-slate-400 max-w-xs mx-auto">
+              ธอส. กำหนดเพดานภาระผ่อนรวม <strong class="text-emerald-400">ไม่เกิน 60%</strong> ของรายได้สุทธิสองคน
+            </p>
+          </div>
+
+          <!-- DSR Visual Gauge Bar -->
+          <div class="space-y-1.5">
+            <div class="flex justify-between text-[10px] font-bold">
+              <span class="text-emerald-400">โซนผ่าน (ต่ำกว่า 50%)</span>
+              <span class="text-amber-400">เกณฑ์ ธอส. (60%)</span>
+              <span class="text-rose-400">อันตราย (70%+)</span>
+            </div>
+            <div class="w-full bg-slate-950 h-3.5 rounded-full overflow-hidden border border-slate-800 relative">
+              <!-- 60% Target line -->
+              <div class="absolute top-0 bottom-0 left-[60%] w-0.5 bg-white z-10 opacity-80" title="เพดาน 60%"></div>
+              <div id="dsrGaugeBar" class="h-full bg-gradient-to-r from-emerald-400 via-amber-400 to-rose-500 transition-all duration-700" style="width: 75.8%"></div>
+            </div>
+          </div>
+
+          <!-- Financial Breakdown Cards -->
+          <div class="grid grid-cols-2 gap-2">
+            <div class="bg-slate-950 p-2.5 rounded-2xl border border-slate-800">
+              <p class="text-[9px] text-slate-400">รายได้รวม 2 คน</p>
+              <p class="text-xs font-bold text-white font-mono">฿31,634.00</p>
+              <span class="text-[8px] text-slate-500">GIFT (21k) + GET (10.6k)</span>
+            </div>
+            <div class="bg-slate-950 p-2.5 rounded-2xl border border-slate-800">
+              <p class="text-[9px] text-slate-400">ภาระผ่อนปัจจุบัน</p>
+              <p id="currentInstallmentVal" class="text-xs font-bold text-rose-400 font-mono">฿23,984.85</p>
+              <span class="text-[8px] text-slate-500">เป้าหมายต้องต่ำกว่า ฿18,980</span>
+            </div>
+          </div>
+
+          <!-- 5-Month Action Roadmap -->
+          <div class="border-t border-slate-800 pt-3 space-y-2">
+            <h4 class="text-xs font-bold uppercase text-slate-300 flex items-center gap-1.5">
+              <i data-lucide="map" class="w-3.5 h-3.5 text-amber-400"></i> แผนงานกู้คอนโดใน 5 เดือน
+            </h4>
+            <div class="space-y-1.5 text-xs">
+              <div class="p-2 rounded-xl bg-slate-950/80 border border-amber-500/30 flex items-start gap-2">
+                <span class="px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-400 font-bold text-[9px]">เดือน 1-2</span>
+                <div>
+                  <p class="font-bold text-slate-200 text-[11px]">ปิด TTB so fast (฿15,359.88)</p>
+                  <p class="text-[10px] text-slate-400">DSR จะลดเหลือ <strong class="text-emerald-400">70.1%</strong> (ค่างวดลดลง ฿1,800)</p>
+                </div>
+              </div>
+              <div class="p-2 rounded-xl bg-slate-950/80 border border-slate-800 flex items-start gap-2">
+                <span class="px-1.5 py-0.5 rounded bg-slate-800 text-slate-300 font-bold text-[9px]">เดือน 3-4</span>
+                <div>
+                  <p class="font-bold text-slate-200 text-[11px]">ปิด Goodmoney (฿19,812.82)</p>
+                  <p class="text-[10px] text-slate-400">DSR จะลดเหลือ <strong class="text-emerald-400">67.5%</strong> (ค่างวดลดลง ฿800)</p>
+                </div>
+              </div>
+              <div class="p-2 rounded-xl bg-slate-950/80 border border-slate-800 flex items-start gap-2">
+                <span class="px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-bold text-[9px]">เดือน 5</span>
+                <div>
+                  <p class="font-bold text-slate-200 text-[11px]">ขอใบเสร็จปิดยอด & ยื่นกู้ ธอส. รอบใหม่</p>
+                  <p class="text-[10px] text-slate-400">แนบ Closing Letter ขอยื่นกู้คอนโดได้ทันที</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+    </main>
+
+    <nav class="absolute bottom-0 left-0 right-0 z-50 bg-[#0a0f1d]/95 backdrop-blur-xl border-t border-slate-800/90 py-2">
+      <div class="grid grid-cols-3 px-3">
+        <button onclick="switchTab('arena')" id="nav-arena" class="flex flex-col items-center py-1 text-amber-400 transition-colors">
+          <i data-lucide="sword" class="w-5 h-5 mb-0.5"></i>
+          <span class="text-[9px] font-bold">แบทเทิลรายวัน</span>
+        </button>
+        <button onclick="switchTab('debts')" id="nav-debts" class="flex flex-col items-center py-1 text-slate-400 hover:text-slate-200 transition-colors">
+          <i data-lucide="shield-alert" class="w-5 h-5 mb-0.5"></i>
+          <span class="text-[9px] font-bold">บอสหนี้ (Snowball)</span>
+        </button>
+        <button onclick="switchTab('dsr')" id="nav-dsr" class="flex flex-col items-center py-1 text-slate-400 hover:text-slate-200 transition-colors">
+          <i data-lucide="gauge" class="w-5 h-5 mb-0.5"></i>
+          <span class="text-[9px] font-bold">วิเคราะห์ DSR</span>
+        </button>
+      </div>
+    </nav>
+
+  </div>
+
+  <!-- Custom Modal for Quick Boss Attack -->
+  <div id="attackModal" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 hidden">
+    <div class="bg-slate-900 border border-amber-500/50 rounded-3xl p-5 max-w-xs w-full shadow-2xl space-y-3.5">
+      <div class="flex items-center gap-2">
+        <span class="text-2xl">⚡</span>
+        <div>
+          <h3 class="text-sm font-black text-white">โจมตีบอส TTB so fast</h3>
+          <p class="text-[10px] text-slate-400">ระบุจำนวนเงินที่ต้องการโปะตัดหนี้</p>
+        </div>
+      </div>
+      <div class="relative">
+        <span class="absolute left-3 top-2.5 text-slate-500 font-bold text-sm">฿</span>
+        <input type="number" id="attackInput" placeholder="1500" class="w-full bg-slate-950 border border-slate-800 rounded-2xl pl-8 pr-3 py-2 text-white font-mono text-base font-bold focus:border-amber-500 focus:outline-none">
+      </div>
+      <div class="flex gap-2">
+        <button onclick="closeAttackModal()" class="flex-1 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold rounded-xl text-xs transition">
+          ยกเลิก
+        </button>
+        <button onclick="executeBossAttack()" class="flex-1 py-2 bg-gradient-to-r from-amber-500 to-rose-500 hover:opacity-90 text-slate-950 font-black rounded-xl text-xs shadow-md transition">
+          ปล่อยดาเมจ!
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toastNotification" class="fixed top-4 z-50 bg-slate-900 border border-emerald-500 text-emerald-300 text-xs px-4 py-2.5 rounded-2xl shadow-xl transform -translate-y-20 transition-all duration-300 flex items-center gap-2">
+    <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-400"></i>
+    <span id="toastMessage">บันทึกสำเร็จ</span>
+  </div>
+
+  <!-- Modal: View Slip Photo -->
+  <div id="slipModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 hidden" onclick="closeSlipModal()">
+    <div class="bg-slate-900 border border-slate-700 rounded-3xl p-4 max-w-xs w-full shadow-2xl space-y-3" onclick="event.stopPropagation()">
+      <div class="flex justify-between items-center pb-2 border-b border-slate-800">
+        <h4 id="slipModalTitle" class="text-xs font-bold text-white flex items-center gap-1.5">
+          <i data-lucide="receipt" class="w-4 h-4 text-amber-400"></i> รูปภาพหลักฐาน
+        </h4>
+        <button onclick="closeSlipModal()" class="text-slate-400 hover:text-white p-1">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+      <div class="rounded-2xl overflow-hidden bg-slate-950 border border-slate-800 max-h-80 flex items-center justify-center">
+        <img id="slipModalImg" src="" alt="Slip" class="w-full h-auto object-contain max-h-72">
+      </div>
+      <button onclick="closeSlipModal()" class="w-full py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold rounded-xl transition">
+        ปิดหน้าต่าง
+      </button>
+    </div>
+  </div>
+
+  <!-- Modal: How to share link for both phones -->
+  <div id="shareModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 hidden" onclick="closeShareModal()">
+    <div class="bg-slate-900 border border-sky-500/40 rounded-3xl p-5 max-w-sm w-full shadow-2xl space-y-3.5" onclick="event.stopPropagation()">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <div class="w-8 h-8 rounded-xl bg-sky-500/20 text-sky-400 flex items-center justify-center">
+            <i data-lucide="smartphone" class="w-4 h-4"></i>
+          </div>
+          <div>
+            <h3 class="text-xs font-black text-white">วิธีเปิดลิงก์แอปบนมือถือ 2 คน</h3>
+            <p class="text-[10px] text-slate-400">ได้ URL ส่วนตัว ฟรี และอัปเดตสดพร้อมกัน</p>
+          </div>
+        </div>
+        <button onclick="closeShareModal()" class="text-slate-400 hover:text-white p-1">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <div class="space-y-2 text-[11px] text-slate-300">
+        <div class="p-2.5 rounded-2xl bg-slate-950 border border-slate-800 space-y-1">
+          <p class="font-bold text-amber-400">วิธีที่ 1: ติดตั้งเป็นแอปบนมือถือทันที</p>
+          <p class="text-slate-400 leading-relaxed">
+            เปิดหน้าพรีวิวนี้บนมือถือ แล้วกดปุ่ม <strong>แชร์ (Share)</strong> ของ Safari/Chrome เลือก <strong>"Add to Home Screen" (เพิ่มไปยังหน้าจอโฮม)</strong> จะได้ไอคอนแอปบนหน้าจอมือถือของคุณทันที
+          </p>
+        </div>
+        <div class="p-2.5 rounded-2xl bg-slate-950 border border-slate-800 space-y-1">
+          <p class="font-bold text-sky-400">วิธีที่ 2: อัปโหลดรับลิงก์ URL ถาวร (30 วินาที)</p>
+          <p class="text-slate-400 leading-relaxed">
+            ดาวน์โหลดไฟล์นี้ไปตั้งชื่อว่า <code class="text-white bg-slate-800 px-1 rounded">index.html</code> แล้วนำไปวางที่ <strong>GitHub Pages</strong> หรือ <strong>Netlify Drop</strong> จะได้ลิงก์ <code class="text-sky-300">https://...</code> ส่งให้แฟนกดบันทึกได้ตลอด 24 ชม.
+          </p>
+        </div>
+      </div>
+
+      <button onclick="closeShareModal()" class="w-full py-2.5 bg-gradient-to-r from-sky-500 to-indigo-600 text-white font-bold rounded-2xl text-xs shadow-md transition">
+        รับทราบ เข้าใจแล้ว!
+      </button>
+    </div>
+  </div>
+
+  <!-- Firebase & Realtime Cloud Data Module -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+    import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+    import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+    const INCOME_GIFT = 21000.00;
+    const INCOME_GET = 10634.00;
+    const TOTAL_INCOME = INCOME_GIFT + INCOME_GET;
+    const DAILY_BUDGET_GIFT = 250.00;
+    const DAILY_BUDGET_GET = 200.00;
+
+    const INITIAL_DEBTS = [
+      { id: 'ttb_sofast', name: 'TTB / so fast', type: 'บัตรเงินสด', monthly: 1800.00, balance: 15359.88, isBoss: true, paid: false },
+      { id: 'goodmoney', name: 'Goodmoney', type: 'สินเชื่อ', monthly: 800.00, balance: 19812.82, paid: false },
+      { id: 'ttb_flash', name: 'TTB / flash', type: 'บัตร', monthly: 907.00, balance: 23860.97, paid: false },
+      { id: 'lotus', name: 'Lotus', type: 'บัตร', monthly: 2436.28, balance: 24419.94, paid: false },
+      { id: 'cardx', name: 'CardX', type: 'บัตร', monthly: 2015.62, balance: 25195.31, paid: false },
+      { id: 'uob', name: 'UOB', type: 'บัตร', monthly: 2100.00, balance: 25280.26, paid: false },
+      { id: 'ktc_proud', name: 'KTC / proud', type: 'บัตร', monthly: 1300.00, balance: 25334.48, paid: false },
+      { id: 'phone_zflip', name: 'Phone (zflip)', type: 'โทรศัพท์', monthly: 2209.94, balance: 39598.75, paid: false },
+      { id: 'tidlor', name: 'เงินติดล้อ', type: 'สินเชื่อ', monthly: 2800.00, balance: 80600.00, paid: false },
+      { id: 'tiktok', name: 'TikTok', type: 'Pay later', monthly: 2000.00, balance: 0.00, paid: false },
+      { id: 'utilities', name: 'น้ำไฟ (จ่ายแม่)', type: 'ค่าใช้จ่าย', monthly: 4500.00, balance: 0.00, paid: false, nonCredit: true },
+      { id: 'internet', name: 'เน็ต 2 คน (Dtac/True)', type: 'ค่าใช้จ่าย', monthly: 1116.01, balance: 0.00, paid: false, nonCredit: true }
+    ];
+
+    let currentActivePlayer = 'GIFT';
+    let selectedCategory = 'Food';
+    let currentSlipBase64 = null;
+    let appDebts = [...INITIAL_DEBTS];
+    let transactions = [
+      { id: 1, player: 'GIFT', amount: 65, note: '🍛 กะเพราไข่ดาว', category: 'Food', time: '12:30', date: new Date().toISOString().split('T')[0] },
+      { id: 2, player: 'GET', amount: 45, note: '☕ ชาไทยเย็น', category: 'Drink', time: '13:10', date: new Date().toISOString().split('T')[0] }
+    ];
+
+    let db = null;
+    let auth = null;
+    let currentUser = null;
+    const appId = typeof __app_id !== 'undefined' ? __app_id : 'duo-debt-warrior';
+
+    // Sound FX
+    function playAudioTone(type) {
+      try {
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        if (type === 'coin') {
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(587.33, audioCtx.currentTime);
+          osc.frequency.setValueAtTime(880.00, audioCtx.currentTime + 0.08);
+          gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+          osc.start();
+          osc.stop(audioCtx.currentTime + 0.3);
+        } else if (type === 'hit') {
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(220, audioCtx.currentTime);
+          osc.frequency.exponentialRampToValueAtTime(60, audioCtx.currentTime + 0.2);
+          gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.2);
+          osc.start();
+          osc.stop(audioCtx.currentTime + 0.2);
+        }
+      } catch (e) {}
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toastNotification');
+      const text = document.getElementById('toastMessage');
+      text.innerText = msg;
+      toast.classList.remove('-translate-y-20');
+      toast.classList.add('translate-y-0');
+      setTimeout(() => {
+        toast.classList.remove('translate-y-0');
+        toast.classList.add('-translate-y-20');
+      }, 2500);
+    }
+
+    // Cloud Sync Setup
+    async function initCloudSync() {
+      try {
+        if (typeof __firebase_config !== 'undefined') {
+          const config = JSON.parse(__firebase_config);
+          const app = initializeApp(config);
+          db = getFirestore(app);
+          auth = getAuth(app);
+
+          if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+            await signInWithCustomToken(auth, __initial_auth_token);
+          } else {
+            await signInAnonymously(auth);
+          }
+
+          currentUser = auth.currentUser;
+          if (currentUser) {
+            document.getElementById('cloudSyncStatus').innerHTML = `
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> คลาวด์เรียลไทม์ (ออนไลน์)
+            `;
+
+            // Listen to shared state across both users
+            const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'main_shared_doc');
+            onSnapshot(docRef, (snap) => {
+              if (snap.exists()) {
+                const data = snap.data();
+                if (data.transactions) transactions = data.transactions;
+                if (data.debts) appDebts = data.debts;
+                updateAllUI();
+              }
+            }, (err) => {
+              console.warn("Sync listener warning:", err);
+            });
+          }
+        }
+      } catch (err) {
+        console.warn("Cloud sync initialized in local fallback mode:", err);
+      }
+    }
+
+    async function pushCloudUpdate() {
+      if (db && currentUser) {
+        try {
+          const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'main_shared_doc');
+          await setDoc(docRef, {
+            transactions: transactions.slice(0, 50),
+            debts: appDebts,
+            updatedAt: Date.now(),
+            updatedBy: currentActivePlayer
+          });
+        } catch (e) {
+          console.warn("Error pushing cloud update:", e);
+        }
+      }
+    }
+
+    // Slip Photo Handling (with automatic client-side compression)
+    window.handleSlipSelected = function(e) {
+      const file = e.target.files?.[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(event) {
+        const img = new Image();
+        img.onload = function() {
+          const canvas = document.createElement('canvas');
+          const maxDim = 500;
+          let width = img.width;
+          let height = img.height;
+
+          if (width > height && width > maxDim) {
+            height *= maxDim / width;
+            width = maxDim;
+          } else if (height > maxDim) {
+            width *= maxDim / height;
+            height = maxDim;
+          }
+
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, width, height);
+          currentSlipBase64 = canvas.toDataURL('image/jpeg', 0.6);
+
+          document.getElementById('slipBtnText').innerText = "แนบรูปแล้ว ✓";
+          document.getElementById('slipStatusBadge').innerText = "พร้อมบันทึก";
+          document.getElementById('slipStatusBadge').className = "text-[9px] text-emerald-400 font-bold";
+          document.getElementById('removeSlipBtn').classList.remove('hidden');
+        };
+        img.src = event.target.result;
+      };
+      reader.readAsDataURL(file);
+    };
+
+    window.clearSlipPhoto = function() {
+      currentSlipBase64 = null;
+      document.getElementById('slipInput').value = '';
+      document.getElementById('slipBtnText').innerText = "แนบสลิป / บิล";
+      document.getElementById('slipStatusBadge').innerText = "ยังไม่มีรูปภาพ";
+      document.getElementById('slipStatusBadge').className = "text-[9px] text-slate-500 italic";
+      document.getElementById('removeSlipBtn').classList.add('hidden');
+    };
+
+    window.viewSlip = function(id) {
+      const tx = transactions.find(t => t.id === id);
+      if (tx && tx.slip) {
+        document.getElementById('slipModalImg').src = tx.slip;
+        document.getElementById('slipModalTitle').innerText = `${tx.note} (฿${tx.amount.toLocaleString()})`;
+        document.getElementById('slipModal').classList.remove('hidden');
+      }
+    };
+
+    window.closeSlipModal = function() {
+      document.getElementById('slipModal').classList.add('hidden');
+    };
+
+    window.openShareModal = function() {
+      document.getElementById('shareModal').classList.remove('hidden');
+    };
+
+    window.closeShareModal = function() {
+      document.getElementById('shareModal').classList.add('hidden');
+    };
+
+    window.switchTab = function(tabId) {
+      ['arena', 'debts', 'dsr'].forEach(id => {
+        document.getElementById(`tab-${id}`).classList.add('hidden');
+        const navEl = document.getElementById(`nav-${id}`);
+        navEl.classList.remove('text-amber-400');
+        navEl.classList.add('text-slate-400');
+      });
+
+      document.getElementById(`tab-${tabId}`).classList.remove('hidden');
+      const activeNav = document.getElementById(`nav-${tabId}`);
+      activeNav.classList.add('text-amber-400');
+      activeNav.classList.remove('text-slate-400');
+      lucide.createIcons();
+    };
+
+    window.setActivePlayer = function(player) {
+      currentActivePlayer = player;
+      const cardGift = document.getElementById('playerCardGift');
+      const cardGet = document.getElementById('playerCardGet');
+      const badgeGift = document.getElementById('badgeGift');
+      const badgeGet = document.getElementById('badgeGet');
+      const indicator = document.getElementById('activePlayerIndicator');
+
+      if (player === 'GIFT') {
+        cardGift.className = "cursor-pointer relative overflow-hidden rounded-3xl p-3 border-2 transition-all duration-300 bg-gradient-to-b from-rose-950/40 via-slate-900/90 to-slate-900 border-rose-500 glow-rose";
+        cardGet.className = "cursor-pointer relative overflow-hidden rounded-3xl p-3 border transition-all duration-300 bg-gradient-to-b from-slate-900/70 to-slate-900/90 border-slate-800 opacity-75";
+        badgeGift.classList.remove('hidden');
+        badgeGet.classList.add('hidden');
+        indicator.className = "text-[10px] font-bold px-2 py-0.5 rounded-full bg-rose-500/20 text-rose-400 border border-rose-500/30";
+        indicator.innerText = "ลงในนาม: GIFT";
+      } else {
+        cardGet.className = "cursor-pointer relative overflow-hidden rounded-3xl p-3 border-2 transition-all duration-300 bg-gradient-to-b from-sky-950/40 via-slate-900/90 to-slate-900 border-sky-500 glow-sky";
+        cardGift.className = "cursor-pointer relative overflow-hidden rounded-3xl p-3 border transition-all duration-300 bg-gradient-to-b from-slate-900/70 to-slate-900/90 border-slate-800 opacity-75";
+        badgeGet.classList.remove('hidden');
+        badgeGift.classList.add('hidden');
+        indicator.className = "text-[10px] font-bold px-2 py-0.5 rounded-full bg-sky-500/20 text-sky-400 border border-sky-500/30";
+        indicator.innerText = "ลงในนาม: GET";
+      }
+    };
+
+    window.selectQuickTag = function(label, cat) {
+      selectedCategory = cat;
+      const noteInput = document.getElementById('txNote');
+      if (!noteInput.value) noteInput.value = label;
+    };
+
+    window.saveTransaction = function() {
+      const amountEl = document.getElementById('txAmount');
+      const noteEl = document.getElementById('txNote');
+      const amt = parseFloat(amountEl.value);
+
+      if (!amt || isNaN(amt) || amt <= 0) {
+        amountEl.focus();
+        return;
+      }
+
+      const newTx = {
+        id: Date.now(),
+        player: currentActivePlayer,
+        amount: amt,
+        category: selectedCategory,
+        note: noteEl.value || (selectedCategory === 'Snowball' ? '💣 โปะหนี้' : 'ใช้จ่ายทั่วไป'),
+        time: new Date().toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' }),
+        date: new Date().toISOString().split('T')[0],
+        slip: currentSlipBase64 || null
+      };
+
+      if (selectedCategory === 'Snowball') {
+        const boss = appDebts.find(d => d.id === 'ttb_sofast');
+        if (boss && !boss.paid) {
+          boss.balance = Math.max(0, boss.balance - amt);
+          if (boss.balance === 0) {
+            boss.paid = true;
+            confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+          }
+        }
+        playAudioTone('hit');
+      } else {
+        playAudioTone('coin');
+      }
+
+      transactions.unshift(newTx);
+      amountEl.value = '';
+      noteEl.value = '';
+      selectedCategory = 'Food';
+      clearSlipPhoto();
+
+      showToast(`บันทึกสำเร็จ ฿${amt.toLocaleString()} (${newTx.player})`);
+      updateAllUI();
+      pushCloudUpdate();
+    };
+
+    window.openAttackModal = function() {
+      document.getElementById('attackModal').classList.remove('hidden');
+      document.getElementById('attackInput').focus();
+    };
+
+    window.closeAttackModal = function() {
+      document.getElementById('attackModal').classList.add('hidden');
+    };
+
+    window.executeBossAttack = function() {
+      const input = document.getElementById('attackInput');
+      const amt = parseFloat(input.value);
+      if (amt && amt > 0) {
+        document.getElementById('txAmount').value = amt;
+        document.getElementById('txNote').value = "⚡ โจมตีบอส TTB so fast";
+        selectedCategory = 'Snowball';
+        closeAttackModal();
+        saveTransaction();
+
+        const bossBox = document.getElementById('bossBox');
+        bossBox.classList.add('boss-shake');
+        setTimeout(() => bossBox.classList.remove('boss-shake'), 400);
+      }
+    };
+
+    function updateDailyStats() {
+      const today = new Date().toISOString().split('T')[0];
+      const todayTx = transactions.filter(t => t.date === today && t.category !== 'Snowball');
+
+      let spentGift = 0;
+      let spentGet = 0;
+
+      todayTx.forEach(t => {
+        if (t.player === 'GIFT') spentGift += t.amount;
+        if (t.player === 'GET') spentGet += t.amount;
+      });
+
+      document.getElementById('giftSpentText').innerText = `฿${spentGift.toLocaleString()} / 250`;
+      document.getElementById('getSpentText').innerText = `฿${spentGet.toLocaleString()} / 200`;
+
+      const hpGiftPct = Math.max(0, 100 - (spentGift / DAILY_BUDGET_GIFT * 100));
+      const hpGetPct = Math.max(0, 100 - (spentGet / DAILY_BUDGET_GET * 100));
+
+      const hpGiftBar = document.getElementById('hpGiftBar');
+      const hpGetBar = document.getElementById('hpGetBar');
+      hpGiftBar.style.width = `${hpGiftPct}%`;
+      hpGetBar.style.width = `${hpGetPct}%`;
+
+      const giftStatus = document.getElementById('giftStatusPhrase');
+      if (hpGiftPct > 50) {
+        giftStatus.innerHTML = `<i data-lucide="shield-check" class="w-3 h-3"></i> HP ปลอดภัย ยอดเยี่ยม!`;
+        giftStatus.className = "text-[9px] text-emerald-400 mt-1.5 font-medium flex items-center gap-1";
+      } else if (hpGiftPct > 0) {
+        giftStatus.innerHTML = `<i data-lucide="alert-circle" class="w-3 h-3"></i> ใช้เกินครึ่งแล้ว ระวังตัว!`;
+        giftStatus.className = "text-[9px] text-amber-400 mt-1.5 font-medium flex items-center gap-1";
+      } else {
+        giftStatus.innerHTML = `<i data-lucide="skull" class="w-3 h-3"></i> HP หมด! ต้องงดใช้เพิ่ม`;
+        giftStatus.className = "text-[9px] text-rose-400 mt-1.5 font-medium flex items-center gap-1";
+      }
+    }
+
+    function updateDebtBossesAndDSR() {
+      const boss = appDebts.find(d => d.id === 'ttb_sofast');
+      if (boss) {
+        document.getElementById('bossHpValue').innerText = `฿${boss.balance.toLocaleString('en-US', {minimumFractionDigits: 2})}`;
+        const initialBossHp = 15359.88;
+        const damageDone = Math.max(0, initialBossHp - boss.balance);
+        document.getElementById('bossDamageDone').innerText = `฿${damageDone.toLocaleString()}`;
+        const bossPct = Math.min(100, Math.max(0, (boss.balance / initialBossHp) * 100));
+        document.getElementById('bossProgressBar').style.width = `${bossPct}%`;
+      }
+
+      let activeInstallment = 0;
+      appDebts.forEach(d => {
+        if (!d.paid) activeInstallment += d.monthly;
+      });
+
+      const currentDsr = ((activeInstallment / TOTAL_INCOME) * 100).toFixed(1);
+      
+      document.getElementById('dsrHeaderVal').innerText = `${currentDsr}%`;
+      document.getElementById('dsrBigVal').innerText = `${currentDsr}%`;
+      document.getElementById('currentInstallmentVal').innerText = `฿${activeInstallment.toLocaleString('en-US', {minimumFractionDigits: 2})}`;
+      
+      const gauge = document.getElementById('dsrGaugeBar');
+      gauge.style.width = `${Math.min(100, currentDsr)}%`;
+
+      const dsrStatus = document.getElementById('dsrStatusText');
+      const headerBadge = document.getElementById('headerDsrBadge');
+      if (currentDsr <= 60) {
+        dsrStatus.innerText = "ผ่านเกณฑ์ ธอส. แล้ว 🎉";
+        dsrStatus.className = "text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30";
+        headerBadge.className = "flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-black bg-emerald-500/15 text-emerald-400 border border-emerald-500/30";
+      } else {
+        dsrStatus.innerText = "เกินเกณฑ์ ธอส. (ต้อง < 60%)";
+        dsrStatus.className = "text-[10px] font-bold px-2 py-0.5 rounded-full bg-rose-500/20 text-rose-400 border border-rose-500/30";
+        headerBadge.className = "flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-black bg-rose-500/15 text-rose-400 border border-rose-500/30";
+      }
+
+      const debtListContainer = document.getElementById('debtBossList');
+      debtListContainer.innerHTML = '';
+      appDebts.forEach((debt, index) => {
+        const item = document.createElement('div');
+        item.className = `p-2.5 rounded-2xl border transition-all flex items-center justify-between ${debt.paid ? 'bg-slate-950/40 border-slate-900 opacity-50' : 'bg-slate-950 border-slate-800'}`;
+        item.innerHTML = `
+          <div class="flex items-center space-x-2.5">
+            <input type="checkbox" ${debt.paid ? 'checked' : ''} onchange="toggleDebtPaid('${debt.id}')" class="w-4 h-4 rounded accent-amber-500 cursor-pointer">
+            <div>
+              <div class="flex items-center gap-1.5">
+                <span class="text-xs font-bold text-white ${debt.paid ? 'line-through text-slate-500' : ''}">${debt.name}</span>
+                <span class="text-[8px] px-1 py-0.2 rounded bg-slate-800 text-slate-400">${debt.type}</span>
+              </div>
+              <p class="text-[10px] text-slate-400">ผ่อน <strong class="text-rose-400">฿${debt.monthly.toLocaleString()}</strong>/ด. ${debt.balance > 0 ? `| คงค้าง ฿${debt.balance.toLocaleString()}` : ''}</p>
+            </div>
+          </div>
+          <div>
+            ${debt.paid ? '<span class="text-[9px] font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full">ปิดแล้ว 🎉</span>' : `<span class="text-[9px] font-mono text-slate-500">#${index+1}</span>`}
+          </div>
+        `;
+        debtListContainer.appendChild(item);
+      });
+    }
+
+    window.toggleDebtPaid = function(id) {
+      const debt = appDebts.find(d => d.id === id);
+      if (debt) {
+        debt.paid = !debt.paid;
+        if (debt.paid) {
+          playAudioTone('hit');
+          confetti({ particleCount: 50, spread: 60, origin: { y: 0.7 } });
+          showToast(`ยินดีด้วย! ปลดค่างวด ฿${debt.monthly.toLocaleString()}/ด.`);
+        }
+        updateAllUI();
+        pushCloudUpdate();
+      }
+    };
+
+    function renderTxList() {
+      const list = document.getElementById('transactionsList');
+      list.innerHTML = '';
+      const recent = transactions.slice(0, 15);
+      document.getElementById('txCountBadge').innerText = `${transactions.length} รายการ`;
+
+      if (recent.length === 0) {
+        list.innerHTML = `<p class="text-center py-4 text-xs text-slate-600">ยังไม่มีรายการบันทึกของวันนี้</p>`;
+        return;
+      }
+
+      recent.forEach(t => {
+        const item = document.createElement('div');
+        item.className = "flex justify-between items-center bg-slate-900/80 border border-slate-800 rounded-2xl px-3 py-2 text-xs";
+        item.innerHTML = `
+          <div class="flex items-center space-x-2">
+            <span class="${t.player === 'GIFT' ? 'bg-rose-500/15 text-rose-400' : 'bg-sky-500/15 text-sky-400'} px-1.5 py-0.5 rounded font-bold text-[9px]">${t.player}</span>
+            <div>
+              <div class="flex items-center gap-1.5">
+                <span class="text-slate-200 font-medium block text-[11px]">${t.note}</span>
+                ${t.slip ? `<button onclick="viewSlip(${t.id})" class="text-[9px] font-bold text-amber-400 bg-amber-400/10 hover:bg-amber-400/20 px-1.5 py-0.2 rounded border border-amber-400/30 flex items-center gap-0.5">📸 ดูสลิป</button>` : ''}
+              </div>
+              <span class="text-[9px] text-slate-500 font-mono">${t.time}</span>
+            </div>
+          </div>
+          <div class="text-right">
+            <span class="font-mono font-black ${t.category === 'Snowball' ? 'text-amber-400' : 'text-slate-200'} text-xs">
+              ${t.category === 'Snowball' ? '⚡ ' : ''}฿${t.amount.toLocaleString()}
+            </span>
+          </div>
+        `;
+        list.appendChild(item);
+      });
+    }
+
+    window.generateAiAdvice = function() {
+      const adviceEl = document.getElementById('aiCoachMessage');
+      const tips = [
+        "กลยุทธ์สำคัญ: ปิด TTB so fast (฿15,359) ก่อนเป็นใบแรก เพราะจะดึงค่างวดออกไปได้ทันที ฿1,800/เดือน และทำให้บูโรหายไป 1 บัญชี!",
+        "วิเคราะห์วินัย: หากคุณทั้งสองจำกัดงบกินใช้วันละ 200–250฿ ร่วมกัน จะมีเงินสดเหลือราว ฿7,500/เดือน ซึ่งพอปิดหนี้ 2 ใบได้ภายใน 4 เดือนแน่นอน",
+        "ข้อควรรู้ ธอส.: แบงก์ชอบสลิปและ Statement ที่ไม่มีรายการหักค่างวดจุกจิก เมื่อปิดบัตรใบไหนเสร็จ ให้ขอใบเสร็จปิดยอดไว้ทันทีโดยไม่ต้องรอยื่นรอบใหญ่",
+        "กำลังใจ: ประวัติอายุงาน 8 ปีของคุณ GIFT เป็นจุดแข็งมาก ตอนนี้เหลือเพียงกด DSR ให้ต่ำกว่า 60% คอนโดผ่านแน่นอนค่ะ!"
+      ];
+      adviceEl.innerText = tips[Math.floor(Math.random() * tips.length)];
+      lucide.createIcons();
+    };
+
+    function updateAllUI() {
+      updateDailyStats();
+      updateDebtBossesAndDSR();
+      renderTxList();
+      lucide.createIcons();
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      const now = new Date();
+      document.getElementById('statusBarTime').innerText = now.toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' });
+      initCloudSync();
+      updateAllUI();
+    });
+  </script>
+</body>
+</html>
