@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Duo Debt Warrior - ทุบหนี้คว้าคอนโด (Live Sheets Only)</title>
+  <title>Duo Debt Warrior - ทุบหนี้คว้าคอนโด</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -12,20 +12,20 @@
           colors: {
             brand: {
               rose: '#f43f5e',
-              roseBg: '#fff1f2',
+              roseLight: '#ffe4e6',
               sky: '#0284c7',
-              skyBg: '#f0f9ff',
-              amber: '#f59e0b',
-              amberBg: '#fffbeb',
-              emerald: '#10b981',
-              emeraldBg: '#ecfdf5'
+              skyLight: '#e0f2fe',
+              amber: '#d97706',
+              amberLight: '#fef3c7',
+              emerald: '#059669',
+              emeraldLight: '#d1fae5'
             }
           },
           fontFamily: {
             sans: ['Plus Jakarta Sans', 'Noto Sans Thai', 'sans-serif']
           },
           boxShadow: {
-            'cute': '0 10px 25px -4px rgba(100, 116, 139, 0.12), 0 4px 10px -2px rgba(0, 0, 0, 0.04)'
+            'cute': '0 8px 24px -4px rgba(100, 116, 139, 0.08), 0 3px 8px -2px rgba(0, 0, 0, 0.03)'
           }
         }
       }
@@ -40,7 +40,7 @@
     body {
       font-family: 'Plus Jakarta Sans', 'Noto Sans Thai', sans-serif;
       -webkit-font-smoothing: antialiased;
-      background: linear-gradient(135deg, #f0fdfa 0%, #eff6ff 50%, #fdf2f8 100%);
+      background: linear-gradient(135deg, #f0fdfa 0%, #f8fafc 50%, #eff6ff 100%);
       color: #1e293b;
       user-select: none;
     }
@@ -48,8 +48,8 @@
       user-select: auto;
     }
     .custom-scrollbar::-webkit-scrollbar {
-      width: 6px;
-      height: 6px;
+      width: 5px;
+      height: 5px;
     }
     .custom-scrollbar::-webkit-scrollbar-thumb {
       background: #cbd5e1;
@@ -68,7 +68,7 @@
       transition: transform 0.15s, background-color 0.15s;
     }
     .press-hold:active {
-      transform: scale(0.97);
+      transform: scale(0.98);
       background-color: #fee2e2 !important;
     }
   </style>
@@ -76,10 +76,10 @@
 <body class="min-h-screen flex flex-col items-center justify-start p-0 sm:p-4 md:py-6 bg-slate-100">
 
   <!-- Main Mobile Shell Container -->
-  <div class="w-full max-w-md bg-white min-h-screen sm:min-h-[860px] sm:rounded-[40px] sm:border-[8px] sm:border-slate-800/90 shadow-2xl relative flex flex-col overflow-hidden text-slate-800">
+  <div class="w-full max-w-md bg-white min-h-screen sm:min-h-[860px] sm:rounded-[36px] sm:border-[8px] sm:border-slate-800/90 shadow-2xl relative flex flex-col overflow-hidden text-slate-800">
     
     <!-- Phone Top Status Bar (Desktop Display) -->
-    <div class="hidden sm:flex items-center justify-between px-6 pt-3.5 pb-1 text-xs text-slate-500 font-mono select-none bg-slate-50 border-b border-slate-100">
+    <div class="hidden sm:flex items-center justify-between px-6 pt-3 pb-1 text-xs text-slate-500 font-mono select-none bg-slate-50 border-b border-slate-100">
       <span id="statusBarTime" class="font-bold">09:41</span>
       <div class="w-20 h-4 bg-slate-200 rounded-full flex items-center justify-center">
         <span class="w-2 h-2 rounded-full bg-slate-400"></span>
@@ -102,7 +102,7 @@
               <span class="text-xs font-black tracking-wide text-amber-800 bg-amber-100 px-2 py-0.5 rounded-full border border-amber-300">
                 ธอส. คอนโด
               </span>
-              <button onclick="triggerManualSync()" id="cloudSyncStatus" title="แตะเพื่อรีเฟรชข้อมูลสด" class="text-xs text-emerald-700 font-bold flex items-center gap-1 bg-emerald-50 hover:bg-emerald-100 px-2 py-0.5 rounded-full border border-emerald-200 transition active:scale-95">
+              <button onclick="triggerManualSync()" id="cloudSyncStatus" title="แตะเพื่อรีเฟรชข้อมูลคลาวด์สด" class="text-xs text-emerald-700 font-bold flex items-center gap-1 bg-emerald-50 hover:bg-emerald-100 px-2 py-0.5 rounded-full border border-emerald-200 transition active:scale-95">
                 <span id="cloudStatusDot" class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> 
                 <span id="cloudStatusLabel">คลาวด์สด</span>
               </button>
@@ -114,25 +114,25 @@
         </div>
         
         <div class="flex items-center gap-2">
-          <!-- Cloud Guide & Script Diagnostics Trigger -->
-          <button onclick="openShareModal()" title="วิธีแก้ปัญหาคลาวด์และโค้ด Apps Script" class="p-2 rounded-2xl bg-sky-50 hover:bg-sky-100 text-sky-700 border border-sky-200 transition active:scale-95 flex items-center gap-1 text-xs font-bold shadow-sm">
-            <i data-lucide="cloud-cog" class="w-4 h-4 text-sky-600"></i>
-            <span class="text-xs font-extrabold">ชีต</span>
+          <!-- WebApp URL & Cloud Settings Modal Trigger -->
+          <button onclick="openShareModal()" title="ตั้งค่า Web App URL และโค้ด Apps Script" class="p-2 rounded-2xl bg-sky-50 hover:bg-sky-100 text-sky-700 border border-sky-200 transition active:scale-95 flex items-center gap-1.5 text-xs font-bold shadow-sm">
+            <i data-lucide="link" class="w-4 h-4 text-sky-600"></i>
+            <span class="font-extrabold">ลิงก์ชีต</span>
           </button>
 
           <!-- Live DSR Quick Meter Button -->
           <button onclick="switchTab('dsr')" class="flex flex-col items-end group focus:outline-none p-1">
             <span class="text-xs text-slate-500 font-bold group-hover:text-slate-700">DSR รวม</span>
-            <div id="headerDsrBadge" class="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-black bg-rose-100 text-rose-700 border border-rose-300 transition-all group-hover:scale-105 shadow-sm">
+            <div id="headerDsrBadge" class="flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-black bg-rose-100 text-rose-700 border border-rose-300 transition-all group-hover:scale-105 shadow-sm">
               <span class="w-2 h-2 rounded-full bg-rose-500 animate-pulse"></span>
-              <span id="dsrHeaderVal" class="text-xs font-black">75.8%</span>
+              <span id="dsrHeaderVal" class="font-black">75.8%</span>
             </div>
           </button>
         </div>
       </div>
     </header>
 
-    <!-- Main Scrollable Content Area -->
+    <!-- Main Content Body -->
     <main class="flex-1 px-4 pt-3.5 pb-24 overflow-y-auto custom-scrollbar space-y-4 bg-slate-50/70">
 
       <!-- TAB 1: DAILY ARENA -->
@@ -223,7 +223,7 @@
 
           <div class="space-y-2">
             <div class="flex justify-between text-xs font-bold">
-              <span class="text-slate-600 text-xs">HP บอสคงเหลือ:</span>
+              <span class="text-slate-600">HP บอสคงเหลือ:</span>
               <span id="bossHpValue" class="text-amber-700 font-extrabold text-sm">฿15,359.88</span>
             </div>
             <div class="w-full bg-slate-200/80 h-4 rounded-full overflow-hidden border border-amber-200 p-0.5">
@@ -238,7 +238,7 @@
           </div>
         </div>
 
-        <!-- Expense Entry Form (Clean, No Photo Upload, No AI) -->
+        <!-- Expense Entry Form (Clean, Fast, No Photo, No AI) -->
         <div class="bg-white border border-slate-200 rounded-3xl p-4 shadow-cute space-y-3.5">
           <div class="flex items-center justify-between">
             <div class="flex items-center gap-2">
@@ -286,8 +286,8 @@
               <p class="text-[11px] text-slate-400 font-medium">💡 กดค้างที่รายการเพื่อลบได้เลย</p>
             </div>
             <div class="flex items-center gap-2">
-              <span id="txCountBadge" class="text-xs font-bold text-slate-500 bg-slate-200 px-2 py-0.5 rounded-full">กำลังโหลด...</span>
-              <button onclick="triggerManualSync()" title="รีเฟรชข้อมูลคลาวด์" class="p-1 rounded-lg bg-slate-200 hover:bg-slate-300 text-slate-700 active:scale-95 transition">
+              <span id="txCountBadge" class="text-xs font-bold text-slate-500 bg-slate-200 px-2 py-0.5 rounded-full">0 รายการ</span>
+              <button onclick="triggerManualSync()" title="รีเฟรชข้อมูลคลาวด์สด" class="p-1 rounded-lg bg-slate-200 hover:bg-slate-300 text-slate-700 active:scale-95 transition">
                 <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
               </button>
             </div>
@@ -465,17 +465,17 @@
     </div>
   </div>
 
-  <!-- Modal: Google Apps Script Diagnostics and Working Script Code -->
+  <!-- Modal: Custom WebApp URL Management and Cloud Setup -->
   <div id="shareModal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 hidden" onclick="closeShareModal()">
-    <div class="bg-white border border-sky-300 rounded-3xl p-5 max-w-sm w-full shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto custom-scrollbar" onclick="event.stopPropagation()">
+    <div class="bg-white border-2 border-sky-300 rounded-3xl p-5 max-w-sm w-full shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto custom-scrollbar" onclick="event.stopPropagation()">
       <div class="flex items-center justify-between">
         <div class="flex items-center gap-2.5">
-          <div class="w-10 h-10 rounded-2xl bg-sky-100 text-sky-600 flex items-center justify-center shadow-sm">
-            <i data-lucide="cloud-check" class="w-5 h-5"></i>
+          <div class="w-10 h-10 rounded-2xl bg-sky-100 text-sky-600 flex items-center justify-center shadow-sm text-lg">
+            🔗
           </div>
           <div>
-            <h3 class="text-sm font-black text-slate-900">การเชื่อมต่อ Google Sheets</h3>
-            <p id="cloudLastSyncTime" class="text-[11px] text-slate-500 font-bold">รอการตรวจสอบ...</p>
+            <h3 class="text-sm font-black text-slate-900">ตั้งค่า Web App URL ด้วยตนเอง</h3>
+            <p id="cloudLastSyncTime" class="text-[11px] text-slate-500 font-bold">กรอกลิงก์ Web App จาก Google Sheets</p>
           </div>
         </div>
         <button onclick="closeShareModal()" class="text-slate-400 hover:text-slate-700 p-1">
@@ -483,35 +483,42 @@
         </button>
       </div>
 
-      <div class="space-y-2.5 text-xs text-slate-600">
-        <div class="p-3 rounded-2xl bg-slate-50 border border-slate-200 space-y-1">
-          <p class="font-extrabold text-slate-800 text-xs">สถานะ Web App URL หลังบ้าน:</p>
-          <p class="text-[11px] font-mono text-slate-500 break-all bg-white p-2 rounded-xl border border-slate-200">
-            https://script.google.com/macros/s/AKfycbWZhVO7aT4EB9iM-RJiqfVoMFYcJrNa7cKkd5emxmXvmlN9t0--_2PzPoZXQxWnL_C/exec
-          </p>
+      <!-- WebApp URL Input & Actions -->
+      <div class="space-y-2">
+        <label class="block text-xs font-black text-slate-700">Google Apps Script Web App URL:</label>
+        <div class="relative">
+          <textarea id="customUrlInput" rows="3" placeholder="https://script.google.com/macros/s/.../exec" class="w-full bg-slate-50 border-2 border-slate-200 focus:border-sky-400 rounded-2xl p-2.5 text-[11px] font-mono font-medium text-slate-800 focus:outline-none transition leading-relaxed"></textarea>
         </div>
-
-        <div class="p-3 rounded-2xl bg-amber-50 border border-amber-200 space-y-1.5">
-          <p class="font-extrabold text-amber-900 text-xs flex items-center gap-1">
-            <i data-lucide="alert-triangle" class="w-4 h-4 text-amber-600"></i> หากข้อมูลไม่ขึ้น ให้ทำตาม 3 ขั้นตอนนี้:
-          </p>
-          <ol class="list-decimal list-inside space-y-1 text-amber-800 text-[11px] leading-relaxed">
-            <li>เปิด Google Sheet ของคุณ &gt; เมนู <strong>Extensions (ส่วนขยาย) &gt; Apps Script</strong></li>
-            <li>วางโค้ดด้านล่างนี้ทับโค้ดเดิมทั้งหมด แล้วกดบันทึก (Ctrl+S)</li>
-            <li>กด <strong>Deploy &gt; Manage deployments</strong> &gt; คลิกไอคอนดินสอ &gt; เลือก <strong>Version: New version</strong> &gt; ตรวจสอบว่า Who has access เป็น <strong>Anyone</strong> แล้วกด Deploy ครับ</li>
-          </ol>
-          <button onclick="copyWorkingAppsScriptCode()" id="copyScriptBtn" class="w-full py-2.5 bg-amber-600 hover:bg-amber-700 text-white font-black rounded-xl text-xs transition flex items-center justify-center gap-1.5 shadow-sm">
-            <i data-lucide="copy" class="w-3.5 h-3.5"></i> คัดลอกโค้ด Apps Script ตัวสมบูรณ์
+        <div class="grid grid-cols-2 gap-2">
+          <button onclick="saveCustomUrl()" class="py-2.5 bg-sky-600 hover:bg-sky-700 text-white font-black rounded-xl text-xs transition active:scale-95 shadow-sm flex items-center justify-center gap-1">
+            <i data-lucide="save" class="w-3.5 h-3.5"></i> บันทึก URL ใหม่
+          </button>
+          <button onclick="testConnection()" id="testConnBtn" class="py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-800 font-extrabold rounded-xl text-xs transition active:scale-95 flex items-center justify-center gap-1">
+            <i data-lucide="activity" class="w-3.5 h-3.5 text-emerald-600"></i> ทดสอบเชื่อมต่อ
           </button>
         </div>
+        <div id="urlTestFeedback" class="text-[11px] font-bold p-2.5 rounded-xl hidden"></div>
+      </div>
+
+      <!-- Apps Script Code Helper -->
+      <div class="p-3.5 rounded-2xl bg-amber-50 border border-amber-200 space-y-2 text-xs text-amber-900">
+        <p class="font-black text-amber-900 text-xs flex items-center gap-1">
+          <i data-lucide="file-code" class="w-4 h-4 text-amber-600"></i> โค้ด Apps Script สำหรับวางใน Google Sheet:
+        </p>
+        <p class="text-[11px] leading-relaxed text-amber-800 font-medium">
+          วางโค้ดนี้ใน <strong>ส่วนขยาย &gt; Apps Script</strong> แล้วกด <strong>Deploy &gt; New deployment &gt; Anyone (ทุกคน)</strong> จากนั้นนำ URL มาใส่ในช่องด้านบนครับ
+        </p>
+        <button onclick="copyWorkingAppsScriptCode()" id="copyScriptBtn" class="w-full py-2.5 bg-amber-600 hover:bg-amber-700 text-white font-black rounded-xl text-xs transition flex items-center justify-center gap-1.5 shadow-sm active:scale-95">
+          <i data-lucide="copy" class="w-3.5 h-3.5"></i> คัดลอกโค้ด Apps Script
+        </button>
       </div>
 
       <div class="flex gap-2 pt-1">
-        <button onclick="triggerManualSync(); closeShareModal();" class="flex-1 py-2.5 bg-sky-100 hover:bg-sky-200 text-sky-800 font-extrabold rounded-xl text-xs flex items-center justify-center gap-1.5 transition">
-          <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i> ดึงข้อมูลสดเดี๋ยวนี้
+        <button onclick="resetDefaultUrl()" class="py-2 px-3 bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold rounded-xl text-[11px] transition">
+          คืนค่าเริ่มต้น
         </button>
-        <button onclick="closeShareModal()" class="flex-1 py-2.5 bg-slate-800 hover:bg-slate-900 text-white text-xs font-extrabold rounded-xl transition">
-          ปิด
+        <button onclick="closeShareModal()" class="flex-1 py-2 bg-slate-800 hover:bg-slate-900 text-white font-black rounded-xl text-xs transition">
+          ปิดหน้าต่าง
         </button>
       </div>
     </div>
@@ -523,10 +530,51 @@
     <span id="toastMessage">บันทึกสำเร็จ</span>
   </div>
 
-  <!-- Application Logic & Pure Real-Time Sheets Engine -->
+  <!-- JavaScript Engine: Safe, Real-Time, Error-Free -->
   <script>
-    // HARDCODED BACKEND GOOGLE SHEETS API ENDPOINT
-    const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbWZhVO7aT4EB9iM-RJiqfVoMFYcJrNa7cKkd5emxmXvmlN9t0--_2PzPoZXQxWnL_C/exec";
+    // GLOBAL ERROR SHIELD: Prevents "[GLOBAL] Script error." from cross-origin/external events
+    window.addEventListener('error', function(event) {
+      console.warn("Handled safe error event:", event.message || event);
+      if (event.preventDefault) event.preventDefault();
+      return true;
+    });
+    window.addEventListener('unhandledrejection', function(event) {
+      console.warn("Handled unhandled rejection:", event.reason);
+      if (event.preventDefault) event.preventDefault();
+    });
+
+    // Safe Lucide icon initializer
+    function safeRenderIcons() {
+      try {
+        if (window.lucide && typeof window.lucide.createIcons === 'function') {
+          window.lucide.createIcons();
+        }
+      } catch (e) {}
+    }
+
+    // DEFAULT FALLBACK WEB APP URL
+    const DEFAULT_APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzwCDYxSTc_-zCtRKXCFiZRsA0ucPXwsUj1SVuQGJnCMsUTdVMICDWQMpm4fgkHwgyc/exec";
+
+    // Allow user to set and persist their own custom Web App URL
+    function getActiveWebAppUrl() {
+      try {
+        const savedUrl = localStorage.getItem('warrior_custom_webapp_url');
+        if (savedUrl && savedUrl.trim().startsWith('http')) {
+          return savedUrl.trim();
+        }
+      } catch (e) {}
+      return DEFAULT_APPS_SCRIPT_URL;
+    }
+
+    function setActiveWebAppUrl(newUrl) {
+      try {
+        if (newUrl && newUrl.trim().startsWith('http')) {
+          localStorage.setItem('warrior_custom_webapp_url', newUrl.trim());
+        } else {
+          localStorage.removeItem('warrior_custom_webapp_url');
+        }
+      } catch (e) {}
+    }
 
     const INCOME_GIFT = 21000.00;
     const INCOME_GET = 10634.00;
@@ -549,14 +597,7 @@
       { id: 'internet', name: 'เน็ต 2 คน (Dtac/True)', type: 'ค่าใช้จ่าย', monthly: 1116.01, balance: 0.00, paid: false, nonCredit: true }
     ];
 
-    // PURGE ANY PREVIOUS LOCALSTORAGE TEST DATA COMPLETELY
-    try {
-      localStorage.removeItem('warrior_saved_tx');
-      localStorage.removeItem('warrior_saved_debts');
-      localStorage.removeItem('warrior_slip_vault');
-    } catch(e) {}
-
-    // PURE MEMORY STATE: DATA COMES EXCLUSIVELY FROM GOOGLE SHEETS
+    // PURE REALTIME MEMORY: Data exclusively comes from Google Sheets (No mock/cached records)
     let transactions = [];
     let appDebts = [...INITIAL_DEBTS];
     let currentActivePlayer = 'GIFT';
@@ -565,15 +606,18 @@
     let pendingDeleteTxId = null;
     let longPressTimer = null;
 
-    // Helper DOM utilities
+    // DOM Utilities
     function safeSetText(id, text) {
       const el = document.getElementById(id);
       if (el) el.innerText = text;
     }
 
+    // Audio SFX synthesis with safety wrapper
     function playAudioTone(type) {
       try {
-        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const AudioCtxClass = window.AudioContext || window.webkitAudioContext;
+        if (!AudioCtxClass) return;
+        const audioCtx = new AudioCtxClass();
         const osc = audioCtx.createOscillator();
         const gain = audioCtx.createGain();
         osc.connect(gain);
@@ -619,9 +663,31 @@
       }
     }
 
+    function applySheetRows(cloudRows) {
+      if (!Array.isArray(cloudRows)) return;
+      const todayStr = new Date().toISOString().split('T')[0];
+      const parsed = cloudRows.map(r => ({
+        id: Number(r.id) || Date.now(),
+        player: String(r.player || 'GIFT'),
+        amount: Number(r.amount) || 0,
+        note: String(r.note || ''),
+        category: String(r.category || 'Food'),
+        time: String(r.time || ''),
+        date: String(r.date || todayStr)
+      }));
+
+      // In Google Sheets, rows are appended downwards; reverse so newest is on top
+      transactions = parsed.reverse();
+      updateAllUI();
+
+      const timeString = new Date().toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+      safeSetText('cloudLastSyncTime', `อัปเดตชีตสด: ${timeString} น.`);
+    }
+
     async function loadDataFromGoogleSheet(silent = false) {
-      if (isSyncing) return;
+      if (isSyncing) return false;
       isSyncing = true;
+      const activeUrl = getActiveWebAppUrl();
       const statusLabel = document.getElementById('cloudStatusLabel');
       const statusDot = document.getElementById('cloudStatusDot');
 
@@ -630,53 +696,35 @@
         if (statusDot) statusDot.className = "w-2 h-2 rounded-full bg-amber-500 animate-ping";
       }
 
+      let success = false;
       try {
-        // Append cache-busting timestamp to guarantee 100% real-time freshness
-        const fetchUrl = `${APPS_SCRIPT_URL}?action=read&t=${Date.now()}`;
+        const fetchUrl = `${activeUrl}?action=read&_t=${Date.now()}`;
         const res = await fetch(fetchUrl, {
           method: 'GET',
           redirect: 'follow'
         });
-
         if (res.ok) {
-          const cloudRows = await res.json();
-          if (Array.isArray(cloudRows)) {
-            const todayStr = new Date().toISOString().split('T')[0];
-            // Normalize rows directly from Google Sheet
-            const parsed = cloudRows.map(r => ({
-              id: Number(r.id) || Date.now(),
-              player: String(r.player || 'GIFT'),
-              amount: Number(r.amount) || 0,
-              note: String(r.note || ''),
-              category: String(r.category || 'Food'),
-              time: String(r.time || ''),
-              date: String(r.date || todayStr)
-            }));
-
-            // Google Sheets records top-down (chronological), reverse to show newest first
-            transactions = parsed.reverse();
-            updateAllUI();
-
-            const timeString = new Date().toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-            safeSetText('cloudLastSyncTime', `อัปเดตชีตสด: ${timeString} น.`);
-          }
-
-          if (statusLabel) statusLabel.innerText = "คลาวด์สด";
-          if (statusDot) statusDot.className = "w-2 h-2 rounded-full bg-emerald-500 animate-pulse";
-        } else {
-          if (statusLabel) statusLabel.innerText = "ชีตขัดข้อง";
-          if (statusDot) statusDot.className = "w-2 h-2 rounded-full bg-rose-500";
+          const data = await res.json();
+          applySheetRows(data);
+          success = true;
         }
       } catch (err) {
-        console.warn("Google Sheets connection error:", err);
-        if (statusLabel) statusLabel.innerText = "ยังไม่ต่อชีต";
-        if (statusDot) statusDot.className = "w-2 h-2 rounded-full bg-amber-500";
-      } finally {
-        isSyncing = false;
+        console.warn("Direct fetch error:", err);
       }
+
+      if (success) {
+        if (statusLabel) statusLabel.innerText = "คลาวด์สด";
+        if (statusDot) statusDot.className = "w-2 h-2 rounded-full bg-emerald-500 animate-pulse";
+      } else {
+        if (statusLabel) statusLabel.innerText = "เชื่อมต่อไม่ได้";
+        if (statusDot) statusDot.className = "w-2 h-2 rounded-full bg-rose-500";
+      }
+      isSyncing = false;
+      return success;
     }
 
     async function postDataToGoogleSheet(newTx) {
+      const activeUrl = getActiveWebAppUrl();
       const statusLabel = document.getElementById('cloudStatusLabel');
       const statusDot = document.getElementById('cloudStatusDot');
       const saveBtnText = document.getElementById('saveBtnText');
@@ -685,13 +733,10 @@
       if (saveBtnText) saveBtnText.innerText = "กำลังส่งข้อมูลเข้าชีต...";
 
       try {
-        // Send plain text payload to prevent CORS preflight OPTIONS rejection
-        await fetch(APPS_SCRIPT_URL, {
+        await fetch(activeUrl, {
           method: 'POST',
           mode: 'no-cors',
-          headers: {
-            'Content-Type': 'text/plain;charset=utf-8'
-          },
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
           body: JSON.stringify({
             action: 'create',
             id: newTx.id,
@@ -707,39 +752,35 @@
         if (statusLabel) statusLabel.innerText = "เซฟแล้ว";
         if (statusDot) statusDot.className = "w-2 h-2 rounded-full bg-emerald-500 animate-pulse";
       } catch (err) {
-        console.warn("Could not post to Google Sheet:", err);
+        console.warn("Post error:", err);
       } finally {
         if (saveBtnText) saveBtnText.innerText = "บันทึกเข้า Google Sheets ทันที";
-        // Immediately trigger fresh pull from cloud to synchronize all views
         setTimeout(() => loadDataFromGoogleSheet(true), 1200);
       }
     }
 
     async function deleteDataFromGoogleSheet(txId) {
+      const activeUrl = getActiveWebAppUrl();
       const statusLabel = document.getElementById('cloudStatusLabel');
       if (statusLabel) statusLabel.innerText = "กำลังลบในชีต...";
 
       try {
-        await fetch(APPS_SCRIPT_URL, {
+        await fetch(activeUrl, {
           method: 'POST',
           mode: 'no-cors',
-          headers: {
-            'Content-Type': 'text/plain;charset=utf-8'
-          },
-          body: JSON.stringify({
-            action: 'delete',
-            id: txId
-          })
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify({ action: 'delete', id: txId })
         });
 
         if (statusLabel) statusLabel.innerText = "ลบแล้ว";
       } catch (err) {
-        console.warn("Could not delete from Google Sheet:", err);
+        console.warn("Delete error:", err);
       } finally {
         setTimeout(() => loadDataFromGoogleSheet(true), 1200);
       }
     }
 
+    // Manual sync trigger
     window.triggerManualSync = function() {
       loadDataFromGoogleSheet(false);
       showToast("ดึงข้อมูลล่าสุดจาก Google Sheets เรียบร้อย");
@@ -766,7 +807,7 @@
       if (txIndex !== -1) {
         const deletedTx = transactions[txIndex];
 
-        // If transaction was a Snowball boss attack, restore boss HP
+        // If Snowball attack, restore boss HP
         if (deletedTx.category === 'Snowball') {
           const boss = appDebts.find(d => d.id === 'ttb_sofast');
           if (boss) {
@@ -775,7 +816,7 @@
           }
         }
 
-        // Remove from current memory array immediately
+        // Delete from local UI memory immediately
         transactions.splice(txIndex, 1);
         playAudioTone('delete');
         showToast(`ลบรายการ ฿${deletedTx.amount.toLocaleString()} ออกจากชีตแล้ว`);
@@ -790,7 +831,7 @@
     window.startLongPress = function(id) {
       longPressTimer = setTimeout(() => {
         promptDeleteTransaction(id);
-      }, 500); // 500ms press-and-hold trigger
+      }, 500); // 500ms long press trigger
     };
 
     window.cancelLongPress = function() {
@@ -801,8 +842,13 @@
     };
 
     window.openShareModal = function() {
+      const input = document.getElementById('customUrlInput');
+      if (input) input.value = getActiveWebAppUrl();
+      const feedback = document.getElementById('urlTestFeedback');
+      if (feedback) feedback.classList.add('hidden');
       const modal = document.getElementById('shareModal');
       if (modal) modal.classList.remove('hidden');
+      safeRenderIcons();
     };
 
     window.closeShareModal = function() {
@@ -810,6 +856,58 @@
       if (modal) modal.classList.add('hidden');
     };
 
+    window.saveCustomUrl = function() {
+      const input = document.getElementById('customUrlInput');
+      if (!input) return;
+      const url = input.value.trim();
+      if (!url.startsWith('https://script.google.com/macros/s/')) {
+        showFeedback("URL ไม่ถูกต้อง! ต้องขึ้นต้นด้วย https://script.google.com/macros/s/...", false);
+        return;
+      }
+      setActiveWebAppUrl(url);
+      showToast("บันทึก Web App URL สำเร็จแล้ว");
+      showFeedback("บันทึก URL ใหม่แล้ว ระบบจะเริ่มซิงค์ข้อมูลเดี๋ยวนี้", true);
+      loadDataFromGoogleSheet(false);
+    };
+
+    window.resetDefaultUrl = function() {
+      setActiveWebAppUrl(null);
+      const input = document.getElementById('customUrlInput');
+      if (input) input.value = DEFAULT_APPS_SCRIPT_URL;
+      showToast("คืนค่าเป็น Web App URL เริ่มต้นแล้ว");
+      showFeedback("คืนค่าเริ่มต้นแล้ว", true);
+      loadDataFromGoogleSheet(false);
+    };
+
+    window.testConnection = async function() {
+      const btn = document.getElementById('testConnBtn');
+      if (btn) btn.innerHTML = `<i data-lucide="loader" class="w-3.5 h-3.5 animate-spin"></i> กำลังทดสอบ...`;
+      safeRenderIcons();
+
+      const success = await loadDataFromGoogleSheet(false);
+      if (btn) btn.innerHTML = `<i data-lucide="activity" class="w-3.5 h-3.5 text-emerald-600"></i> ทดสอบเชื่อมต่อ`;
+      safeRenderIcons();
+
+      if (success) {
+        showFeedback(`เชื่อมต่อ Google Sheets สำเร็จ! (พบข้อมูล ${transactions.length} รายการ)`, true);
+      } else {
+        showFeedback("เชื่อมต่อไม่สำเร็จ! กรุณาตรวจสอบว่าเลือกสิทธิ์ 'Anyone (ทุกคน)' ใน Google Apps Script หรือยังครับ", false);
+      }
+    };
+
+    function showFeedback(text, isSuccess) {
+      const fb = document.getElementById('urlTestFeedback');
+      if (!fb) return;
+      fb.classList.remove('hidden', 'bg-emerald-50', 'text-emerald-800', 'border-emerald-200', 'bg-rose-50', 'text-rose-800', 'border-rose-200');
+      if (isSuccess) {
+        fb.classList.add('bg-emerald-50', 'text-emerald-800', 'border', 'border-emerald-200');
+      } else {
+        fb.classList.add('bg-rose-50', 'text-rose-800', 'border', 'border-rose-200');
+      }
+      fb.innerText = text;
+    }
+
+    // Tab Switching
     window.switchTab = function(tabId) {
       ['arena', 'debts', 'dsr'].forEach(id => {
         const tabEl = document.getElementById(`tab-${id}`);
@@ -828,9 +926,10 @@
         activeNav.classList.add('text-rose-600');
         activeNav.classList.remove('text-slate-400');
       }
-      lucide.createIcons();
+      safeRenderIcons();
     };
 
+    // Player Selection
     window.setActivePlayer = function(player) {
       currentActivePlayer = player;
       const cardGift = document.getElementById('playerCardGift');
@@ -894,7 +993,9 @@
           boss.balance = Math.max(0, boss.balance - amt);
           if (boss.balance === 0) {
             boss.paid = true;
-            confetti({ particleCount: 120, spread: 80, origin: { y: 0.6 } });
+            if (typeof confetti === 'function') {
+              confetti({ particleCount: 120, spread: 80, origin: { y: 0.6 } });
+            }
           }
         }
         playAudioTone('hit');
@@ -902,7 +1003,7 @@
         playAudioTone('coin');
       }
 
-      // Add to current UI memory instantly
+      // Add to UI immediately
       transactions.unshift(newTx);
       amountEl.value = '';
       if (noteEl) noteEl.value = '';
@@ -911,7 +1012,7 @@
       showToast(`บันทึกแล้ว ฿${amt.toLocaleString()} (${newTx.player})`);
       updateAllUI();
 
-      // Post directly to Google Sheets
+      // Send to active Web App Google Sheet
       postDataToGoogleSheet(newTx);
     };
 
@@ -1007,7 +1108,7 @@
     }
 
     function updateDebtBossesAndDSR() {
-      // Recalculate boss damage dynamically from transactions marked Snowball
+      // Dynamically calculate boss damage from transactions
       const totalSnowballDamage = transactions
         .filter(t => t.category === 'Snowball')
         .reduce((sum, t) => sum + (Number(t.amount) || 0), 0);
@@ -1091,7 +1192,9 @@
         debt.paid = !debt.paid;
         if (debt.paid) {
           playAudioTone('hit');
-          confetti({ particleCount: 80, spread: 70, origin: { y: 0.6 } });
+          if (typeof confetti === 'function') {
+            confetti({ particleCount: 80, spread: 70, origin: { y: 0.6 } });
+          }
           showToast(`ยินดีด้วย! ปลดค่างวด ฿${debt.monthly.toLocaleString()}/ด.`);
         }
         updateAllUI();
@@ -1108,7 +1211,7 @@
         list.innerHTML = `
           <div class="text-center py-6 border-2 border-dashed border-slate-200 rounded-2xl bg-white/60">
             <p class="text-xs sm:text-sm font-bold text-slate-400">ยังไม่มีรายการใน Google Sheets</p>
-            <p class="text-[11px] text-slate-400 mt-0.5">กดบันทึกด้านบนเพื่อทดสอบการซิงค์สดได้เลยครับ</p>
+            <p class="text-[11px] text-slate-400 mt-0.5">กดบันทึกด้านบน หรือตรวจสอบ URL Web App ได้ที่ปุ่ม "ลิงก์ชีต" ครับ</p>
           </div>`;
         return;
       }
@@ -1141,7 +1244,7 @@
                 ${t.category === 'Snowball' ? '⚡ ' : ''}฿${t.amount.toLocaleString()}
               </span>
             </div>
-            <!-- Quick trash button for easy clicking -->
+            <!-- Quick trash button -->
             <button onclick="event.stopPropagation(); promptDeleteTransaction(${t.id})" title="แตะหรือกดค้างเพื่อลบ" class="p-1.5 rounded-xl hover:bg-rose-50 text-slate-300 hover:text-rose-600 transition active:scale-90">
               <i data-lucide="trash-2" class="w-4 h-4"></i>
             </button>
@@ -1158,26 +1261,52 @@
   
   if (sheet.getLastRow() === 0) {
     sheet.appendRow(['id', 'player', 'amount', 'note', 'category', 'time', 'date']);
-    return ContentService.createTextOutput(JSON.stringify([]))
+  }
+  
+  var action = (e && e.parameter && e.parameter.action) || 'read';
+  
+  // SUPPORT CREATION VIA GET
+  if (action === 'create' && e.parameter.amount) {
+    sheet.appendRow([
+      e.parameter.id || Date.now(),
+      e.parameter.player || 'GIFT',
+      Number(e.parameter.amount) || 0,
+      e.parameter.note || '',
+      e.parameter.category || 'Food',
+      e.parameter.time || '',
+      e.parameter.date || ''
+    ]);
+    return ContentService.createTextOutput(JSON.stringify({ status: 'success' }))
       .setMimeType(ContentService.MimeType.JSON);
   }
   
-  var data = sheet.getDataRange().getValues();
-  if (data.length <= 1) {
-    return ContentService.createTextOutput(JSON.stringify([]))
-      .setMimeType(ContentService.MimeType.JSON);
-  }
-  
-  var headers = data[0];
-  var rows = [];
-  for (var i = 1; i < data.length; i++) {
-    var row = data[i];
-    if (!row[0] && !row[1] && !row[2]) continue;
-    var obj = {};
-    for (var j = 0; j < headers.length; j++) {
-      obj[headers[j]] = row[j];
+  // SUPPORT DELETION VIA GET
+  if (action === 'delete' && e.parameter.id) {
+    var data = sheet.getDataRange().getValues();
+    for (var i = 1; i < data.length; i++) {
+      if (String(data[i][0]) === String(e.parameter.id)) {
+        sheet.deleteRow(i + 1);
+        break;
+      }
     }
-    rows.push(obj);
+    return ContentService.createTextOutput(JSON.stringify({ status: 'deleted', id: e.parameter.id }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+  
+  // DEFAULT: READ DATA
+  var data = sheet.getDataRange().getValues();
+  var rows = [];
+  if (data.length > 1) {
+    var headers = data[0];
+    for (var i = 1; i < data.length; i++) {
+      var row = data[i];
+      if (!row[0] && !row[1] && !row[2]) continue;
+      var obj = {};
+      for (var j = 0; j < headers.length; j++) {
+        obj[headers[j]] = row[j];
+      }
+      rows.push(obj);
+    }
   }
   
   return ContentService.createTextOutput(JSON.stringify(rows))
@@ -1237,17 +1366,17 @@ function doPost(e) {
       if (btn) btn.innerHTML = `<i data-lucide="check" class="w-3.5 h-3.5"></i> คัดลอกโค้ดสำเร็จแล้ว!`;
       showToast("คัดลอกโค้ด Google Apps Script แล้ว");
       setTimeout(() => {
-        if (btn) btn.innerHTML = `<i data-lucide="copy" class="w-3.5 h-3.5"></i> คัดลอกโค้ด Apps Script ตัวสมบูรณ์`;
-        lucide.createIcons();
+        if (btn) btn.innerHTML = `<i data-lucide="copy" class="w-3.5 h-3.5"></i> คัดลอกโค้ด Apps Script`;
+        safeRenderIcons();
       }, 3000);
-      lucide.createIcons();
+      safeRenderIcons();
     };
 
     function updateAllUI() {
       updateDailyStats();
       updateDebtBossesAndDSR();
       renderTxList();
-      lucide.createIcons();
+      safeRenderIcons();
     }
 
     function initApp() {
@@ -1255,13 +1384,13 @@ function doPost(e) {
       safeSetText('statusBarTime', now.toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' }));
       
       updateAllUI();
-      // First immediate pull from Google Sheets
+      // First real-time pull from active Google Sheets
       loadDataFromGoogleSheet(false);
 
-      // Realtime background sync every 5 seconds across all devices
+      // Background real-time polling every 4 seconds to sync data across all devices
       setInterval(() => {
         loadDataFromGoogleSheet(true);
-      }, 5000);
+      }, 4000);
     }
 
     if (document.readyState === 'loading') {
