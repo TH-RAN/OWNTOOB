@@ -120,10 +120,10 @@
             <i data-lucide="rotate-cw" class="w-3.5 h-3.5 text-emerald-400"></i>
           </button>
 
-          <!-- Cloud Storage Info & Share Modal Button -->
-          <button onclick="openShareModal()" title="คู่มือการตั้งค่าสลิปบน Sheets" class="p-1.5 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-300 border border-slate-700 transition active:scale-95 flex items-center gap-1 text-[10px] font-bold">
-            <i data-lucide="cloud" class="w-3.5 h-3.5 text-sky-400"></i>
-            <span class="hidden sm:inline">คลาวด์</span>
+          <!-- Cloud Diagnostic & Storage Info Button -->
+          <button onclick="openShareModal()" title="ตรวจสอบการเชื่อมต่อ Google Sheets" class="p-1.5 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-300 border border-slate-700 transition active:scale-95 flex items-center gap-1 text-[10px] font-bold">
+            <i data-lucide="cloud-cog" class="w-3.5 h-3.5 text-sky-400"></i>
+            <span class="hidden sm:inline">ตรวจคลาวด์</span>
           </button>
 
           <!-- Live DSR Quick Meter Button -->
@@ -503,11 +503,11 @@
       <div class="flex items-center justify-between">
         <div class="flex items-center gap-2">
           <div class="w-8 h-8 rounded-xl bg-sky-500/20 text-sky-400 flex items-center justify-center">
-            <i data-lucide="cloud-check" class="w-4 h-4"></i>
+            <i data-lucide="cloud-cog" class="w-4 h-4"></i>
           </div>
           <div>
-            <h3 class="text-xs font-black text-white">ระบบซิงค์รูปภาพสลิปข้ามเครื่อง</h3>
-            <p class="text-[10px] text-slate-400">ทำไมรูปสลิปถึงเปิดดูได้ทุกเครื่อง?</p>
+            <h3 class="text-xs font-black text-white">ตรวจสอบการเชื่อมต่อคลาวด์</h3>
+            <p class="text-[10px] text-slate-400">Google Sheets Web API & รูปภาพ</p>
           </div>
         </div>
         <button onclick="closeShareModal()" class="text-slate-400 hover:text-white p-1">
@@ -515,30 +515,36 @@
         </button>
       </div>
 
-      <div class="space-y-2 text-[11px] text-slate-300">
-        <div class="p-2.5 rounded-2xl bg-slate-950 border border-slate-800 space-y-1">
-          <p class="font-bold text-amber-400">1. การบีบอัดระดับ Micro-Base64</p>
-          <p class="text-slate-400 leading-relaxed">
-            สลิปจะถูกย่อขนาดความกว้างไม่เกิน 380px คุณภาพพอดีตา ทำให้ขนาดไฟล์เหลือเพียง ~15-25 KB จึงส่งผ่านช่องทาง Google Sheets ได้โดยไม่เกินขีดจำกัดของเซลล์
-          </p>
+      <!-- Real-time Test Output Box -->
+      <div class="p-3 rounded-2xl bg-slate-950 border border-slate-800 space-y-2">
+        <div class="flex justify-between items-center">
+          <span class="text-[10px] font-bold text-slate-400">สถานะ API ปัจจุบัน:</span>
+          <span id="diagnosticStatusText" class="text-[10px] font-bold text-amber-400">พร้อมทดสอบ</span>
         </div>
-        <div class="p-2.5 rounded-2xl bg-slate-950 border border-slate-800 space-y-1">
-          <p class="font-bold text-sky-400">2. การส่งรูปไปยัง Apps Script</p>
-          <p class="text-slate-400 leading-relaxed">
-            ระบบส่งตัวแปร <code class="text-white bg-slate-800 px-1 rounded">slip</code> เข้าไปในชีต และดึงกลับมาแสดงผลทันทีทุกเครื่องที่เปิดแอป
-          </p>
+        <div id="diagnosticDetailBox" class="text-[10px] font-mono text-slate-300 bg-slate-900/90 p-2 rounded-xl border border-slate-800 break-all max-h-24 overflow-y-auto custom-scrollbar">
+          คลิกปุ่มด้านล่างเพื่อส่งข้อมูลทดสอบไปยัง Google Sheets ทันที
         </div>
+        <button onclick="runCloudDiagnostic()" id="btnRunTest" class="w-full py-2 rounded-xl bg-sky-500/20 hover:bg-sky-500/30 border border-sky-500/40 text-sky-300 text-xs font-bold transition flex items-center justify-center gap-1.5 active:scale-95">
+          <i data-lucide="activity" class="w-3.5 h-3.5"></i>
+          <span>กดทดสอบส่งข้อมูลเข้าชีตเดี๋ยวนี้</span>
+        </button>
       </div>
 
-      <button onclick="closeShareModal()" class="w-full py-2.5 bg-gradient-to-r from-sky-500 to-indigo-600 text-white font-bold rounded-2xl text-xs shadow-md transition">
-        รับทราบ เข้าใจแล้ว!
+      <div class="space-y-1.5 text-[10px] text-slate-400">
+        <p class="font-bold text-slate-300"> Checklist ตรวจสอบถ้าข้อมูลยังไม่ขึ้น:</p>
+        <p>1. ใน Apps Script ตั้ง <strong>ผู้มีสิทธิ์เข้าถึง (Who has access)</strong> เป็น <span class="text-emerald-400 font-bold">ทุกคน (Anyone)</span> หรือยัง?</p>
+        <p>2. ตอนบันทึกโค้ด ได้กด <strong>Deploy -> New version (เวอร์ชันใหม่)</strong> หรือไม่?</p>
+      </div>
+
+      <button onclick="closeShareModal()" class="w-full py-2 bg-slate-800 hover:bg-slate-700 text-white font-bold rounded-2xl text-xs transition">
+        ปิดหน้าต่าง
       </button>
     </div>
   </div>
 
   <script>
     // Google Sheets API Web App Endpoint
-    const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxgo4nOwJ4ojlV9LuH0vfIzzm1lKAmx6kcM9liRYxteg3z0Qrdonh1aDFz0gfUULFuy/exec";
+    const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw8yuJdcBtjjJZPWHzJDvXTzWnT1ru7co9A64uNvlZMY4Zh8VUG3_i5FfT5quS-zRoX/exec";
 
     const INCOME_GIFT = 21000.00;
     const INCOME_GET = 10634.00;
@@ -704,7 +710,7 @@
       const statusBadge = document.getElementById('cloudSyncStatus');
 
       if (!silent && statusBadge) {
-        statusBadge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-amber-400 animate-ping"></span> กำลังดึงข้อมูลและรูปภาพจาก Sheets...`;
+        statusBadge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-amber-400 animate-ping"></span> กำลังดึงข้อมูลจาก Sheets...`;
       }
 
       try {
@@ -714,9 +720,11 @@
         });
 
         if (res.ok) {
-          const cloudRows = await res.json();
+          const rawResponse = await res.json();
+          // Support both direct array or wrapped { status: 'success', data: [...] }
+          const cloudRows = Array.isArray(rawResponse) ? rawResponse : (rawResponse.data || []);
+          
           if (Array.isArray(cloudRows) && cloudRows.length > 0) {
-            // Map incoming items; if cloud doesn't have slip for initial ID, preserve mock slip
             const parsed = cloudRows.map(r => {
               const rId = Number(r.id) || Date.now();
               const existingLocal = transactions.find(t => t.id === rId);
@@ -737,13 +745,15 @@
             updateAllUI();
           }
           if (statusBadge) {
-            statusBadge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> คลาวด์ซิงค์รูปภาพเรียลไทม์แล้ว`;
+            statusBadge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> คลาวด์ซิงค์เรียลไทม์แล้ว`;
           }
+        } else {
+          throw new Error(`HTTP Error: ${res.status}`);
         }
       } catch (err) {
         console.warn("Google Sheets fetch error (falling back to local cache):", err);
         if (statusBadge) {
-          statusBadge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> ข้อมูลพร้อมใช้งาน (แคช)`;
+          statusBadge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span> ข้อมูลพร้อมใช้ (แคชในเครื่อง)`;
         }
       } finally {
         isSyncing = false;
@@ -752,7 +762,6 @@
 
     // Append new transaction to Google Sheets via POST including slip
     async function postDataToGoogleSheet(newTx) {
-      // Local backup immediate write
       try {
         localStorage.setItem('warrior_saved_tx', JSON.stringify(transactions));
         localStorage.setItem('warrior_saved_debts', JSON.stringify(appDebts));
@@ -760,11 +769,10 @@
 
       const statusBadge = document.getElementById('cloudSyncStatus');
       if (statusBadge) {
-        statusBadge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-sky-400 animate-spin"></span> กำลังส่งรูปภาพและข้อมูลลงชีต...`;
+        statusBadge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-sky-400 animate-spin"></span> กำลังส่งข้อมูลลง Google Sheets...`;
       }
 
       try {
-        // Send payload using text/plain to avoid CORS preflight rejection
         await fetch(APPS_SCRIPT_URL, {
           method: 'POST',
           mode: 'no-cors',
@@ -779,71 +787,74 @@
             category: newTx.category,
             time: newTx.time,
             date: newTx.date,
-            slip: newTx.slip || "" // CRITICAL FIX: Ensure slip base64 is sent to Google Sheets!
+            slip: newTx.slip || ""
           })
         });
 
         if (statusBadge) {
-          statusBadge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> เซฟรูปลง Google Sheets แล้ว`;
+          statusBadge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> เซฟลง Google Sheets สำเร็จ`;
         }
       } catch (err) {
         console.warn("Could not post to Google Sheet:", err);
       }
     }
 
-    // Micro-Base64 Compression: fits within Google Sheets cell limit (<40KB)
-    window.handleSlipSelected = function(e) {
-      const file = e.target.files?.[0];
-      if (!file) return;
+    // Cloud Diagnostic Runner
+    window.runCloudDiagnostic = async function() {
+      const statusEl = document.getElementById('diagnosticStatusText');
+      const detailEl = document.getElementById('diagnosticDetailBox');
+      const btn = document.getElementById('btnRunTest');
 
-      const reader = new FileReader();
-      reader.onload = function(event) {
-        const img = new Image();
-        img.onload = function() {
-          const canvas = document.createElement('canvas');
-          const maxDim = 380; // Optimized dimension so base64 string is only ~20KB
-          let width = img.width;
-          let height = img.height;
+      statusEl.innerText = "กำลังทดสอบ...";
+      statusEl.className = "text-[10px] font-bold text-sky-400 animate-pulse";
+      detailEl.innerHTML = "1. กำลังส่งคำสั่งทดสอบไปยัง Web App URL...";
+      btn.disabled = true;
 
-          if (width > height && width > maxDim) {
-            height *= maxDim / width;
-            width = maxDim;
-          } else if (height > maxDim) {
-            width *= maxDim / height;
-            height = maxDim;
-          }
-
-          canvas.width = Math.round(width);
-          canvas.height = Math.round(height);
-          const ctx = canvas.getContext('2d');
-          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-          currentSlipBase64 = canvas.toDataURL('image/jpeg', 0.5);
-
-          document.getElementById('slipBtnText').innerText = "แนบรูปสลิปแล้ว ✓";
-          document.getElementById('slipStatusBadge').innerText = "พร้อมซิงค์ข้ามเครื่อง";
-          document.getElementById('slipStatusBadge').className = "text-[9px] text-emerald-400 font-bold";
-          document.getElementById('removeSlipBtn').classList.remove('hidden');
-        };
-        img.src = event.target.result;
+      const testPayload = {
+        id: Date.now(),
+        player: "GIFT",
+        amount: 1,
+        note: "🧪 ทดสอบระบบคลาวด์",
+        category: "Food",
+        time: new Date().toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' }),
+        date: new Date().toISOString().split('T')[0],
+        slip: ""
       };
-      reader.readAsDataURL(file);
-    };
 
-    window.clearSlipPhoto = function() {
-      currentSlipBase64 = null;
-      document.getElementById('slipInput').value = '';
-      document.getElementById('slipBtnText').innerText = "แนบสลิป / บิล";
-      document.getElementById('slipStatusBadge').innerText = "บีบอัดซิงค์คลาวด์อัตโนมัติ";
-      document.getElementById('slipStatusBadge').className = "text-[9px] text-slate-500 italic";
-      document.getElementById('removeSlipBtn').classList.add('hidden');
-    };
+      try {
+        // Step 1: POST Test
+        await fetch(APPS_SCRIPT_URL, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify(testPayload)
+        });
+        detailEl.innerHTML += "<br>2. ส่งข้อมูลแบบ POST เรียบร้อยแล้ว!";
 
-    window.viewSlip = function(id) {
-      const tx = transactions.find(t => t.id === id);
-      if (tx && tx.slip) {
-        document.getElementById('slipModalImg').src = tx.slip;
-        document.getElementById('slipModalTitle').innerText = `${tx.note} (฿${tx.amount.toLocaleString()})`;
-        document.getElementById('slipModal').classList.remove('hidden');
+        // Step 2: GET Test
+        detailEl.innerHTML += "<br>3. กำลังทดสอบดึงข้อมูลกลับ (GET)...";
+        const res = await fetch(APPS_SCRIPT_URL, {
+          method: 'GET',
+          headers: { 'Accept': 'application/json' }
+        });
+
+        if (res.ok) {
+          const result = await res.json();
+          const rows = Array.isArray(result) ? result : (result.data || []);
+          statusEl.innerText = "เชื่อมต่อสำเร็จ 100% ✓";
+          statusEl.className = "text-[10px] font-bold text-emerald-400";
+          detailEl.innerHTML += `<br>4. <span class="text-emerald-400 font-bold">สำเร็จ! พบข้อมูลทั้งหมด ${rows.length} แถวในชีต</span>`;
+          loadDataFromGoogleSheet(true);
+        } else {
+          throw new Error(`Google Apps Script ส่ง HTTP Status: ${res.status}`);
+        }
+      } catch (err) {
+        statusEl.innerText = "เกิดข้อผิดพลาด ⚠️";
+        statusEl.className = "text-[10px] font-bold text-rose-400";
+        detailEl.innerHTML += `<br><span class="text-rose-400 font-bold">Error: ${err.message}</span><br>คำแนะนำ: ตรวจสอบสิทธิ์เป็น 'Anyone' และ Deploy เป็น New Version ใน Apps Script ค่ะ`;
+      } finally {
+        btn.disabled = false;
+        lucide.createIcons();
       }
     };
 
