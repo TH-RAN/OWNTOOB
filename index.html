@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Duo Debt Warrior - ทุบหนี้คว้าคอนโด (Live Sync)</title>
+  <title>Duo Debt Warrior - ทุบหนี้คว้าคอนโด (Live Sheets Only)</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -18,29 +18,14 @@
               amber: '#f59e0b',
               amberBg: '#fffbeb',
               emerald: '#10b981',
-              emeraldBg: '#ecfdf5',
-              violet: '#8b5cf6',
-              violetBg: '#f5f3ff'
+              emeraldBg: '#ecfdf5'
             }
           },
           fontFamily: {
             sans: ['Plus Jakarta Sans', 'Noto Sans Thai', 'sans-serif']
           },
           boxShadow: {
-            'cute': '0 10px 25px -4px rgba(100, 116, 139, 0.12), 0 4px 10px -2px rgba(0, 0, 0, 0.04)',
-            'glow-rose': '0 10px 25px -4px rgba(244, 63, 94, 0.3)',
-            'glow-sky': '0 10px 25px -4px rgba(14, 165, 233, 0.3)',
-            'glow-amber': '0 10px 25px -4px rgba(245, 158, 11, 0.3)'
-          },
-          animation: {
-            'float': 'floating 3s ease-in-out infinite',
-            'pulse-fast': 'pulse 1.2s cubic-bezier(0.4, 0, 0.6, 1) infinite'
-          },
-          keyframes: {
-            floating: {
-              '0%, 100%': { transform: 'translateY(0px)' },
-              '50%': { transform: 'translateY(-6px)' }
-            }
+            'cute': '0 10px 25px -4px rgba(100, 116, 139, 0.12), 0 4px 10px -2px rgba(0, 0, 0, 0.04)'
           }
         }
       }
@@ -55,7 +40,7 @@
     body {
       font-family: 'Plus Jakarta Sans', 'Noto Sans Thai', sans-serif;
       -webkit-font-smoothing: antialiased;
-      background: linear-gradient(135deg, #f0fdfa 0%, #eff6ff 45%, #fdf2f8 100%);
+      background: linear-gradient(135deg, #f0fdfa 0%, #eff6ff 50%, #fdf2f8 100%);
       color: #1e293b;
       user-select: none;
     }
@@ -79,9 +64,8 @@
       30%, 50%, 70% { transform: translate3d(-5px, 0, 0); }
       40%, 60% { transform: translate3d(5px, 0, 0); }
     }
-    /* Long press indicator styling */
     .press-hold {
-      transition: transform 0.2s, background-color 0.2s;
+      transition: transform 0.15s, background-color 0.15s;
     }
     .press-hold:active {
       transform: scale(0.97);
@@ -91,6 +75,7 @@
 </head>
 <body class="min-h-screen flex flex-col items-center justify-start p-0 sm:p-4 md:py-6 bg-slate-100">
 
+  <!-- Main Mobile Shell Container -->
   <div class="w-full max-w-md bg-white min-h-screen sm:min-h-[860px] sm:rounded-[40px] sm:border-[8px] sm:border-slate-800/90 shadow-2xl relative flex flex-col overflow-hidden text-slate-800">
     
     <!-- Phone Top Status Bar (Desktop Display) -->
@@ -109,30 +94,30 @@
     <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-100 px-4 py-3 shadow-sm">
       <div class="flex items-center justify-between">
         <div class="flex items-center space-x-3">
-          <div class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-amber-400 via-rose-400 to-pink-500 flex items-center justify-center text-2xl shadow-md shadow-rose-200 animate-float">
+          <div class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-amber-400 via-rose-400 to-pink-500 flex items-center justify-center text-2xl shadow-md shadow-rose-200">
             🏠
           </div>
           <div>
             <div class="flex items-center gap-1.5 mb-0.5">
               <span class="text-xs font-black tracking-wide text-amber-800 bg-amber-100 px-2 py-0.5 rounded-full border border-amber-300">
-                ภารกิจกู้คอนโด ธอส.
+                ธอส. คอนโด
               </span>
-              <button onclick="triggerManualSync()" id="cloudSyncStatus" title="แตะเพื่อรีเฟรชชีตสด" class="text-xs text-emerald-700 font-bold flex items-center gap-1 bg-emerald-50 hover:bg-emerald-100 px-2 py-0.5 rounded-full border border-emerald-200 transition active:scale-95">
+              <button onclick="triggerManualSync()" id="cloudSyncStatus" title="แตะเพื่อรีเฟรชข้อมูลสด" class="text-xs text-emerald-700 font-bold flex items-center gap-1 bg-emerald-50 hover:bg-emerald-100 px-2 py-0.5 rounded-full border border-emerald-200 transition active:scale-95">
                 <span id="cloudStatusDot" class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> 
-                <span id="cloudStatusLabel">คลาวด์เชื่อมต่อ</span>
+                <span id="cloudStatusLabel">คลาวด์สด</span>
               </button>
             </div>
-            <h1 class="text-base font-extrabold text-slate-900 tracking-tight flex items-center gap-1.5">
+            <h1 class="text-base font-extrabold text-slate-900 tracking-tight">
               Duo Debt Warrior ⚔️
             </h1>
           </div>
         </div>
         
         <div class="flex items-center gap-2">
-          <!-- Cloud Guide & Script Modal Trigger -->
+          <!-- Cloud Guide & Script Diagnostics Trigger -->
           <button onclick="openShareModal()" title="วิธีแก้ปัญหาคลาวด์และโค้ด Apps Script" class="p-2 rounded-2xl bg-sky-50 hover:bg-sky-100 text-sky-700 border border-sky-200 transition active:scale-95 flex items-center gap-1 text-xs font-bold shadow-sm">
             <i data-lucide="cloud-cog" class="w-4 h-4 text-sky-600"></i>
-            <span class="hidden sm:inline">คลาวด์</span>
+            <span class="text-xs font-extrabold">ชีต</span>
           </button>
 
           <!-- Live DSR Quick Meter Button -->
@@ -153,9 +138,10 @@
       <!-- TAB 1: DAILY ARENA -->
       <section id="tab-arena" class="space-y-4">
 
+        <!-- Player Cards (GIFT & GET) -->
         <div class="grid grid-cols-2 gap-3">
           <!-- Player GIFT Card -->
-          <div id="playerCardGift" onclick="setActivePlayer('GIFT')" class="cursor-pointer relative overflow-hidden rounded-3xl p-3.5 border-2 transition-all duration-300 bg-white border-rose-400 shadow-glow-rose">
+          <div id="playerCardGift" onclick="setActivePlayer('GIFT')" class="cursor-pointer relative overflow-hidden rounded-3xl p-3.5 border-2 transition-all duration-300 bg-white border-rose-400 shadow-md shadow-rose-100">
             <div class="flex justify-between items-start">
               <div class="flex items-center space-x-2">
                 <span class="text-3xl filter drop-shadow-sm">👩🏻‍💻</span>
@@ -180,7 +166,7 @@
               </div>
             </div>
             <p id="giftStatusPhrase" class="text-xs text-emerald-700 mt-2 font-bold flex items-center gap-1.5">
-              <i data-lucide="shield-check" class="w-3.5 h-3.5 text-emerald-600"></i> HP เต็ม ปลอดภัย (ยังไม่ใช้เงิน)
+              <i data-lucide="shield-check" class="w-3.5 h-3.5 text-emerald-600"></i> HP เต็ม ปลอดภัย
             </p>
           </div>
 
@@ -202,19 +188,20 @@
             <div class="mt-3">
               <div class="flex justify-between text-xs text-slate-600 mb-1.5 font-bold">
                 <span>งบวันนี้:</span>
-                <span id="getSpentText" class="text-sky-600 font-black text-sm">฿150 / 200</span>
+                <span id="getSpentText" class="text-sky-600 font-black text-sm">฿0 / 200</span>
               </div>
               <!-- Health Bar -->
               <div class="w-full bg-slate-100 h-3 rounded-full overflow-hidden border border-slate-200 p-0.5">
-                <div id="hpGetBar" class="bg-gradient-to-r from-sky-400 to-amber-500 h-full rounded-full transition-all duration-500" style="width: 25%"></div>
+                <div id="hpGetBar" class="bg-gradient-to-r from-sky-400 to-amber-500 h-full rounded-full transition-all duration-500" style="width: 100%"></div>
               </div>
             </div>
-            <p id="getStatusPhrase" class="text-xs text-amber-700 mt-2 font-bold flex items-center gap-1.5">
-              <i data-lucide="alert-circle" class="w-3.5 h-3.5 text-amber-600"></i> เหลืออีก ฿50 วันนี้
+            <p id="getStatusPhrase" class="text-xs text-emerald-700 mt-2 font-bold flex items-center gap-1.5">
+              <i data-lucide="shield-check" class="w-3.5 h-3.5 text-emerald-600"></i> HP เต็ม ปลอดภัย
             </p>
           </div>
         </div>
 
+        <!-- Boss Target #1 Box -->
         <div id="bossBox" class="bg-gradient-to-br from-amber-50 via-white to-orange-50 border-2 border-amber-300 rounded-3xl p-4 shadow-cute relative overflow-hidden transition-all">
           <div class="flex justify-between items-start mb-2.5">
             <div>
@@ -251,6 +238,7 @@
           </div>
         </div>
 
+        <!-- Expense Entry Form (Clean, No Photo Upload, No AI) -->
         <div class="bg-white border border-slate-200 rounded-3xl p-4 shadow-cute space-y-3.5">
           <div class="flex items-center justify-between">
             <div class="flex items-center gap-2">
@@ -273,77 +261,45 @@
             </div>
           </div>
 
-          <!-- Photo Receipt Attachment Row -->
-          <div class="flex items-center justify-between bg-slate-50 p-2.5 rounded-2xl border border-slate-200">
-            <div class="flex items-center gap-2.5">
-              <label for="slipInput" class="cursor-pointer flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white hover:bg-slate-100 border border-slate-300 text-xs font-black text-slate-700 active:scale-95 transition shadow-sm">
-                <i data-lucide="camera" class="w-4 h-4 text-amber-500"></i>
-                <span id="slipBtnText">แนบสลิป / บิล</span>
-              </label>
-              <input type="file" id="slipInput" accept="image/*" class="hidden" onchange="handleSlipSelected(event)">
-              <span id="slipStatusBadge" class="text-xs text-slate-500 font-medium">ยังไม่มีรูปแนบ</span>
-            </div>
-            <button id="removeSlipBtn" onclick="clearSlipPhoto()" class="hidden text-xs text-rose-600 hover:text-rose-800 font-bold px-2 py-1 bg-rose-50 rounded-lg">
-              ลบรูป
-            </button>
-          </div>
-
           <!-- Quick Category Tags -->
           <div class="grid grid-cols-4 gap-2">
-            <button type="button" onclick="selectQuickTag('🍛 ข้าว', 'Food')" class="py-2 rounded-2xl bg-slate-100 hover:bg-rose-50 hover:text-rose-600 border border-slate-200 text-xs text-slate-700 text-center font-bold transition active:scale-95 shadow-sm">🍛 ข้าว</button>
-            <button type="button" onclick="selectQuickTag('☕ กาแฟ', 'Drink')" class="py-2 rounded-2xl bg-slate-100 hover:bg-sky-50 hover:text-sky-600 border border-slate-200 text-xs text-slate-700 text-center font-bold transition active:scale-95 shadow-sm">☕ กาแฟ</button>
-            <button type="button" onclick="selectQuickTag('🚗 เดินทาง', 'Travel')" class="py-2 rounded-2xl bg-slate-100 hover:bg-emerald-50 hover:text-emerald-600 border border-slate-200 text-xs text-slate-700 text-center font-bold transition active:scale-95 shadow-sm">🚗 เดินทาง</button>
-            <button type="button" onclick="selectQuickTag('💣 โปะหนี้', 'Snowball')" class="py-2 rounded-2xl bg-amber-100 hover:bg-amber-200 text-amber-900 border border-amber-300 text-xs text-center font-black transition active:scale-95 shadow-sm">💣 โปะหนี้</button>
+            <button type="button" onclick="selectQuickTag('🍛 ข้าว', 'Food')" class="py-2.5 rounded-2xl bg-slate-100 hover:bg-rose-50 hover:text-rose-600 border border-slate-200 text-xs text-slate-700 text-center font-bold transition active:scale-95 shadow-sm">🍛 ข้าว</button>
+            <button type="button" onclick="selectQuickTag('☕ กาแฟ', 'Drink')" class="py-2.5 rounded-2xl bg-slate-100 hover:bg-sky-50 hover:text-sky-600 border border-slate-200 text-xs text-slate-700 text-center font-bold transition active:scale-95 shadow-sm">☕ กาแฟ</button>
+            <button type="button" onclick="selectQuickTag('🚗 เดินทาง', 'Travel')" class="py-2.5 rounded-2xl bg-slate-100 hover:bg-emerald-50 hover:text-emerald-600 border border-slate-200 text-xs text-slate-700 text-center font-bold transition active:scale-95 shadow-sm">🚗 เดินทาง</button>
+            <button type="button" onclick="selectQuickTag('💣 โปะหนี้', 'Snowball')" class="py-2.5 rounded-2xl bg-amber-100 hover:bg-amber-200 text-amber-900 border border-amber-300 text-xs text-center font-black transition active:scale-95 shadow-sm">💣 โปะหนี้</button>
           </div>
 
           <!-- Submit Button -->
-          <button onclick="saveTransaction()" class="w-full py-3 bg-gradient-to-r from-rose-500 via-pink-500 to-amber-500 hover:opacity-95 text-white font-black rounded-2xl text-sm shadow-md shadow-rose-200 active:scale-[0.98] transition-all flex items-center justify-center gap-2">
+          <button id="saveBtn" onclick="saveTransaction()" class="w-full py-3 bg-gradient-to-r from-rose-500 via-pink-500 to-amber-500 hover:opacity-95 text-white font-black rounded-2xl text-sm shadow-md shadow-rose-200 active:scale-[0.98] transition-all flex items-center justify-center gap-2">
             <i data-lucide="plus-circle" class="w-5 h-5"></i>
-            <span>บันทึกเข้าระบบทันที (เซฟคลาวด์)</span>
+            <span id="saveBtnText">บันทึกเข้า Google Sheets ทันที</span>
           </button>
         </div>
 
-        <div class="bg-gradient-to-r from-violet-50 via-purple-50 to-pink-50 border border-purple-200 rounded-3xl p-3.5 shadow-sm">
-          <div class="flex items-start space-x-3">
-            <div class="w-9 h-9 rounded-2xl bg-purple-500 text-white flex items-center justify-center flex-shrink-0 shadow-sm mt-0.5">
-              <i data-lucide="sparkles" class="w-4 h-4"></i>
-            </div>
-            <div class="space-y-1 flex-1">
-              <div class="flex items-center justify-between">
-                <h4 class="text-xs font-black uppercase tracking-wider text-purple-700">AI Debt & DSR Coach</h4>
-                <button onclick="generateAiAdvice()" class="text-xs text-purple-600 hover:text-purple-800 font-bold underline flex items-center gap-1">
-                  <i data-lucide="refresh-cw" class="w-3 h-3"></i> ข้อคิดใหม่
-                </button>
-              </div>
-              <p id="aiCoachMessage" class="text-xs sm:text-sm text-slate-700 leading-relaxed font-medium">
-                "วันนี้คุณ GET ทานข้าวไป ฿150 คงเหลืองบอีก ฿50 ส่วนคุณ GIFT ยังไม่ได้ใช้เงินเลย ถือเป็นวินัยที่ดีมากค่ะ! หากประคองแบบนี้ได้ตลอดเดือน ค่างวดที่เหลือจะนำไปปิดบอส TTB so fast ได้เร็วขึ้นแน่นอน"
-              </p>
-            </div>
-          </div>
-        </div>
-
+        <!-- Recent Transactions Feed with Long-Press Delete Feature -->
         <div class="space-y-2.5">
           <div class="flex justify-between items-center px-1">
             <div>
               <h3 class="text-xs font-black uppercase tracking-wider text-slate-700 flex items-center gap-1.5">
-                <i data-lucide="history" class="w-4 h-4 text-slate-500"></i> รายการล่าสุดวันนี้
+                <i data-lucide="history" class="w-4 h-4 text-slate-500"></i> รายการล่าสุดจาก Google Sheets
               </h3>
               <p class="text-[11px] text-slate-400 font-medium">💡 กดค้างที่รายการเพื่อลบได้เลย</p>
             </div>
             <div class="flex items-center gap-2">
-              <span id="txCountBadge" class="text-xs font-bold text-slate-500 bg-slate-200 px-2 py-0.5 rounded-full">1 รายการ</span>
+              <span id="txCountBadge" class="text-xs font-bold text-slate-500 bg-slate-200 px-2 py-0.5 rounded-full">กำลังโหลด...</span>
               <button onclick="triggerManualSync()" title="รีเฟรชข้อมูลคลาวด์" class="p-1 rounded-lg bg-slate-200 hover:bg-slate-300 text-slate-700 active:scale-95 transition">
                 <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
               </button>
             </div>
           </div>
-          <div id="transactionsList" class="space-y-2 min-h-[60px]">
-            <!-- Dynamic Items -->
+          <div id="transactionsList" class="space-y-2 min-h-[70px]">
+            <!-- Dynamic Real-Time Google Sheet Items -->
           </div>
         </div>
 
       </section>
 
+      <!-- TAB 2: DEBTS SNOWBALL -->
       <section id="tab-debts" class="space-y-3.5 hidden">
         <div class="bg-white border border-slate-200 rounded-3xl p-4 shadow-cute space-y-3.5">
           <div class="flex justify-between items-center">
@@ -362,6 +318,7 @@
         </div>
       </section>
 
+      <!-- TAB 3: DSR ANALYSIS -->
       <section id="tab-dsr" class="space-y-4 hidden">
         <div class="bg-white border border-slate-200 rounded-3xl p-4 shadow-cute space-y-4">
           <div class="text-center space-y-1.5">
@@ -439,6 +396,7 @@
 
     </main>
 
+    <!-- Bottom Navigation Bar -->
     <nav class="absolute bottom-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-t border-slate-200 py-2.5 shadow-lg">
       <div class="grid grid-cols-3 px-4">
         <button onclick="switchTab('arena')" id="nav-arena" class="flex flex-col items-center py-1 text-rose-600 transition-colors">
@@ -483,7 +441,7 @@
     </div>
   </div>
 
-  <!-- Modal: Confirm Delete Transaction -->
+  <!-- Modal: Confirm Delete Transaction (Triggered by Long-Press or Trash button) -->
   <div id="deleteModal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 hidden">
     <div class="bg-white border-2 border-rose-300 rounded-3xl p-5 max-w-xs w-full shadow-2xl space-y-3.5 text-center">
       <div class="w-12 h-12 rounded-2xl bg-rose-100 text-rose-600 flex items-center justify-center mx-auto text-2xl shadow-sm">
@@ -494,40 +452,20 @@
         <p id="deleteItemDesc" class="text-xs text-slate-600 font-bold mt-1 bg-slate-50 py-1.5 px-3 rounded-xl border border-slate-200">
           ข้าวเที่ยง - ฿150
         </p>
-        <p class="text-[11px] text-slate-400 mt-1">รายการจะถูกลบออกจากทั้งเครื่องและ Google Sheets ทันที</p>
+        <p class="text-[11px] text-rose-500 font-bold mt-1">รายการจะถูกลบออกจาก Google Sheets ทันที</p>
       </div>
       <div class="flex gap-2 pt-1">
         <button onclick="closeDeleteModal()" class="flex-1 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-xs transition">
           ยกเลิก
         </button>
-        <button onclick="confirmDeleteTransaction()" class="flex-1 py-2.5 bg-rose-600 hover:bg-rose-700 text-white font-black rounded-xl text-xs shadow-md shadow-rose-200 transition">
+        <button onclick="confirmDeleteTransaction()" id="confirmDeleteBtn" class="flex-1 py-2.5 bg-rose-600 hover:bg-rose-700 text-white font-black rounded-xl text-xs shadow-md shadow-rose-200 transition">
           ลบเลย
         </button>
       </div>
     </div>
   </div>
 
-  <!-- Modal: View Slip Photo -->
-  <div id="slipModal" class="fixed inset-0 z-50 bg-slate-900/70 backdrop-blur-sm flex items-center justify-center p-4 hidden" onclick="closeSlipModal()">
-    <div class="bg-white border border-slate-200 rounded-3xl p-4 max-w-xs w-full shadow-2xl space-y-3" onclick="event.stopPropagation()">
-      <div class="flex justify-between items-center pb-2 border-b border-slate-100">
-        <h4 id="slipModalTitle" class="text-sm font-black text-slate-900 flex items-center gap-1.5">
-          <i data-lucide="receipt" class="w-4 h-4 text-amber-500"></i> รูปภาพหลักฐาน
-        </h4>
-        <button onclick="closeSlipModal()" class="text-slate-400 hover:text-slate-700 p-1">
-          <i data-lucide="x" class="w-5 h-5"></i>
-        </button>
-      </div>
-      <div class="rounded-2xl overflow-hidden bg-slate-100 border border-slate-200 max-h-80 flex items-center justify-center">
-        <img id="slipModalImg" src="" alt="Slip" class="w-full h-auto object-contain max-h-72">
-      </div>
-      <button onclick="closeSlipModal()" class="w-full py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold rounded-xl transition">
-        ปิดหน้าต่าง
-      </button>
-    </div>
-  </div>
-
-  <!-- Modal: Cloud and Storage Status & Google Apps Script Setup Guide -->
+  <!-- Modal: Google Apps Script Diagnostics and Working Script Code -->
   <div id="shareModal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 hidden" onclick="closeShareModal()">
     <div class="bg-white border border-sky-300 rounded-3xl p-5 max-w-sm w-full shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto custom-scrollbar" onclick="event.stopPropagation()">
       <div class="flex items-center justify-between">
@@ -536,8 +474,8 @@
             <i data-lucide="cloud-check" class="w-5 h-5"></i>
           </div>
           <div>
-            <h3 class="text-sm font-black text-slate-900">การเชื่อมต่อคลาวด์ Google Sheets</h3>
-            <p id="cloudLastSyncTime" class="text-[11px] text-slate-500 font-bold">อัปเดตล่าสุด: กำลังเชื่อมต่อ...</p>
+            <h3 class="text-sm font-black text-slate-900">การเชื่อมต่อ Google Sheets</h3>
+            <p id="cloudLastSyncTime" class="text-[11px] text-slate-500 font-bold">รอการตรวจสอบ...</p>
           </div>
         </div>
         <button onclick="closeShareModal()" class="text-slate-400 hover:text-slate-700 p-1">
@@ -546,34 +484,34 @@
       </div>
 
       <div class="space-y-2.5 text-xs text-slate-600">
-        <div class="p-3 rounded-2xl bg-emerald-50 border border-emerald-200 space-y-1">
-          <p class="font-extrabold text-emerald-800 flex items-center gap-1.5 text-xs">
-            <i data-lucide="check-circle" class="w-4 h-4 text-emerald-600"></i> ทำงานแบบ Real-time Auto-Sync
-          </p>
-          <p class="text-emerald-700 leading-relaxed text-xs">
-            ระบบจะดึงและซิงค์ข้อมูลระหว่างเครื่องของคุณ GIFT และคุณ GET โดยอัตโนมัติทุกๆ 8 วินาที
+        <div class="p-3 rounded-2xl bg-slate-50 border border-slate-200 space-y-1">
+          <p class="font-extrabold text-slate-800 text-xs">สถานะ Web App URL หลังบ้าน:</p>
+          <p class="text-[11px] font-mono text-slate-500 break-all bg-white p-2 rounded-xl border border-slate-200">
+            https://script.google.com/macros/s/AKfycbWZhVO7aT4EB9iM-RJiqfVoMFYcJrNa7cKkd5emxmXvmlN9t0--_2PzPoZXQxWnL_C/exec
           </p>
         </div>
 
         <div class="p-3 rounded-2xl bg-amber-50 border border-amber-200 space-y-1.5">
-          <p class="font-extrabold text-amber-800 text-xs flex items-center gap-1">
-            <i data-lucide="alert-triangle" class="w-4 h-4 text-amber-600"></i> โค้ด Apps Script หลังบ้านที่รองรับ "ลบ" และ "รูปภาพ"
+          <p class="font-extrabold text-amber-900 text-xs flex items-center gap-1">
+            <i data-lucide="alert-triangle" class="w-4 h-4 text-amber-600"></i> หากข้อมูลไม่ขึ้น ให้ทำตาม 3 ขั้นตอนนี้:
           </p>
-          <p class="text-amber-700 leading-relaxed text-[11px]">
-            หากบันทึกไม่เข้า Google Sheet ให้เปิด Google Sheet > ส่วนขยาย (Extensions) > Apps Script แล้ววางโค้ดนี้แทนที่อันเดิม จากนั้นกด <strong>Deploy > Manage deployments > ไอคอนดินสอ > New version</strong> ครับ
-          </p>
-          <button onclick="copyAppsScriptCode()" id="copyScriptBtn" class="w-full py-2 bg-amber-600 hover:bg-amber-700 text-white font-black rounded-xl text-xs transition flex items-center justify-center gap-1.5 shadow-sm">
-            <i data-lucide="copy" class="w-3.5 h-3.5"></i> คัดลอกโค้ด Apps Script v2
+          <ol class="list-decimal list-inside space-y-1 text-amber-800 text-[11px] leading-relaxed">
+            <li>เปิด Google Sheet ของคุณ &gt; เมนู <strong>Extensions (ส่วนขยาย) &gt; Apps Script</strong></li>
+            <li>วางโค้ดด้านล่างนี้ทับโค้ดเดิมทั้งหมด แล้วกดบันทึก (Ctrl+S)</li>
+            <li>กด <strong>Deploy &gt; Manage deployments</strong> &gt; คลิกไอคอนดินสอ &gt; เลือก <strong>Version: New version</strong> &gt; ตรวจสอบว่า Who has access เป็น <strong>Anyone</strong> แล้วกด Deploy ครับ</li>
+          </ol>
+          <button onclick="copyWorkingAppsScriptCode()" id="copyScriptBtn" class="w-full py-2.5 bg-amber-600 hover:bg-amber-700 text-white font-black rounded-xl text-xs transition flex items-center justify-center gap-1.5 shadow-sm">
+            <i data-lucide="copy" class="w-3.5 h-3.5"></i> คัดลอกโค้ด Apps Script ตัวสมบูรณ์
           </button>
         </div>
       </div>
 
       <div class="flex gap-2 pt-1">
         <button onclick="triggerManualSync(); closeShareModal();" class="flex-1 py-2.5 bg-sky-100 hover:bg-sky-200 text-sky-800 font-extrabold rounded-xl text-xs flex items-center justify-center gap-1.5 transition">
-          <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i> รีเฟรชดึงชีตสด
+          <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i> ดึงข้อมูลสดเดี๋ยวนี้
         </button>
         <button onclick="closeShareModal()" class="flex-1 py-2.5 bg-slate-800 hover:bg-slate-900 text-white text-xs font-extrabold rounded-xl transition">
-          ตกลง
+          ปิด
         </button>
       </div>
     </div>
@@ -585,8 +523,9 @@
     <span id="toastMessage">บันทึกสำเร็จ</span>
   </div>
 
+  <!-- Application Logic & Pure Real-Time Sheets Engine -->
   <script>
-    // Hardcoded Backend Google Sheets API Endpoint
+    // HARDCODED BACKEND GOOGLE SHEETS API ENDPOINT
     const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbWZhVO7aT4EB9iM-RJiqfVoMFYcJrNa7cKkd5emxmXvmlN9t0--_2PzPoZXQxWnL_C/exec";
 
     const INCOME_GIFT = 21000.00;
@@ -610,82 +549,27 @@
       { id: 'internet', name: 'เน็ต 2 คน (Dtac/True)', type: 'ค่าใช้จ่าย', monthly: 1116.01, balance: 0.00, paid: false, nonCredit: true }
     ];
 
-    const todayStr = new Date().toISOString().split('T')[0];
-    const INITIAL_TRANSACTIONS = [
-      { 
-        id: 1001, 
-        player: 'GET', 
-        amount: 150, 
-        note: '🍛 ค่าข้าว GET', 
-        category: 'Food', 
-        time: '12:30', 
-        date: todayStr,
-        slip: null 
-      }
-    ];
+    // PURGE ANY PREVIOUS LOCALSTORAGE TEST DATA COMPLETELY
+    try {
+      localStorage.removeItem('warrior_saved_tx');
+      localStorage.removeItem('warrior_saved_debts');
+      localStorage.removeItem('warrior_slip_vault');
+    } catch(e) {}
 
+    // PURE MEMORY STATE: DATA COMES EXCLUSIVELY FROM GOOGLE SHEETS
+    let transactions = [];
+    let appDebts = [...INITIAL_DEBTS];
     let currentActivePlayer = 'GIFT';
     let selectedCategory = 'Food';
-    let currentSlipBase64 = null;
     let isSyncing = false;
     let pendingDeleteTxId = null;
     let longPressTimer = null;
-    let isLongPressTriggered = false;
 
-    // Safe DOM helper utilities
+    // Helper DOM utilities
     function safeSetText(id, text) {
       const el = document.getElementById(id);
       if (el) el.innerText = text;
     }
-
-    function safeSetHtml(id, html) {
-      const el = document.getElementById(id);
-      if (el) el.innerHTML = html;
-    }
-
-    function getSlipVault() {
-      try {
-        return JSON.parse(localStorage.getItem('warrior_slip_vault') || '{}');
-      } catch (e) {
-        return {};
-      }
-    }
-
-    function saveSlipToVault(id, base64) {
-      if (!id || !base64) return;
-      try {
-        const vault = getSlipVault();
-        vault[String(id)] = base64;
-        localStorage.setItem('warrior_slip_vault', JSON.stringify(vault));
-      } catch (e) {
-        console.warn("Slip vault storage warning:", e);
-      }
-    }
-
-    function deleteSlipFromVault(id) {
-      try {
-        const vault = getSlipVault();
-        delete vault[String(id)];
-        localStorage.setItem('warrior_slip_vault', JSON.stringify(vault));
-      } catch (e) {}
-    }
-
-    let cachedTx = null;
-    let cachedDebts = null;
-    try {
-      cachedTx = JSON.parse(localStorage.getItem('warrior_saved_tx') || 'null');
-      cachedDebts = JSON.parse(localStorage.getItem('warrior_saved_debts') || 'null');
-    } catch (e) {}
-
-    let appDebts = cachedDebts && cachedDebts.length > 0 ? cachedDebts : [...INITIAL_DEBTS];
-    let transactions = cachedTx && cachedTx.length > 0 ? cachedTx : [...INITIAL_TRANSACTIONS];
-
-    const initialVault = getSlipVault();
-    transactions.forEach(t => {
-      if (!t.slip && initialVault[String(t.id)]) {
-        t.slip = initialVault[String(t.id)];
-      }
-    });
 
     function playAudioTone(type) {
       try {
@@ -742,12 +626,12 @@
       const statusDot = document.getElementById('cloudStatusDot');
 
       if (!silent && statusLabel) {
-        statusLabel.innerText = "กำลังซิงค์...";
+        statusLabel.innerText = "กำลังดึงชีต...";
         if (statusDot) statusDot.className = "w-2 h-2 rounded-full bg-amber-500 animate-ping";
       }
 
       try {
-        // Prevent browser cache by appending timestamp query
+        // Append cache-busting timestamp to guarantee 100% real-time freshness
         const fetchUrl = `${APPS_SCRIPT_URL}?action=read&t=${Date.now()}`;
         const res = await fetch(fetchUrl, {
           method: 'GET',
@@ -757,63 +641,54 @@
         if (res.ok) {
           const cloudRows = await res.json();
           if (Array.isArray(cloudRows)) {
-            const vault = getSlipVault();
-            const parsed = cloudRows.map(r => {
-              const txId = Number(r.id) || Date.now();
-              const slipData = (r.slip && r.slip.length > 50) ? r.slip : (vault[String(txId)] || null);
-              if (r.slip && r.slip.length > 50 && !vault[String(txId)]) {
-                saveSlipToVault(txId, r.slip);
-              }
-              return {
-                id: txId,
-                player: String(r.player || 'GIFT'),
-                amount: Number(r.amount) || 0,
-                note: String(r.note || ''),
-                category: String(r.category || 'Food'),
-                time: String(r.time || ''),
-                date: String(r.date || todayStr),
-                slip: slipData
-              };
-            });
+            const todayStr = new Date().toISOString().split('T')[0];
+            // Normalize rows directly from Google Sheet
+            const parsed = cloudRows.map(r => ({
+              id: Number(r.id) || Date.now(),
+              player: String(r.player || 'GIFT'),
+              amount: Number(r.amount) || 0,
+              note: String(r.note || ''),
+              category: String(r.category || 'Food'),
+              time: String(r.time || ''),
+              date: String(r.date || todayStr)
+            }));
 
-            // If rows are ordered oldest first in sheets, reverse so newest is on top
+            // Google Sheets records top-down (chronological), reverse to show newest first
             transactions = parsed.reverse();
-            localStorage.setItem('warrior_saved_tx', JSON.stringify(transactions));
             updateAllUI();
 
             const timeString = new Date().toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-            safeSetText('cloudLastSyncTime', `อัปเดตล่าสุด: ${timeString} น.`);
+            safeSetText('cloudLastSyncTime', `อัปเดตชีตสด: ${timeString} น.`);
           }
 
-          if (statusLabel) statusLabel.innerText = "ซิงค์ชีตสด";
+          if (statusLabel) statusLabel.innerText = "คลาวด์สด";
           if (statusDot) statusDot.className = "w-2 h-2 rounded-full bg-emerald-500 animate-pulse";
+        } else {
+          if (statusLabel) statusLabel.innerText = "ชีตขัดข้อง";
+          if (statusDot) statusDot.className = "w-2 h-2 rounded-full bg-rose-500";
         }
       } catch (err) {
-        console.warn("Google Sheets sync issue:", err);
-        if (statusLabel) statusLabel.innerText = "แคชพร้อมใช้";
-        if (statusDot) statusDot.className = "w-2 h-2 rounded-full bg-emerald-500";
+        console.warn("Google Sheets connection error:", err);
+        if (statusLabel) statusLabel.innerText = "ยังไม่ต่อชีต";
+        if (statusDot) statusDot.className = "w-2 h-2 rounded-full bg-amber-500";
       } finally {
         isSyncing = false;
       }
     }
 
     async function postDataToGoogleSheet(newTx) {
-      try {
-        localStorage.setItem('warrior_saved_tx', JSON.stringify(transactions));
-        localStorage.setItem('warrior_saved_debts', JSON.stringify(appDebts));
-      } catch (e) {}
-
       const statusLabel = document.getElementById('cloudStatusLabel');
       const statusDot = document.getElementById('cloudStatusDot');
+      const saveBtnText = document.getElementById('saveBtnText');
       if (statusLabel) statusLabel.innerText = "กำลังเซฟ...";
       if (statusDot) statusDot.className = "w-2 h-2 rounded-full bg-sky-500 animate-ping";
+      if (saveBtnText) saveBtnText.innerText = "กำลังส่งข้อมูลเข้าชีต...";
 
       try {
-        // Send payload using text/plain to prevent CORS preflight OPTIONS failure
+        // Send plain text payload to prevent CORS preflight OPTIONS rejection
         await fetch(APPS_SCRIPT_URL, {
           method: 'POST',
           mode: 'no-cors',
-          redirect: 'follow',
           headers: {
             'Content-Type': 'text/plain;charset=utf-8'
           },
@@ -825,27 +700,22 @@
             note: newTx.note,
             category: newTx.category,
             time: newTx.time,
-            date: newTx.date,
-            slip: "" // Kept empty in sheet cell to avoid 50,000 char cell limits; preserved in local Slip Vault
+            date: newTx.date
           })
         });
 
-        if (statusLabel) statusLabel.innerText = "ซิงค์แล้ว";
+        if (statusLabel) statusLabel.innerText = "เซฟแล้ว";
         if (statusDot) statusDot.className = "w-2 h-2 rounded-full bg-emerald-500 animate-pulse";
-
-        // Re-sync after short delay to verify server consistency
-        setTimeout(() => loadDataFromGoogleSheet(true), 1500);
       } catch (err) {
-        console.warn("Could not post transaction to Google Sheet:", err);
+        console.warn("Could not post to Google Sheet:", err);
+      } finally {
+        if (saveBtnText) saveBtnText.innerText = "บันทึกเข้า Google Sheets ทันที";
+        // Immediately trigger fresh pull from cloud to synchronize all views
+        setTimeout(() => loadDataFromGoogleSheet(true), 1200);
       }
     }
 
     async function deleteDataFromGoogleSheet(txId) {
-      try {
-        localStorage.setItem('warrior_saved_tx', JSON.stringify(transactions));
-        localStorage.setItem('warrior_saved_debts', JSON.stringify(appDebts));
-      } catch (e) {}
-
       const statusLabel = document.getElementById('cloudStatusLabel');
       if (statusLabel) statusLabel.innerText = "กำลังลบในชีต...";
 
@@ -853,7 +723,6 @@
         await fetch(APPS_SCRIPT_URL, {
           method: 'POST',
           mode: 'no-cors',
-          redirect: 'follow',
           headers: {
             'Content-Type': 'text/plain;charset=utf-8'
           },
@@ -864,97 +733,18 @@
         });
 
         if (statusLabel) statusLabel.innerText = "ลบแล้ว";
-        setTimeout(() => loadDataFromGoogleSheet(true), 1500);
       } catch (err) {
         console.warn("Could not delete from Google Sheet:", err);
+      } finally {
+        setTimeout(() => loadDataFromGoogleSheet(true), 1200);
       }
     }
 
     window.triggerManualSync = function() {
       loadDataFromGoogleSheet(false);
-      showToast("รีเฟรชดึงข้อมูลคลาวด์เรียบร้อย");
+      showToast("ดึงข้อมูลล่าสุดจาก Google Sheets เรียบร้อย");
     };
 
-    window.handleSlipSelected = function(e) {
-      const file = e.target.files?.[0];
-      if (!file) return;
-
-      const reader = new FileReader();
-      reader.onload = function(event) {
-        const img = new Image();
-        img.onload = function() {
-          const canvas = document.createElement('canvas');
-          const maxDim = 400;
-          let width = img.width;
-          let height = img.height;
-
-          if (width > height && width > maxDim) {
-            height = Math.round(height * (maxDim / width));
-            width = maxDim;
-          } else if (height > maxDim) {
-            width = Math.round(width * (maxDim / height));
-            height = maxDim;
-          }
-
-          canvas.width = width;
-          canvas.height = height;
-          const ctx = canvas.getContext('2d');
-          ctx.drawImage(img, 0, 0, width, height);
-          currentSlipBase64 = canvas.toDataURL('image/jpeg', 0.5);
-
-          safeSetText('slipBtnText', "แนบรูปแล้ว ✓");
-          safeSetText('slipStatusBadge', "พร้อมบันทึก");
-          const badge = document.getElementById('slipStatusBadge');
-          if (badge) badge.className = "text-xs text-emerald-600 font-bold";
-          const removeBtn = document.getElementById('removeSlipBtn');
-          if (removeBtn) removeBtn.classList.remove('hidden');
-        };
-        img.src = event.target.result;
-      };
-      reader.readAsDataURL(file);
-    };
-
-    window.clearSlipPhoto = function() {
-      currentSlipBase64 = null;
-      const input = document.getElementById('slipInput');
-      if (input) input.value = '';
-      safeSetText('slipBtnText', "แนบสลิป / บิล");
-      safeSetText('slipStatusBadge', "ยังไม่มีรูปแนบ");
-      const badge = document.getElementById('slipStatusBadge');
-      if (badge) badge.className = "text-xs text-slate-500 font-medium";
-      const removeBtn = document.getElementById('removeSlipBtn');
-      if (removeBtn) removeBtn.classList.add('hidden');
-    };
-
-    window.viewSlip = function(id) {
-      const vault = getSlipVault();
-      const tx = transactions.find(t => t.id === id);
-      const slipImg = (tx && tx.slip) || vault[String(id)];
-      if (slipImg) {
-        const imgEl = document.getElementById('slipModalImg');
-        if (imgEl) imgEl.src = slipImg;
-        safeSetText('slipModalTitle', `${tx ? tx.note : 'สลิป'} (฿${tx ? tx.amount.toLocaleString() : ''})`);
-        const modal = document.getElementById('slipModal');
-        if (modal) modal.classList.remove('hidden');
-      }
-    };
-
-    window.closeSlipModal = function() {
-      const modal = document.getElementById('slipModal');
-      if (modal) modal.classList.add('hidden');
-    };
-
-    window.openShareModal = function() {
-      const modal = document.getElementById('shareModal');
-      if (modal) modal.classList.remove('hidden');
-    };
-
-    window.closeShareModal = function() {
-      const modal = document.getElementById('shareModal');
-      if (modal) modal.classList.add('hidden');
-    };
-
-    // Long press and deletion methods
     window.promptDeleteTransaction = function(id) {
       const tx = transactions.find(t => t.id === id);
       if (!tx) return;
@@ -975,8 +765,8 @@
       const txIndex = transactions.findIndex(t => t.id === pendingDeleteTxId);
       if (txIndex !== -1) {
         const deletedTx = transactions[txIndex];
-        
-        // If the transaction was a Snowball boss attack, restore boss HP
+
+        // If transaction was a Snowball boss attack, restore boss HP
         if (deletedTx.category === 'Snowball') {
           const boss = appDebts.find(d => d.id === 'ttb_sofast');
           if (boss) {
@@ -985,23 +775,22 @@
           }
         }
 
+        // Remove from current memory array immediately
         transactions.splice(txIndex, 1);
-        deleteSlipFromVault(pendingDeleteTxId);
         playAudioTone('delete');
-        showToast(`ลบรายการ ฿${deletedTx.amount.toLocaleString()} เรียบร้อย`);
-        
+        showToast(`ลบรายการ ฿${deletedTx.amount.toLocaleString()} ออกจากชีตแล้ว`);
         updateAllUI();
+
+        // Send delete request to Google Sheets
         deleteDataFromGoogleSheet(pendingDeleteTxId);
       }
       closeDeleteModal();
     };
 
     window.startLongPress = function(id) {
-      isLongPressTriggered = false;
       longPressTimer = setTimeout(() => {
-        isLongPressTriggered = true;
         promptDeleteTransaction(id);
-      }, 550);
+      }, 500); // 500ms press-and-hold trigger
     };
 
     window.cancelLongPress = function() {
@@ -1009,6 +798,16 @@
         clearTimeout(longPressTimer);
         longPressTimer = null;
       }
+    };
+
+    window.openShareModal = function() {
+      const modal = document.getElementById('shareModal');
+      if (modal) modal.classList.remove('hidden');
+    };
+
+    window.closeShareModal = function() {
+      const modal = document.getElementById('shareModal');
+      if (modal) modal.classList.add('hidden');
     };
 
     window.switchTab = function(tabId) {
@@ -1041,7 +840,7 @@
       const indicator = document.getElementById('activePlayerIndicator');
 
       if (player === 'GIFT') {
-        if (cardGift) cardGift.className = "cursor-pointer relative overflow-hidden rounded-3xl p-3.5 border-2 transition-all duration-300 bg-white border-rose-400 shadow-glow-rose";
+        if (cardGift) cardGift.className = "cursor-pointer relative overflow-hidden rounded-3xl p-3.5 border-2 transition-all duration-300 bg-white border-rose-400 shadow-md shadow-rose-100";
         if (cardGet) cardGet.className = "cursor-pointer relative overflow-hidden rounded-3xl p-3.5 border-2 transition-all duration-300 bg-white border-slate-200 opacity-80 hover:opacity-100";
         if (badgeGift) badgeGift.classList.remove('hidden');
         if (badgeGet) badgeGet.classList.add('hidden');
@@ -1050,7 +849,7 @@
           indicator.innerText = "ลงในนาม: GIFT";
         }
       } else {
-        if (cardGet) cardGet.className = "cursor-pointer relative overflow-hidden rounded-3xl p-3.5 border-2 transition-all duration-300 bg-white border-sky-400 shadow-glow-sky";
+        if (cardGet) cardGet.className = "cursor-pointer relative overflow-hidden rounded-3xl p-3.5 border-2 transition-all duration-300 bg-white border-sky-400 shadow-md shadow-sky-100";
         if (cardGift) cardGift.className = "cursor-pointer relative overflow-hidden rounded-3xl p-3.5 border-2 transition-all duration-300 bg-white border-slate-200 opacity-80 hover:opacity-100";
         if (badgeGet) badgeGet.classList.remove('hidden');
         if (badgeGift) badgeGift.classList.add('hidden');
@@ -1086,13 +885,8 @@
         category: selectedCategory,
         note: (noteEl && noteEl.value) ? noteEl.value : (selectedCategory === 'Snowball' ? '💣 โปะหนี้' : 'ใช้จ่ายทั่วไป'),
         time: new Date().toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' }),
-        date: new Date().toISOString().split('T')[0],
-        slip: currentSlipBase64 || null
+        date: new Date().toISOString().split('T')[0]
       };
-
-      if (newTx.slip) {
-        saveSlipToVault(txId, newTx.slip);
-      }
 
       if (selectedCategory === 'Snowball') {
         const boss = appDebts.find(d => d.id === 'ttb_sofast');
@@ -1108,14 +902,16 @@
         playAudioTone('coin');
       }
 
+      // Add to current UI memory instantly
       transactions.unshift(newTx);
       amountEl.value = '';
       if (noteEl) noteEl.value = '';
       selectedCategory = 'Food';
-      clearSlipPhoto();
 
-      showToast(`บันทึกสำเร็จ ฿${amt.toLocaleString()} (${newTx.player})`);
+      showToast(`บันทึกแล้ว ฿${amt.toLocaleString()} (${newTx.player})`);
       updateAllUI();
+
+      // Post directly to Google Sheets
       postDataToGoogleSheet(newTx);
     };
 
@@ -1178,7 +974,7 @@
       const giftStatus = document.getElementById('giftStatusPhrase');
       if (giftStatus) {
         if (spentGift === 0) {
-          giftStatus.innerHTML = `<i data-lucide="shield-check" class="w-3.5 h-3.5 text-emerald-600"></i> HP เต็ม ปลอดภัย (ยังไม่ใช้เงิน)`;
+          giftStatus.innerHTML = `<i data-lucide="shield-check" class="w-3.5 h-3.5 text-emerald-600"></i> HP เต็ม ปลอดภัย`;
           giftStatus.className = "text-xs text-emerald-700 mt-2 font-bold flex items-center gap-1.5";
         } else if (hpGiftPct > 50) {
           giftStatus.innerHTML = `<i data-lucide="shield-check" class="w-3.5 h-3.5 text-emerald-600"></i> HP ปลอดภัย เหลือ ฿${(DAILY_BUDGET_GIFT - spentGift).toLocaleString()}`;
@@ -1187,7 +983,7 @@
           giftStatus.innerHTML = `<i data-lucide="alert-circle" class="w-3.5 h-3.5 text-amber-600"></i> เหลืออีก ฿${(DAILY_BUDGET_GIFT - spentGift).toLocaleString()}`;
           giftStatus.className = "text-xs text-amber-700 mt-2 font-bold flex items-center gap-1.5";
         } else {
-          giftStatus.innerHTML = `<i data-lucide="skull" class="w-3.5 h-3.5 text-rose-600"></i> HP หมด! เกินงบวันนี้`;
+          giftStatus.innerHTML = `<i data-lucide="skull" class="w-3.5 h-3.5 text-rose-600"></i> เกินงบวันนี้!`;
           giftStatus.className = "text-xs text-rose-700 mt-2 font-bold flex items-center gap-1.5";
         }
       }
@@ -1201,22 +997,29 @@
           getStatus.innerHTML = `<i data-lucide="shield-check" class="w-3.5 h-3.5 text-emerald-600"></i> HP ปลอดภัย เหลือ ฿${(DAILY_BUDGET_GET - spentGet).toLocaleString()}`;
           getStatus.className = "text-xs text-emerald-700 mt-2 font-bold flex items-center gap-1.5";
         } else if (hpGetPct > 0) {
-          getStatus.innerHTML = `<i data-lucide="alert-circle" class="w-3.5 h-3.5 text-amber-600"></i> เหลืออีก ฿${(DAILY_BUDGET_GET - spentGet).toLocaleString()} วันนี้`;
+          getStatus.innerHTML = `<i data-lucide="alert-circle" class="w-3.5 h-3.5 text-amber-600"></i> เหลืออีก ฿${(DAILY_BUDGET_GET - spentGet).toLocaleString()}`;
           getStatus.className = "text-xs text-amber-700 mt-2 font-bold flex items-center gap-1.5";
         } else {
-          getStatus.innerHTML = `<i data-lucide="skull" class="w-3.5 h-3.5 text-rose-600"></i> HP หมด! เกินงบวันนี้`;
+          getStatus.innerHTML = `<i data-lucide="skull" class="w-3.5 h-3.5 text-rose-600"></i> เกินงบวันนี้!`;
           getStatus.className = "text-xs text-rose-700 mt-2 font-bold flex items-center gap-1.5";
         }
       }
     }
 
     function updateDebtBossesAndDSR() {
+      // Recalculate boss damage dynamically from transactions marked Snowball
+      const totalSnowballDamage = transactions
+        .filter(t => t.category === 'Snowball')
+        .reduce((sum, t) => sum + (Number(t.amount) || 0), 0);
+
       const boss = appDebts.find(d => d.id === 'ttb_sofast');
       if (boss) {
-        safeSetText('bossHpValue', `฿${boss.balance.toLocaleString('en-US', {minimumFractionDigits: 2})}`);
         const initialBossHp = 15359.88;
-        const damageDone = Math.max(0, initialBossHp - boss.balance);
-        safeSetText('bossDamageDone', `฿${damageDone.toLocaleString()}`);
+        boss.balance = Math.max(0, initialBossHp - totalSnowballDamage);
+        boss.paid = boss.balance <= 0;
+
+        safeSetText('bossHpValue', `฿${boss.balance.toLocaleString('en-US', {minimumFractionDigits: 2})}`);
+        safeSetText('bossDamageDone', `฿${totalSnowballDamage.toLocaleString()}`);
         const bossPct = Math.min(100, Math.max(0, (boss.balance / initialBossHp) * 100));
         const bossBar = document.getElementById('bossProgressBar');
         if (bossBar) bossBar.style.width = `${bossPct}%`;
@@ -1292,9 +1095,6 @@
           showToast(`ยินดีด้วย! ปลดค่างวด ฿${debt.monthly.toLocaleString()}/ด.`);
         }
         updateAllUI();
-        try {
-          localStorage.setItem('warrior_saved_debts', JSON.stringify(appDebts));
-        } catch (e) {}
       }
     };
 
@@ -1302,27 +1102,27 @@
       const list = document.getElementById('transactionsList');
       if (!list) return;
       list.innerHTML = '';
-      const recent = transactions.slice(0, 15);
       safeSetText('txCountBadge', `${transactions.length} รายการ`);
 
-      if (recent.length === 0) {
-        list.innerHTML = `<p class="text-center py-6 text-xs sm:text-sm font-bold text-slate-400">ยังไม่มีรายการบันทึกของวันนี้</p>`;
+      if (transactions.length === 0) {
+        list.innerHTML = `
+          <div class="text-center py-6 border-2 border-dashed border-slate-200 rounded-2xl bg-white/60">
+            <p class="text-xs sm:text-sm font-bold text-slate-400">ยังไม่มีรายการใน Google Sheets</p>
+            <p class="text-[11px] text-slate-400 mt-0.5">กดบันทึกด้านบนเพื่อทดสอบการซิงค์สดได้เลยครับ</p>
+          </div>`;
         return;
       }
 
-      const vault = getSlipVault();
-
-      recent.forEach(t => {
-        const hasSlip = !!(t.slip || vault[String(t.id)]);
+      transactions.slice(0, 30).forEach(t => {
         const item = document.createElement('div');
         item.className = "press-hold relative group flex justify-between items-center bg-white border border-slate-200 rounded-2xl px-3.5 py-2.5 shadow-sm transition cursor-pointer select-none";
         
-        // Mobile touch long press events
+        // Touch long-press events for mobile
         item.addEventListener('touchstart', () => startLongPress(t.id), { passive: true });
         item.addEventListener('touchend', cancelLongPress);
         item.addEventListener('touchmove', cancelLongPress);
 
-        // Desktop mouse long press events
+        // Mouse long-press events for desktop
         item.addEventListener('mousedown', () => startLongPress(t.id));
         item.addEventListener('mouseup', cancelLongPress);
         item.addEventListener('mouseleave', cancelLongPress);
@@ -1331,11 +1131,8 @@
           <div class="flex items-center space-x-2.5 flex-1 pr-2">
             <span class="${t.player === 'GIFT' ? 'bg-rose-100 text-rose-700 border-rose-200' : 'bg-sky-100 text-sky-700 border-sky-200'} border px-2 py-0.5 rounded-lg font-black text-xs">${t.player}</span>
             <div class="flex-1">
-              <div class="flex items-center gap-2 flex-wrap">
-                <span class="text-slate-800 font-bold text-xs sm:text-sm">${t.note}</span>
-                ${hasSlip ? `<button onclick="event.stopPropagation(); viewSlip(${t.id})" class="text-xs font-black text-amber-800 bg-amber-100 hover:bg-amber-200 px-2 py-0.5 rounded-lg border border-amber-300 flex items-center gap-1 shadow-xs">📸 สลิป</button>` : ''}
-              </div>
-              <span class="text-xs text-slate-500 font-mono font-medium">${t.time}</span>
+              <span class="text-slate-800 font-bold text-xs sm:text-sm block">${t.note}</span>
+              <span class="text-xs text-slate-400 font-mono font-medium">${t.time} • ${t.date}</span>
             </div>
           </div>
           <div class="flex items-center gap-2">
@@ -1344,8 +1141,8 @@
                 ${t.category === 'Snowball' ? '⚡ ' : ''}฿${t.amount.toLocaleString()}
               </span>
             </div>
-            <!-- Quick trash button for immediate desktop click -->
-            <button onclick="event.stopPropagation(); promptDeleteTransaction(${t.id})" title="ลบรายการนี้" class="p-1.5 rounded-xl hover:bg-rose-50 text-slate-300 hover:text-rose-600 transition active:scale-90">
+            <!-- Quick trash button for easy clicking -->
+            <button onclick="event.stopPropagation(); promptDeleteTransaction(${t.id})" title="แตะหรือกดค้างเพื่อลบ" class="p-1.5 rounded-xl hover:bg-rose-50 text-slate-300 hover:text-rose-600 transition active:scale-90">
               <i data-lucide="trash-2" class="w-4 h-4"></i>
             </button>
           </div>
@@ -1354,43 +1151,55 @@
       });
     }
 
-    window.generateAiAdvice = function() {
-      const tips = [
-        "กลยุทธ์สำคัญ: ปิด TTB so fast (฿15,359) ก่อนเป็นใบแรก เพราะจะดึงค่างวดออกไปได้ทันที ฿1,800/เดือน และทำให้บูโรหายไป 1 บัญชี!",
-        "วิเคราะห์วินัย: ทั้งสองคนช่วยกันคุมงบอย่างมีวินัย หากประคองยอดนี้ได้ตลอดเดือน ค่างวดที่เหลือจะนำไปปิดบอส TTB ได้เร็วขึ้นแน่นอนค่ะ!",
-        "ข้อควรรู้ ธอส.: แบงก์ชอบ Statement ที่ไม่มีรายการหักค่างวดจุกจิก เมื่อปิดบัตรใบไหนเสร็จ ให้ขอใบเสร็จปิดยอดไว้ทันทีโดยไม่ต้องรอยื่นรอบใหญ่",
-        "กำลังใจ: ประวัติอายุงาน 8 ปีของคุณ GIFT เป็นจุดแข็งมาก ตอนนี้เหลือเพียงกด DSR ให้ต่ำกว่า 60% คอนโดผ่านแน่นอนค่ะ!"
-      ];
-      safeSetText('aiCoachMessage', tips[Math.floor(Math.random() * tips.length)]);
-      lucide.createIcons();
-    };
-
-    window.copyAppsScriptCode = function() {
+    window.copyWorkingAppsScriptCode = function() {
       const code = `function doGet(e) {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
   var sheet = ss.getSheetByName('Transactions') || ss.getSheets()[0];
+  
+  if (sheet.getLastRow() === 0) {
+    sheet.appendRow(['id', 'player', 'amount', 'note', 'category', 'time', 'date']);
+    return ContentService.createTextOutput(JSON.stringify([]))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+  
   var data = sheet.getDataRange().getValues();
   if (data.length <= 1) {
-    return ContentService.createTextOutput(JSON.stringify([])).setMimeType(ContentService.MimeType.JSON);
+    return ContentService.createTextOutput(JSON.stringify([]))
+      .setMimeType(ContentService.MimeType.JSON);
   }
+  
   var headers = data[0];
   var rows = [];
   for (var i = 1; i < data.length; i++) {
     var row = data[i];
+    if (!row[0] && !row[1] && !row[2]) continue;
     var obj = {};
     for (var j = 0; j < headers.length; j++) {
       obj[headers[j]] = row[j];
     }
     rows.push(obj);
   }
-  return ContentService.createTextOutput(JSON.stringify(rows)).setMimeType(ContentService.MimeType.JSON);
+  
+  return ContentService.createTextOutput(JSON.stringify(rows))
+    .setMimeType(ContentService.MimeType.JSON);
 }
 
 function doPost(e) {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
   var sheet = ss.getSheetByName('Transactions') || ss.getSheets()[0];
-  var body = JSON.parse(e.postData.contents);
-
+  
+  if (sheet.getLastRow() === 0) {
+    sheet.appendRow(['id', 'player', 'amount', 'note', 'category', 'time', 'date']);
+  }
+  
+  var contents = e.postData ? e.postData.contents : '';
+  var body = {};
+  try {
+    body = JSON.parse(contents);
+  } catch(err) {
+    body = e.parameter || {};
+  }
+  
   if (body.action === 'delete') {
     var data = sheet.getDataRange().getValues();
     for (var i = 1; i < data.length; i++) {
@@ -1399,14 +1208,22 @@ function doPost(e) {
         break;
       }
     }
-    return ContentService.createTextOutput(JSON.stringify({status: 'deleted'})).setMimeType(ContentService.MimeType.JSON);
+    return ContentService.createTextOutput(JSON.stringify({ status: 'deleted', id: body.id }))
+      .setMimeType(ContentService.MimeType.JSON);
   }
-
-  if (sheet.getLastRow() === 0) {
-    sheet.appendRow(['id', 'player', 'amount', 'note', 'category', 'time', 'date']);
-  }
-  sheet.appendRow([body.id, body.player, body.amount, body.note, body.category, body.time, body.date]);
-  return ContentService.createTextOutput(JSON.stringify({status: 'success'})).setMimeType(ContentService.MimeType.JSON);
+  
+  sheet.appendRow([
+    body.id || Date.now(),
+    body.player || 'GIFT',
+    Number(body.amount) || 0,
+    body.note || '',
+    body.category || 'Food',
+    body.time || '',
+    body.date || ''
+  ]);
+  
+  return ContentService.createTextOutput(JSON.stringify({ status: 'success' }))
+    .setMimeType(ContentService.MimeType.JSON);
 }`;
 
       const el = document.createElement('textarea');
@@ -1418,9 +1235,9 @@ function doPost(e) {
 
       const btn = document.getElementById('copyScriptBtn');
       if (btn) btn.innerHTML = `<i data-lucide="check" class="w-3.5 h-3.5"></i> คัดลอกโค้ดสำเร็จแล้ว!`;
-      showToast("คัดลอกโค้ด Apps Script v2 แล้ว");
+      showToast("คัดลอกโค้ด Google Apps Script แล้ว");
       setTimeout(() => {
-        if (btn) btn.innerHTML = `<i data-lucide="copy" class="w-3.5 h-3.5"></i> คัดลอกโค้ด Apps Script v2`;
+        if (btn) btn.innerHTML = `<i data-lucide="copy" class="w-3.5 h-3.5"></i> คัดลอกโค้ด Apps Script ตัวสมบูรณ์`;
         lucide.createIcons();
       }, 3000);
       lucide.createIcons();
@@ -1438,12 +1255,13 @@ function doPost(e) {
       safeSetText('statusBarTime', now.toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' }));
       
       updateAllUI();
-      loadDataFromGoogleSheet();
+      // First immediate pull from Google Sheets
+      loadDataFromGoogleSheet(false);
 
-      // Realtime polling every 8 seconds across all devices
+      // Realtime background sync every 5 seconds across all devices
       setInterval(() => {
         loadDataFromGoogleSheet(true);
-      }, 8000);
+      }, 5000);
     }
 
     if (document.readyState === 'loading') {
